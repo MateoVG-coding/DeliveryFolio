@@ -9,18 +9,20 @@ namespace Courier_Data_Control_App.Classes
 {
     public class Driver
     {
-        private int Id;
-        private string Name;
-        private int PhoneNumber;
-        private string LicensePlate;
-        private bool Status;
+        private int Id { get; set; }
+        private string Name { get; set; }
+        private int PhoneNumber { get; set; }
+        private string LicensePlate { get; set; }
+        private DateTime DateCreated { get; set; }
+        private bool Status { get; set; }
 
-        public Driver(int id, string name, int phoneNumber, string licensePlate, bool status = false)
+        public Driver(int id, string name, int phoneNumber, string licensePlate, DateTime dateCreated, bool status = false)
         {
             Name = name;
             PhoneNumber = phoneNumber;
             LicensePlate = licensePlate;
             Status = status;
+            DateCreated = dateCreated;
         }
     }
 }

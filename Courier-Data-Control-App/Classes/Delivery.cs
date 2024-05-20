@@ -11,15 +11,16 @@ namespace Courier_Data_Control_App.Classes
 {
     public class Delivery
     {
-        private int Id;
-        private string Name;
-        private int PhoneNumber;
-        private string Address;
-        private string Description;
-        private bool Status;
-        private Driver Driver;
+        private int Id { get; set; }
+        private string Name { get; set; }
+        private int PhoneNumber { get; set; }
+        private string Address { get; set; }
+        private string Description { get; set; }
+        private bool Status { get; set; }
+        private DateTime DateCreated { get; set; }
+        private Driver Driver { get; set; }
 
-        public Delivery(string name, int phoneNumber, string address, string description, bool status = false, Driver driver = null)
+        public Delivery(string name, int phoneNumber, string address, string description, DateTime dateCreated, bool status = false, Driver driver = null)
         {
             Name = name;
             PhoneNumber = phoneNumber;
@@ -27,6 +28,7 @@ namespace Courier_Data_Control_App.Classes
             Description = description;
             Status = status;
             Driver = driver;
+            DateCreated = dateCreated;
         }
     }
 }

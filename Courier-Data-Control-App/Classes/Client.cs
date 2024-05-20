@@ -13,11 +13,14 @@ namespace Courier_Data_Control_App.Classes
         private int PhoneNumber { get; set; }
         private string Address { get; set; }
 
-        public Client(string name, int phoneNumber, string address)
+        private DateTime DateCreated { get; set; }
+
+        public Client(string name, int phoneNumber, string address, DateTime dateCreated)
         {
             Name = name;
             PhoneNumber = phoneNumber;
             Address = address;
+            DateCreated = dateCreated;
         }
     }
 }

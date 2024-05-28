@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Courier-Data-Control-App", "Courier-Data-Control-App\Courier-Data-Control-App.csproj", "{4F9FD50C-4393-4D40-9BC9-2D345108CB58}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryFolio.App", "App\DeliveryFolio.App.csproj", "{4F9FD50C-4393-4D40-9BC9-2D345108CB58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

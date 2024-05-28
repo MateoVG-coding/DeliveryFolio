@@ -1,26 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Courier_Data_Control_App.Classes
 {
-    public class Client
+    public class Delivery
     {
-        private int Id;
+        private int Id { get; set; }
         private string Name { get; set; }
         private int PhoneNumber { get; set; }
         private string Address { get; set; }
-
+        private string Description { get; set; }
+        private bool Status { get; set; }
         private DateTime DateCreated { get; set; }
-
-        public Client(string name, int phoneNumber, string address, DateTime dateCreated)
-        {
-            Name = name;
-            PhoneNumber = phoneNumber;
-            Address = address;
-            DateCreated = dateCreated;
-        }
+        private Driver Driver { get; set; }
     }
 }

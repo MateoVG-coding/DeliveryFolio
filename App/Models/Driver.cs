@@ -15,14 +15,5 @@ namespace Courier_Data_Control_App.Classes
         private string LicensePlate { get; set; }
         private DateTime DateCreated { get; set; }
         private bool Status { get; set; }
-
-        public Driver(int id, string name, int phoneNumber, string licensePlate, DateTime dateCreated, bool status = false)
-        {
-            Name = name;
-            PhoneNumber = phoneNumber;
-            LicensePlate = licensePlate;
-            Status = status;
-            DateCreated = dateCreated;
-        }
     }
 }

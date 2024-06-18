@@ -9,11 +9,11 @@ namespace Courier_Data_Control_App.Classes
 {
     public class Driver
     {
-        private int Id { get; set; }
-        private string Name { get; set; }
-        private int PhoneNumber { get; set; }
-        private string LicensePlate { get; set; }
-        private DateTime DateCreated { get; set; }
-        private bool Status { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int PhoneNumber { get; set; }
+        public string LicensePlate { get; set; }
+        public DateTime DateCreated { get; set; }
+        public bool Status { get; set; }
     }
 }

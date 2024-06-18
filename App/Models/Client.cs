@@ -8,10 +8,10 @@ namespace Courier_Data_Control_App.Classes
 {
     public class Client
     {
-        private int Id;
-        private string Name { get; set; }
-        private int PhoneNumber { get; set; }
-        private string Address { get; set; }
-        private DateTime DateCreated { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int PhoneNumber { get; set; }
+        public string Address { get; set; }
+        public DateTime DateCreated { get; set; }
     }
 }

@@ -166,6 +166,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Repositories\ClientRepository.cs" />
+    <Compile Include="Repositories\DbContext.cs" />
+    <Compile Include="Repositories\DeliveryRepository.cs" />
+    <Compile Include="Repositories\DriverRepository.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

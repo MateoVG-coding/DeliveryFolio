@@ -11,13 +11,14 @@ namespace Courier_Data_Control_App.Classes
 {
     public class Delivery
     {
-        private int Id { get; set; }
-        private string Name { get; set; }
-        private int PhoneNumber { get; set; }
-        private string Address { get; set; }
-        private string Description { get; set; }
-        private bool Status { get; set; }
-        private DateTime DateCreated { get; set; }
-        private Driver Driver { get; set; }
+        public int Id { get; set; }
+        public string CustomerName { get; set; }
+        public int PhoneNumber { get; set; }
+        public string Address { get; set; }
+        public string Description { get; set; }
+        public bool Status { get; set; }
+        public DateTime DateCreated { get; set; }
+        public int DriverId { get; set; }
+        public Driver Driver { get; set; }
     }
 }

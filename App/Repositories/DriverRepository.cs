@@ -16,6 +16,27 @@ namespace Courier_Data_Control_App.Repositories
         {
             _context = context;
         }
+        public async Task<List<Driver>> GetFilteredDriversAsync(string name = null, string phoneNumber = null, string licensePlate = null)
+        {
+            var query = _context.Drivers.AsQueryable();
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(c => c.FullName.Contains(name));
+            }
+
+            if (!string.IsNullOrEmpty(phoneNumber))
+            {
+                query = query.Where(c => c.PhoneNumber.Contains(phoneNumber));
+            }
+
+            if (!string.IsNullOrEmpty(licensePlate))
+            {
+                query = query.Where(c => c.LicensePlate.Contains(licensePlate));
+            }
+
+            return await query.ToListAsync();
+        }
 
         public async Task<List<Driver>> GetAllDriversAsync()
         {

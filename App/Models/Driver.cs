@@ -11,7 +11,7 @@ namespace Courier_Data_Control_App.Classes
     {
         public int Id { get; set; }
         public string FullName { get; set; }
-        public int PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
         public string LicensePlate { get; set; }
         public DateTime DateCreated { get; set; }
         public bool Status { get; set; }

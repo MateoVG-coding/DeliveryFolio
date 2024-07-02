@@ -17,6 +17,34 @@ namespace Courier_Data_Control_App.Repositories
             _context = context;
         }
 
+        public async Task<List<Delivery>> GetFilteredDeliveriesAsync(string customerName = null, string phoneNumber = null,
+                                                                    string address = null, string description = null)
+        {
+            var query = _context.Deliveries.AsQueryable();
+
+            if (!string.IsNullOrEmpty(customerName))
+            {
+                query = query.Where(c => c.CustomerName.Contains(customerName));
+            }
+
+            if (!string.IsNullOrEmpty(phoneNumber))
+            {
+                query = query.Where(c => c.PhoneNumber.Contains(phoneNumber));
+            }
+
+            if (!string.IsNullOrEmpty(address))
+            {
+                query = query.Where(c => c.Address.Contains(address));
+            }
+
+            if (!string.IsNullOrEmpty(description))
+            {
+                query = query.Where(c => c.Description.Contains(description));
+            }
+
+            return await query.ToListAsync();
+        }
+
         public async Task<List<Delivery>> GetAllDeliveriesAsync()
         {
             return await _context.Deliveries.Include(d => d.Driver).ToListAsync();

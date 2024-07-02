@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 
 namespace Courier_Data_Control_App.ViewModels
 {
-    internal class DeliveriesViewModel : ObservableObject
+    /// <summary>
+    /// A view model for list of deliveries.
+    /// </summary>
+    public partial class DeliveriesViewModel : ObservableObject
     {
     }
 }

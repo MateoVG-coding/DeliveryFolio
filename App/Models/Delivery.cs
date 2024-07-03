@@ -17,7 +17,7 @@ namespace Courier_Data_Control_App.Classes
         public string Address { get; set; }
         public string Description { get; set; }
         public bool Status { get; set; }
-        public DateTime DateCreated { get; set; }
+        public DateTime DateCreated { get; set; } = DateTime.Now;
         public int DriverId { get; set; }
         public Driver Driver { get; set; }
     }

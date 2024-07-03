@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Courier_Data_Control_App.Repositories
 {
@@ -45,9 +46,14 @@ namespace Courier_Data_Control_App.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task<List<Delivery>> GetAllDeliveriesAsync()
+        public async Task<List<Delivery>> GetAllDeliveriesAsync(int pageNumber, int pageSize)
         {
-            return await _context.Deliveries.Include(d => d.Driver).ToListAsync();
+            var query = _context.Deliveries.Include(d => d.Driver).AsQueryable();
+
+            return await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
         }
 
         public async Task AddDeliveryAsync(Delivery delivery)

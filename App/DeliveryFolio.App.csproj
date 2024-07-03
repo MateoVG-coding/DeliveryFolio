@@ -184,7 +184,7 @@
     <Compile Include="ViewModels\ClientsViewModel.cs" />
     <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\DeliveriesViewModel.cs" />
-    <Compile Include="ViewModels\DeliveryDriversViewModel.cs" />
+    <Compile Include="ViewModels\DriversViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

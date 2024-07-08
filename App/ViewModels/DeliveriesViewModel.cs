@@ -30,24 +30,12 @@ namespace Courier_Data_Control_App.ViewModels
         private int _currentPage = 1;
         private const int PageSize = 20;
 
-        public DeliveriesViewModel(DeliveryRepository deliveryRepository)
-        {
-            _deliveryRepository = deliveryRepository;
-
-            LoadDeliveriesCommand = new AsyncRelayCommand<int>(LoadDeliveriesAsync);
-            AddDeliveryCommand = new AsyncRelayCommand<Delivery>(AddDeliveryAsync);
-            UpdateDeliveryCommand = new AsyncRelayCommand<UpdateDeliveryParameters>(UpdateDeliveryAsync);
-            DeleteDeliveryCommand = new AsyncRelayCommand<Delivery>(DeleteDeliveryAsync);
-
-            // Load initial data
-            LoadDeliveriesCommand.Execute(_currentPage);
-        }
-
         /// <summary>
         /// Gets the current deliveries in the database for the collection of
         /// the view model using paging
         /// </summary>
-        private async Task LoadDeliveriesAsync(int pageNumber)
+        [RelayCommand]
+        async Task LoadDeliveriesAsync(int pageNumber)
         {
             if (pageNumber < 1)
             {
@@ -61,15 +49,14 @@ namespace Courier_Data_Control_App.ViewModels
             Deliveries = new ObservableGroupedCollection<DateTime, Delivery>(
                deliveries.GroupBy(c => c.DateCreated.Date)
                .OrderBy(g => g.Key));
-
-            OnPropertyChanged(nameof(Deliveries));
         }
 
         /// <summary>
         /// Add a delivery to the deliveries repository and add it to the collection
         /// of the view model
         /// </summary>
-        private async Task AddDeliveryAsync(Delivery newDelivery)
+        [RelayCommand]
+        async Task AddDeliveryAsync(Delivery newDelivery)
         {
             Deliveries.AddItem(newDelivery.DateCreated.Date, newDelivery);
 
@@ -80,7 +67,8 @@ namespace Courier_Data_Control_App.ViewModels
         /// Update the selected delivery by deleting and adding it to the deliveries repository
         /// and the view model collection with their new data
         /// </summary>
-        private async Task UpdateDeliveryAsync(UpdateDeliveryParameters updateDeliveryParameters)
+        [RelayCommand]
+        async Task UpdateDeliveryAsync(UpdateDeliveryParameters updateDeliveryParameters)
         {
             Deliveries.FirstGroupByKey(updateDeliveryParameters.SelectedDelivery.DateCreated.Date).Remove(updateDeliveryParameters.SelectedDelivery);
 
@@ -92,17 +80,13 @@ namespace Courier_Data_Control_App.ViewModels
         /// <summary>
         /// Delete a delivery from the deliveries repository and the view model collection.
         /// </summary>
-        private async Task DeleteDeliveryAsync(Delivery selectedDelivery)
+        [RelayCommand]
+        async Task DeleteDeliveryAsync(Delivery selectedDelivery)
         {
             Deliveries.FirstGroupByKey(selectedDelivery.DateCreated.Date).Remove(selectedDelivery);
 
             await _deliveryRepository.DeleteDeliveryAsync(selectedDelivery);
         }
-
-        public IAsyncRelayCommand LoadDeliveriesCommand { get; }
-        public IAsyncRelayCommand AddDeliveryCommand { get; }
-        public IAsyncRelayCommand UpdateDeliveryCommand { get; }
-        public IAsyncRelayCommand DeleteDeliveryCommand { get; }
 
     }
 }

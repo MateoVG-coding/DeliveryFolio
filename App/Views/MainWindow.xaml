@@ -4,10 +4,184 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Courier_Data_Control_App"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
- 
+        mc:Ignorable="d" Name="home"
+        Title="MainWindow" Height="650" Width="1000"
+        WindowStyle="None" ResizeMode="NoResize"
+        AllowsTransparency="True" WindowStartupLocation="CenterScreen"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Primary.Dark.Foreground}"
+        Background="{DynamicResource MaterialDesign.Brush.Background}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="{materialDesign:RobotoFont}">
+
+    <Border CornerRadius="10">
         <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="9*"/>
+                <RowDefinition Height="641*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0"
+                    CornerRadius="10 0 0 10" Grid.RowSpan="2">
+                <Grid x:Name="GridNav" Width="70">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="75"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <!-- Start: Logo and Label -->
+                        <StackPanel Orientation="Horizontal">
+                            <!-- Logo -->
+                            <Border Width="55" Height="55" CornerRadius="25" Margin="5,10,12,0" BorderBrush="Gray" BorderThickness="1" VerticalAlignment="Center">
+                                <Image Source="/Resources/DeliveryFolioLogo.png" Stretch="Fill" RenderOptions.BitmapScalingMode="NearestNeighbor" Margin="-1,-1,-1,-1"/>
+                            </Border>
+
+                            <!-- Label with Rounded Corners -->
+                            <Border Background="#307ab9" CornerRadius="8" VerticalAlignment="Center" Padding="5">
+                                <Label Content="DeliveryFolio"
+                                       FontFamily="Futura"
+                                       FontSize="16"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Left"
+                                       Foreground="WhiteSmoke"/>
+                            </Border>
+                        </StackPanel>
+                        <!-- End: Logo and Label -->
+                    </Grid>
+
+                    <!-- Start: MenuItem -->
+                    <materialDesign:Card Grid.Row="1" Margin="0,20,5,0">
+                        <TabControl materialDesign:ColorZoneAssist.Mode="PrimaryDark" SnapsToDevicePixels="True" 
+                                    Style="{StaticResource MaterialDesignNavigationRailTabControl}" materialDesign:ElevationAssist.Elevation="Dp8" TabStripPlacement="Left">
+
+                            <TabItem Width="180" HorizontalContentAlignment="Left">
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal" Width="160" Height="auto">
+                                        <materialDesign:PackIcon Width="24" Height="24" Kind="Home" Margin="12,0,0,0" 
+                                                                 ToolTipService.ToolTip="Inicio" ToolTipService.InitialShowDelay="10"/>
+                                        <TextBlock Margin="20,0,20,0" VerticalAlignment="Center" Text="Inicio"/>
+                                    </StackPanel>
+                                </TabItem.Header>
+                            </TabItem>
+
+                            <TabItem Width="180" HorizontalContentAlignment="Left">
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal" Width="160" Height="auto">
+                                        <materialDesign:PackIcon Width="24" Height="24" Kind="PackageVariantClosed" Margin="12,0,0,0"
+                                                                 ToolTipService.ToolTip="Entregas" ToolTipService.InitialShowDelay="10"/>
+                                        <TextBlock Margin="20,0,20,0" VerticalAlignment="Center" Text="Entregas"/>
+                                    </StackPanel>
+                                </TabItem.Header>
+                            </TabItem>
+
+                            <TabItem Width="180" HorizontalContentAlignment="Left">
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal" Width="160" Height="auto">
+                                        <materialDesign:PackIcon Width="24" Height="24" Kind="AccountGroup" Margin="12,0,0,0"
+                                                                 ToolTipService.ToolTip="Clientes" ToolTipService.InitialShowDelay="10"/>
+                                        <TextBlock Margin="20,0,20,0" VerticalAlignment="Center" Text="Clientes"/>
+                                    </StackPanel>
+                                </TabItem.Header>
+                            </TabItem>
+
+                            <TabItem Width="180" HorizontalContentAlignment="Left">
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal" Width="160" Height="auto">
+                                        <materialDesign:PackIcon Width="24" Height="24" Kind="Steering" Margin="12,0,0,0"
+                                                                 ToolTipService.ToolTip="Mensajeros" ToolTipService.InitialShowDelay="10"/>
+                                        <TextBlock Margin="20,0,20,0" VerticalAlignment="Center" Text="Mensajeros"/>
+                                    </StackPanel>
+                                </TabItem.Header>
+                            </TabItem>
+
+                            <TabItem Width="180" HorizontalContentAlignment="Left">
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal" Width="160" Height="auto">
+                                        <materialDesign:PackIcon Width="24" Height="24" Kind="Settings" Margin="12,0,0,0"
+                                                                 ToolTipService.ToolTip="Configuración" ToolTipService.InitialShowDelay="10"/>
+                                        <TextBlock Margin="20,0,20,0" VerticalAlignment="Center" Text="Configuración"/>
+                                    </StackPanel>
+                                </TabItem.Header>
+                            </TabItem>
+                        </TabControl>
+                    </materialDesign:Card>
+                    <!-- End: MenuItem -->
+                </Grid>
+            </Border>
+
+            <!-- Start: Menu Toggle Button -->
+            <Grid Grid.Column="1" Grid.RowSpan="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <ToggleButton x:Name="Tg_Btn" Grid.Column="1" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHamburgerToggleButton}" HorizontalAlignment="Left" BorderThickness="0" Background="Transparent" Margin="5,15,0,15" Height="30" Width="30">
+                    <ToggleButton.Triggers>
+                        <EventTrigger RoutedEvent="ToggleButton.Unchecked">
+                            <BeginStoryboard>
+                                <Storyboard x:Name="HideStackPanel">
+                                    <DoubleAnimation Storyboard.TargetName="GridNav" Storyboard.TargetProperty="Width" BeginTime="0:0:0" From="185" To="70" Duration="0:0:0.5">
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="ToggleButton.Checked">
+                            <BeginStoryboard>
+                                <Storyboard x:Name="ShowStackPanel">
+                                    <DoubleAnimation Storyboard.TargetName="GridNav" Storyboard.TargetProperty="Width" BeginTime="0:0:0" From="70" To="185" Duration="0:0:0.5">
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </ToggleButton.Triggers>
+                </ToggleButton>
+                <!-- End: Menu Toggle Button -->
+
+                <!-- Start: Button Close | Restore | Minimize -->
+                <StackPanel Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5,10,0" Height="30" Orientation="Horizontal" FlowDirection="LeftToRight" Grid.RowSpan="2">
+                    <!-- Minimize Button -->
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" Click="MinimizeButton_Click">
+                        <materialDesign:PackIcon Kind="WindowMinimize" />
+                    </Button>
+                    <!-- Restore Button -->
+                    <Button Click="RestoreButton_Click">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <materialDesign:PackIcon Kind="WindowRestore" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=home, Path=WindowState}" Value="Maximized">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <materialDesign:PackIcon Kind="WindowMaximize" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <!-- Close Button -->
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" Click="CloseButton_Click">
+                        <materialDesign:PackIcon Kind="WindowClose" />
+                    </Button>
+                </StackPanel>
+                <!-- End: Button Close | Restore | Minimize -->
+
+            </Grid>
+
+
 
         </Grid>
+    </Border>
 </Window>

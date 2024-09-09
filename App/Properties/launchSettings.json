@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DeliveryFolio.App": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\Mateo V.G\\source\\repos\\Courier-Data-Control-App\\App"
+    }
+  }
+}

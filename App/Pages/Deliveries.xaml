@@ -1,0 +1,88 @@
+﻿<Page x:Class="Courier_Data_Control_App.Pages.Deliveries"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Courier_Data_Control_App.ViewModels"
+      mc:Ignorable="d" 
+      x:Name="DeliveriesPage"
+      d:DesignHeight="450" d:DesignWidth="800"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Primary.Dark.Foreground}"
+      Background="{DynamicResource MaterialDesign.Brush.Background}"
+      TextElement.FontWeight="Medium"
+      TextElement.FontSize="14"
+      FontFamily="{materialDesign:RobotoFont}"
+      Title="Deliveries">
+
+    <Grid x:Name="DeliveriesGrid">
+
+        <Button Content="Add New Row"
+                Command=""
+                Margin="10"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top" />
+        <!-- List of Deliveries -->
+        <DataGrid x:Name="DeliveriesDataGrid"
+                  AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Extended"  
+                  ItemsSource="{Binding Deliveries}" RowHeight="50" 
+                  Margin="5 60,5,80" CanUserDeleteRows="True" CanUserAddRows="False"
+                  RowEditEnding="DeliveriesDataGrid_RowEditEnding" AlternationCount="2"
+                  RowStyle="{StaticResource MaterialDesignDataGridRow}"
+                  AlternatingRowBackground="{StaticResource MaterialDesignLightSeparatorBackground}"
+                  Style="{StaticResource MaterialDesignDataGrid}">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Fecha" Binding="{Binding DateCreated}" Width="*" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Cliente" Binding="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                <DataGridTextColumn Header="Teléfono" Binding="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                <DataGridTextColumn Header="Dirección" Binding="{Binding Address,UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                <DataGridTemplateColumn Header="Descripción">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Description}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding DataContext.DeliveryTypes, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                      SelectedItem="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      IsEditable="True" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Mensajero" Binding="{Binding Driver.FullName}" Width="*" />
+                <DataGridTextColumn Header="Estado" Binding="{Binding Status}" Width="*" />
+
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20">
+            <!-- Previous Page Button -->
+            <Button materialDesign:ElevationAssist.Elevation="Dp2"
+                    Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                    Command="{Binding PreviousPageCommand}"
+                    IsEnabled="{Binding CanNavigatePrevious}"
+                    Margin="5">
+                <materialDesign:PackIcon Kind="ArrowLeft"/>
+            </Button>
+
+            <!-- Page Information -->
+            <TextBlock Text="{Binding CurrentPage, StringFormat='Page {0} of'}"
+               VerticalAlignment="Center"
+               Margin="20,0,0,0"/>
+            <TextBlock Text="{Binding TotalPages}"
+               VerticalAlignment="Center"
+               Margin="5,0,20,0"/>
+
+            <!-- Next Page Button -->
+            <Button materialDesign:ElevationAssist.Elevation="Dp2"
+                    Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                    Command="{Binding NextPageCommand}"
+                    IsEnabled="{Binding CanNavigateNext}"
+                    Margin="5">
+                <materialDesign:PackIcon Kind="ArrowRight"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Page>

@@ -57,54 +57,54 @@
 
                     <!-- Start: MenuItem -->
                     <materialDesign:Card Grid.Row="1" Margin="0,20,5,0">
-                        <TabControl materialDesign:ColorZoneAssist.Mode="PrimaryDark" SnapsToDevicePixels="True" 
-                                    Style="{StaticResource MaterialDesignNavigationRailTabControl}" materialDesign:ElevationAssist.Elevation="Dp8" TabStripPlacement="Left">
+                        <TabControl materialDesign:ColorZoneAssist.Mode="PrimaryDark"  SnapsToDevicePixels="True" SelectionChanged="TabControl_SelectionChanged"
+                        Style="{StaticResource MaterialDesignNavigationRailTabControl}" materialDesign:ElevationAssist.Elevation="Dp8" TabStripPlacement="Left">
 
-                            <TabItem Width="180" HorizontalContentAlignment="Left">
+                            <TabItem Width="180" HorizontalContentAlignment="Left" Tag="Home">
                                 <TabItem.Header>
                                     <StackPanel Orientation="Horizontal" Width="160" Height="auto">
                                         <materialDesign:PackIcon Width="24" Height="24" Kind="Home" Margin="12,0,0,0" 
-                                                                 ToolTipService.ToolTip="Inicio" ToolTipService.InitialShowDelay="10"/>
+                                             ToolTipService.ToolTip="Inicio" ToolTipService.InitialShowDelay="10"/>
                                         <TextBlock Margin="20,0,20,0" VerticalAlignment="Center" Text="Inicio"/>
                                     </StackPanel>
                                 </TabItem.Header>
                             </TabItem>
 
-                            <TabItem Width="180" HorizontalContentAlignment="Left">
+                            <TabItem Width="180" HorizontalContentAlignment="Left" Tag="Deliveries">
                                 <TabItem.Header>
                                     <StackPanel Orientation="Horizontal" Width="160" Height="auto">
                                         <materialDesign:PackIcon Width="24" Height="24" Kind="PackageVariantClosed" Margin="12,0,0,0"
-                                                                 ToolTipService.ToolTip="Entregas" ToolTipService.InitialShowDelay="10"/>
+                                             ToolTipService.ToolTip="Entregas" ToolTipService.InitialShowDelay="10"/>
                                         <TextBlock Margin="20,0,20,0" VerticalAlignment="Center" Text="Entregas"/>
                                     </StackPanel>
                                 </TabItem.Header>
                             </TabItem>
 
-                            <TabItem Width="180" HorizontalContentAlignment="Left">
+                            <TabItem Width="180" HorizontalContentAlignment="Left" Tag="Clients">
                                 <TabItem.Header>
                                     <StackPanel Orientation="Horizontal" Width="160" Height="auto">
                                         <materialDesign:PackIcon Width="24" Height="24" Kind="AccountGroup" Margin="12,0,0,0"
-                                                                 ToolTipService.ToolTip="Clientes" ToolTipService.InitialShowDelay="10"/>
+                                             ToolTipService.ToolTip="Clientes" ToolTipService.InitialShowDelay="10"/>
                                         <TextBlock Margin="20,0,20,0" VerticalAlignment="Center" Text="Clientes"/>
                                     </StackPanel>
                                 </TabItem.Header>
                             </TabItem>
 
-                            <TabItem Width="180" HorizontalContentAlignment="Left">
+                            <TabItem Width="180" HorizontalContentAlignment="Left" Tag="Couriers">
                                 <TabItem.Header>
                                     <StackPanel Orientation="Horizontal" Width="160" Height="auto">
                                         <materialDesign:PackIcon Width="24" Height="24" Kind="Steering" Margin="12,0,0,0"
-                                                                 ToolTipService.ToolTip="Mensajeros" ToolTipService.InitialShowDelay="10"/>
+                                             ToolTipService.ToolTip="Mensajeros" ToolTipService.InitialShowDelay="10"/>
                                         <TextBlock Margin="20,0,20,0" VerticalAlignment="Center" Text="Mensajeros"/>
                                     </StackPanel>
                                 </TabItem.Header>
                             </TabItem>
 
-                            <TabItem Width="180" HorizontalContentAlignment="Left">
+                            <TabItem Width="180" HorizontalContentAlignment="Left" Tag="Settings">
                                 <TabItem.Header>
                                     <StackPanel Orientation="Horizontal" Width="160" Height="auto">
                                         <materialDesign:PackIcon Width="24" Height="24" Kind="Settings" Margin="12,0,0,0"
-                                                                 ToolTipService.ToolTip="Configuración" ToolTipService.InitialShowDelay="10"/>
+                                             ToolTipService.ToolTip="Configuración" ToolTipService.InitialShowDelay="10"/>
                                         <TextBlock Margin="20,0,20,0" VerticalAlignment="Center" Text="Configuración"/>
                                     </StackPanel>
                                 </TabItem.Header>
@@ -127,7 +127,7 @@
                         <EventTrigger RoutedEvent="ToggleButton.Unchecked">
                             <BeginStoryboard>
                                 <Storyboard x:Name="HideStackPanel">
-                                    <DoubleAnimation Storyboard.TargetName="GridNav" Storyboard.TargetProperty="Width" BeginTime="0:0:0" From="185" To="70" Duration="0:0:0.5">
+                                    <DoubleAnimation Storyboard.TargetName="GridNav" Storyboard.TargetProperty="Width" BeginTime="0:0:0" From="185" To="70" Duration="0:0:0.3">
                                     </DoubleAnimation>
                                 </Storyboard>
                             </BeginStoryboard>
@@ -135,7 +135,7 @@
                         <EventTrigger RoutedEvent="ToggleButton.Checked">
                             <BeginStoryboard>
                                 <Storyboard x:Name="ShowStackPanel">
-                                    <DoubleAnimation Storyboard.TargetName="GridNav" Storyboard.TargetProperty="Width" BeginTime="0:0:0" From="70" To="185" Duration="0:0:0.5">
+                                    <DoubleAnimation Storyboard.TargetName="GridNav" Storyboard.TargetProperty="Width" BeginTime="0:0:0" From="70" To="185" Duration="0:0:0.3">
                                     </DoubleAnimation>
                                 </Storyboard>
                             </BeginStoryboard>
@@ -178,9 +178,13 @@
                 </StackPanel>
                 <!-- End: Button Close | Restore | Minimize -->
 
+                <Frame Grid.Row="1"
+                     Name="fContainer"
+                     Margin="20"
+                     NavigationUIVisibility="Hidden">
+                </Frame>
+
             </Grid>
-
-
 
         </Grid>
     </Border>

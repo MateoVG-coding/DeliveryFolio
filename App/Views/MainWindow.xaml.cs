@@ -24,6 +24,32 @@ namespace Courier_Data_Control_App
         {
             InitializeComponent();
         }
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.Source is TabControl tabControl && tabControl.SelectedItem is TabItem selectedTab)
+            {
+                string tag = selectedTab.Tag as string;
+
+                switch (tag)
+                {
+                    case "Home":
+                        //fContainer.Navigate(new Uri("Pages/HomePage.xaml", UriKind.Relative));
+                        break;
+                    case "Deliveries":
+                        fContainer.Navigate(new Uri("Pages/Deliveries.xaml", UriKind.Relative));
+                        break;
+                    case "Clients":
+                        //fContainer.Navigate(new Uri("Views/ClientsPage.xaml", UriKind.Relative));
+                        break;
+                    case "Couriers":
+                        //fContainer.Navigate(new Uri("Views/CouriersPage.xaml", UriKind.Relative));
+                        break;
+                    case "Settings":
+                        //fContainer.Navigate(new Uri("Views/SettingsPage.xaml", UriKind.Relative));
+                        break;
+                }
+            }
+        }
 
         // Start: Button Close | Restore | Minimize 
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)

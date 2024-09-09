@@ -46,11 +46,17 @@ namespace Courier_Data_Control_App.Repositories
             return await query.ToListAsync();
         }
 
+        public async Task<int> GetTotalDeliveriesCountAsync()
+        {
+            return await _context.Deliveries.CountAsync();
+        }
+
         public async Task<List<Delivery>> GetAllDeliveriesAsync(int pageNumber, int pageSize)
         {
             var query = _context.Deliveries.Include(d => d.Driver).AsQueryable();
 
             return await query
+            .OrderBy(d => d.DateCreated)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

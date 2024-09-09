@@ -5,30 +5,91 @@ using Courier_Data_Control_App.Classes;
 using Courier_Data_Control_App.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Courier_Data_Control_App.ViewModels
 {
-    /// <summary>
-    /// Wrapper Class to encapsulate multiple parameters
-    /// </summary>
-    public class UpdateDeliveryParameters
-    {
-        public Delivery SelectedDelivery { get; set; }
-        public Delivery UpdatedDelivery { get; set; }
-    }
-
     /// <summary>
     /// A view model for list of deliveries.
     /// </summary>
     public partial class DeliveriesViewModel : ObservableObject
     {
         private readonly DeliveryRepository _deliveryRepository;
-        public ObservableGroupedCollection<DateTime, Delivery> Deliveries { get; private set; } = new ObservableGroupedCollection<DateTime, Delivery>();
-        private int _currentPage = 1;
-        private const int PageSize = 20;
+
+        private readonly DriverRepository _DriverRepository;
+
+        private readonly ClientRepository _ClientRepository;
+        public ObservableCollection<Delivery> Deliveries { get; private set; } = new ObservableCollection<Delivery>();
+
+        public ObservableCollection<string> DeliveryTypes { get; set; } = new ObservableCollection<string>
+        {
+            "Entrega estándar",
+            "Entrega urgente",
+            "Entrega de compras",
+            "Entrega bancaria",
+            "Entrega programada"
+        };
+
+        private const int PageSize = 10;
+
+        [ObservableProperty]
+        private int _totalPages;
+
+        [ObservableProperty]
+        private int _currentPage;
+
+        [ObservableProperty]
+        private bool _canNavigatePrevious;
+
+        [ObservableProperty]
+        private bool _canNavigateNext;
+
+        public DeliveriesViewModel(DeliveryRepository deliveryRepository)
+        {
+            _deliveryRepository = deliveryRepository;
+
+            InitializePagination();
+        }
+
+        /// <summary>
+        /// Allows the view to show the existing deliveries using paging
+        /// </summary>
+        void UpdateNavigationButtons()
+        {
+            CanNavigatePrevious = CurrentPage > 1;
+            CanNavigateNext = CurrentPage < TotalPages;
+        }
+
+        async void InitializePagination()
+        {
+            CurrentPage = 1;
+
+            var totalDeliveries = await _deliveryRepository.GetTotalDeliveriesCountAsync();
+            TotalPages = (int)Math.Ceiling(totalDeliveries / (double)PageSize);
+
+            await LoadDeliveriesAsync(CurrentPage);
+        }
+
+        [RelayCommand]
+        async Task NextPageAsync()
+        {
+            if (CanNavigateNext)
+            {
+                await LoadDeliveriesAsync(CurrentPage + 1);
+            }
+        }
+
+        [RelayCommand]
+        async Task PreviousPageAsync()
+        {
+            if (CanNavigatePrevious)
+            {
+                await LoadDeliveriesAsync(CurrentPage - 1);
+            }
+        }
 
         /// <summary>
         /// Gets the current deliveries in the database for the collection of
@@ -37,18 +98,22 @@ namespace Courier_Data_Control_App.ViewModels
         [RelayCommand]
         async Task LoadDeliveriesAsync(int pageNumber)
         {
-            if (pageNumber < 1)
+            if (pageNumber < 1 || pageNumber > TotalPages)
             {
-                pageNumber = 1;
+                return;
             }
 
-            _currentPage = pageNumber;
-            var deliveries = await _deliveryRepository.GetAllDeliveriesAsync(_currentPage, PageSize);
+            CurrentPage = pageNumber;
+            var deliveries = await _deliveryRepository.GetAllDeliveriesAsync(CurrentPage, PageSize);
 
             Deliveries.Clear();
-            Deliveries = new ObservableGroupedCollection<DateTime, Delivery>(
-               deliveries.GroupBy(c => c.DateCreated.Date)
-               .OrderBy(g => g.Key));
+
+            foreach (var delivery in deliveries)
+            {
+                Deliveries.Add(delivery);
+            }
+
+            UpdateNavigationButtons();
         }
 
         /// <summary>
@@ -58,23 +123,18 @@ namespace Courier_Data_Control_App.ViewModels
         [RelayCommand]
         async Task AddDeliveryAsync(Delivery newDelivery)
         {
-            Deliveries.AddItem(newDelivery.DateCreated.Date, newDelivery);
-
             await _deliveryRepository.AddDeliveryAsync(newDelivery);
+            await LoadDeliveriesAsync(CurrentPage);
         }
 
         /// <summary>
-        /// Update the selected delivery by deleting and adding it to the deliveries repository
-        /// and the view model collection with their new data
+        /// Update the selected delivery in the view model collection with their new data
         /// </summary>
         [RelayCommand]
-        async Task UpdateDeliveryAsync(UpdateDeliveryParameters updateDeliveryParameters)
+        async Task UpdateDeliveryAsync(Delivery updatedDelivery)
         {
-            Deliveries.FirstGroupByKey(updateDeliveryParameters.SelectedDelivery.DateCreated.Date).Remove(updateDeliveryParameters.SelectedDelivery);
-
-            Deliveries.AddItem(updateDeliveryParameters.UpdatedDelivery.DateCreated.Date, updateDeliveryParameters.UpdatedDelivery);
-
-            await _deliveryRepository.UpdateDeliveryAsync(updateDeliveryParameters.UpdatedDelivery);
+            await _deliveryRepository.UpdateDeliveryAsync(updatedDelivery);
+            await LoadDeliveriesAsync(CurrentPage);
         }
 
         /// <summary>
@@ -83,10 +143,8 @@ namespace Courier_Data_Control_App.ViewModels
         [RelayCommand]
         async Task DeleteDeliveryAsync(Delivery selectedDelivery)
         {
-            Deliveries.FirstGroupByKey(selectedDelivery.DateCreated.Date).Remove(selectedDelivery);
-
             await _deliveryRepository.DeleteDeliveryAsync(selectedDelivery);
+            await LoadDeliveriesAsync(CurrentPage);
         }
-
     }
 }

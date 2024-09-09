@@ -5,28 +5,21 @@ using Courier_Data_Control_App.Classes;
 using Courier_Data_Control_App.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+
 
 namespace Courier_Data_Control_App.ViewModels
 {
     /// <summary>
-    /// Wrapper Class to encapsulate multiple parameters
-    /// </summary>
-    public class UpdateDriverParameters
-    {
-        public Driver SelectedDriver { get; set; }
-        public Driver UpdatedDriver { get; set; }
-    }
-
-    /// <summary>
     /// A view model for list of drivers.
     /// </summary>
-    internal class DriversViewModel : ObservableObject
+    public partial class DriversViewModel : ObservableObject
     {
         private readonly DriverRepository _driverRepository;
-        public ObservableGroupedCollection<string, Driver> Drivers { get; private set; } = new ObservableGroupedCollection<string, Driver>();
+        public ObservableCollection<Driver> Drivers { get; private set; } = new ObservableCollection<Driver>();
 
         /// <summary>
         /// Gets the current drivers in the database for the collection of
@@ -36,9 +29,6 @@ namespace Courier_Data_Control_App.ViewModels
         {
             var drivers = await _driverRepository.GetAllDriversAsync();
 
-            Drivers = new ObservableGroupedCollection<string, Driver>(
-                drivers.GroupBy(c => c.FullName)
-                .OrderBy(g => g.Key));
         }
 
         /// <summary>
@@ -48,23 +38,18 @@ namespace Courier_Data_Control_App.ViewModels
         [RelayCommand]
         async Task AddDriverAsync(Driver newDriver)
         {
-            Drivers.AddItem(newDriver.FullName, newDriver);
-
             await _driverRepository.AddDriverAsync(newDriver);
+            await LoadDriversAsync();
         }
 
         /// <summary>
-        /// Update the selected driver by deleting and adding it to the drivers repository
-        /// and the view model collection with their new data
+        /// Update the selected driver in the view model collection with their new data
         /// </summary>
         [RelayCommand]
-        async Task UpdateDriverAsync(UpdateDriverParameters updateDriverParameters)
+        async Task UpdateDriverAsync(Driver updatedDriver)
         {
-            Drivers.FirstGroupByKey(updateDriverParameters.SelectedDriver.FullName).Remove(updateDriverParameters.SelectedDriver);
-
-            Drivers.AddItem(updateDriverParameters.UpdatedDriver.FullName, updateDriverParameters.UpdatedDriver);
-
-            await _driverRepository.UpdateDriverAsync(updateDriverParameters.UpdatedDriver);
+            await _driverRepository.UpdateDriverAsync(updatedDriver);
+            await LoadDriversAsync();
         }
 
         /// <summary>
@@ -73,9 +58,8 @@ namespace Courier_Data_Control_App.ViewModels
         [RelayCommand]
         async Task DeleteDriverAsync(Driver selectedDriver)
         {
-            Drivers.FirstGroupByKey(selectedDriver.FullName).Remove(selectedDriver);
-
             await _driverRepository.DeleteDriverAsync(selectedDriver);
+            await LoadDriversAsync();
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
+using Courier_Data_Control_App.Services;
 
 namespace Courier_Data_Control_App
 {
@@ -31,15 +32,21 @@ namespace Courier_Data_Control_App
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlite("Data Source=DeliveryFolio.db"));
 
-            services.AddScoped<DeliveryRepository>(); 
+
+            services.AddScoped<DeliveryRepository>();
+            services.AddScoped<DriverRepository>();
+            services.AddScoped<ClientRepository>();
+
+            services.AddSingleton<SharedDataService>();
 
             services.AddTransient<DeliveriesViewModel>();
-            services.AddSingleton<MainWindow>();
+            services.AddTransient<DriversViewModel>();
+            services.AddTransient<ClientsViewModel>();
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
+            var mainWindow = new MainWindow(); 
             mainWindow.Show();
             base.OnStartup(e);
         }

@@ -10,22 +10,17 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Primary.Dark.Foreground}"
       Background="{DynamicResource MaterialDesign.Brush.Background}"
-      TextElement.FontWeight="Medium"
+      TextElement.FontWeight="Regular"
       TextElement.FontSize="14"
       FontFamily="{materialDesign:RobotoFont}"
       Title="Deliveries">
 
     <Grid x:Name="DeliveriesGrid">
 
-        <Button Content="Add New Row"
-                Command=""
-                Margin="10"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top" />
         <!-- List of Deliveries -->
         <DataGrid x:Name="DeliveriesDataGrid"
                   AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Extended"  
-                  ItemsSource="{Binding Deliveries}" RowHeight="50" 
+                  ItemsSource="{Binding Deliveries}" RowHeight="50"
                   Margin="5 60,5,80" CanUserDeleteRows="True" CanUserAddRows="False"
                   RowEditEnding="DeliveriesDataGrid_RowEditEnding" AlternationCount="2"
                   RowStyle="{StaticResource MaterialDesignDataGridRow}"
@@ -46,13 +41,13 @@
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
                             <ComboBox ItemsSource="{Binding DataContext.DeliveryTypes, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                      SelectedItem="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                      IsEditable="True" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                      SelectedItem="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                                      IsEditable="True" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Mensajero" Binding="{Binding Driver.FullName}" Width="*" />
-                <DataGridTextColumn Header="Estado" Binding="{Binding Status}" Width="*" />
+                <DataGridTextColumn Header="Mensajero" Binding="{Binding Driver.FullName, UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                <DataGridTextColumn Header="Estado" Binding="{Binding Status, UpdateSourceTrigger=PropertyChanged}" Width="*" />
 
             </DataGrid.Columns>
         </DataGrid>

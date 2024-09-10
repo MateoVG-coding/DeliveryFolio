@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Courier_Data_Control_App.Classes;
 using Courier_Data_Control_App.Repositories;
+using Courier_Data_Control_App.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,12 +20,13 @@ namespace Courier_Data_Control_App.ViewModels
     {
         private readonly DeliveryRepository _deliveryRepository;
 
-        private readonly DriverRepository _DriverRepository;
+        private readonly SharedDataService _sharedDataService;
 
-        private readonly ClientRepository _ClientRepository;
-        public ObservableCollection<Delivery> Deliveries { get; private set; } = new ObservableCollection<Delivery>();
+        public ObservableCollection<Delivery> Deliveries => _sharedDataService.Deliveries;
+        public ObservableCollection<Driver> Drivers => _sharedDataService.Drivers;
+        public ObservableCollection<Client> Clients => _sharedDataService.Clients;
 
-        public ObservableCollection<string> DeliveryTypes { get; set; } = new ObservableCollection<string>
+        public ObservableCollection<string> DeliveryTypes { get; } = new ObservableCollection<string>
         {
             "Entrega estándar",
             "Entrega urgente",
@@ -47,9 +49,10 @@ namespace Courier_Data_Control_App.ViewModels
         [ObservableProperty]
         private bool _canNavigateNext;
 
-        public DeliveriesViewModel(DeliveryRepository deliveryRepository)
+        public DeliveriesViewModel(DeliveryRepository deliveryRepository, SharedDataService sharedDataService)
         {
             _deliveryRepository = deliveryRepository;
+            _sharedDataService = sharedDataService;
 
             InitializePagination();
         }
@@ -134,7 +137,6 @@ namespace Courier_Data_Control_App.ViewModels
         async Task UpdateDeliveryAsync(Delivery updatedDelivery)
         {
             await _deliveryRepository.UpdateDeliveryAsync(updatedDelivery);
-            await LoadDeliveriesAsync(CurrentPage);
         }
 
         /// <summary>

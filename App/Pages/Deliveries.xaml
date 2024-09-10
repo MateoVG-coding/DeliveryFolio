@@ -17,11 +17,53 @@
 
     <Grid x:Name="DeliveriesGrid">
 
+        <materialDesign:ColorZone materialDesign:ElevationAssist.Elevation="Dp2" 
+                                  ClipToBounds="False" CornerRadius="10" Mode="Standard" Height="96">
+
+            <StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Orientation="Horizontal" Margin="25, 0">
+
+                <Button Style="{StaticResource MaterialDesignFloatingActionSecondaryDarkButton}" ToolTip="Agregar nueva entrega" Margin="5, 5" materialDesign:ElevationAssist.Elevation="Dp4">
+                    <materialDesign:PackIcon Kind="Plus" Width="30" Height="30"/>
+            </Button>
+            <materialDesign:AutoSuggestBox materialDesign:HintAssist.Hint="Cliente" materialDesign:TextFieldAssist.HasClearButton="True"
+                                           DropDownElevation="Dp0" Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
+                                           Suggestions="{Binding AutoSuggestBox2Suggestions}"
+                                           Text="{Binding AutoSuggestBox2Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                           ValueMember="Key" Margin="20, 20" HorizontalContentAlignment="Left" Width="120"/>
+            
+            <materialDesign:AutoSuggestBox materialDesign:HintAssist.Hint="Teléfono" materialDesign:TextFieldAssist.HasClearButton="True"
+                                           DropDownElevation="Dp0" Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
+                                           Suggestions="{Binding AutoSuggestBox2Suggestions}"
+                                           Text="{Binding AutoSuggestBox2Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                           ValueMember="Key" Margin="20, 20" HorizontalContentAlignment="Left" Width="120"/>
+
+            <materialDesign:AutoSuggestBox materialDesign:HintAssist.Hint="Dirección" materialDesign:TextFieldAssist.HasClearButton="True"
+                                           DropDownElevation="Dp0" Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
+                                           Suggestions="{Binding AutoSuggestBox2Suggestions}"
+                                           Text="{Binding AutoSuggestBox2Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                           ValueMember="Key"  Margin="20, 20" HorizontalContentAlignment="Left" Width="120"/>
+
+            <materialDesign:AutoSuggestBox materialDesign:HintAssist.Hint="Descripción" materialDesign:TextFieldAssist.HasClearButton="True"
+                                           DropDownElevation="Dp0" Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
+                                           Suggestions="{Binding DeliveryTypes}"
+                                           Text="{Binding AutoSuggestBox2Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                           ValueMember="Key" Margin="20, 20" HorizontalContentAlignment="Left" Width="120" />
+
+            <materialDesign:AutoSuggestBox materialDesign:HintAssist.Hint="Mensajero" materialDesign:TextFieldAssist.HasClearButton="True"
+                                           DropDownElevation="Dp0" Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
+                                           Suggestions="{Binding Drivers.FullName}"
+                                           Text="{Binding AutoSuggestBox2Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                           ValueMember="Key" Margin="20, 20" HorizontalContentAlignment="Left" Width="120"/>
+
+        </StackPanel>
+
+        </materialDesign:ColorZone>
+
         <!-- List of Deliveries -->
         <DataGrid x:Name="DeliveriesDataGrid"
                   AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Extended"  
                   ItemsSource="{Binding Deliveries}" RowHeight="50"
-                  Margin="5 60,5,80" CanUserDeleteRows="True" CanUserAddRows="False"
+                  Margin="5,130,5,80" CanUserDeleteRows="True" CanUserAddRows="False"
                   RowEditEnding="DeliveriesDataGrid_RowEditEnding" AlternationCount="2"
                   RowStyle="{StaticResource MaterialDesignDataGridRow}"
                   AlternatingRowBackground="{StaticResource MaterialDesignLightSeparatorBackground}"

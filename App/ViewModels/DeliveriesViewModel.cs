@@ -19,14 +19,12 @@ namespace Courier_Data_Control_App.ViewModels
     public partial class DeliveriesViewModel : ObservableObject
     {
         private readonly DeliveryRepository _deliveryRepository;
-
-        private readonly SharedDataService _sharedDataService;
-
+        private readonly ISharedDataService _sharedDataService;
         public ObservableCollection<Delivery> Deliveries => _sharedDataService.Deliveries;
-        public ObservableCollection<Driver> Drivers => _sharedDataService.Drivers;
         public ObservableCollection<Client> Clients => _sharedDataService.Clients;
+        public ObservableCollection<Driver> Drivers => _sharedDataService.Drivers;
 
-        public ObservableCollection<string> DeliveryTypes { get; } = new ObservableCollection<string>
+        public ObservableCollection<string> DeliveryTypes { get; set; } = new ObservableCollection<string>
         {
             "Entrega estándar",
             "Entrega urgente",
@@ -36,20 +34,17 @@ namespace Courier_Data_Control_App.ViewModels
         };
 
         private const int PageSize = 10;
-
         [ObservableProperty]
         private int _totalPages;
-
         [ObservableProperty]
         private int _currentPage;
 
         [ObservableProperty]
         private bool _canNavigatePrevious;
-
         [ObservableProperty]
         private bool _canNavigateNext;
 
-        public DeliveriesViewModel(DeliveryRepository deliveryRepository, SharedDataService sharedDataService)
+        public DeliveriesViewModel(DeliveryRepository deliveryRepository, ISharedDataService sharedDataService)
         {
             _deliveryRepository = deliveryRepository;
             _sharedDataService = sharedDataService;
@@ -137,6 +132,7 @@ namespace Courier_Data_Control_App.ViewModels
         async Task UpdateDeliveryAsync(Delivery updatedDelivery)
         {
             await _deliveryRepository.UpdateDeliveryAsync(updatedDelivery);
+            await LoadDeliveriesAsync(CurrentPage);
         }
 
         /// <summary>

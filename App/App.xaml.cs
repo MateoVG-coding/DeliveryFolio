@@ -32,12 +32,17 @@ namespace Courier_Data_Control_App
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlite("Data Source=DeliveryFolio.db"));
 
-
             services.AddScoped<DeliveryRepository>();
             services.AddScoped<DriverRepository>();
             services.AddScoped<ClientRepository>();
 
-            services.AddSingleton<SharedDataService>();
+            services.AddSingleton<ISharedDataService>(provider =>
+            {
+                var deliveryRepository = provider.GetRequiredService<DeliveryRepository>();
+                var driverRepository = provider.GetRequiredService<DriverRepository>();
+                var clientRepository = provider.GetRequiredService<ClientRepository>();
+                return new SharedDataService(deliveryRepository, driverRepository, clientRepository);
+            });
 
             services.AddTransient<DeliveriesViewModel>();
             services.AddTransient<DriversViewModel>();
@@ -46,7 +51,7 @@ namespace Courier_Data_Control_App
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            var mainWindow = new MainWindow(); 
+            var mainWindow = new MainWindow();
             mainWindow.Show();
             base.OnStartup(e);
         }

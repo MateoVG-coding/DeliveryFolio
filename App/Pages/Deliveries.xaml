@@ -3,11 +3,11 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:Courier_Data_Control_App.ViewModels"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
       mc:Ignorable="d" 
       x:Name="DeliveriesPage"
       d:DesignHeight="450" d:DesignWidth="800"
-      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Primary.Dark.Foreground}"
       Background="{DynamicResource MaterialDesign.Brush.Background}"
       TextElement.FontWeight="Regular"
@@ -20,42 +20,71 @@
         <materialDesign:ColorZone materialDesign:ElevationAssist.Elevation="Dp2" 
                                   ClipToBounds="False" CornerRadius="10" Mode="Standard" Height="96">
 
-            <StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Orientation="Horizontal" Margin="25, 0">
+            <StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Orientation="Horizontal" 
+                        Margin="25, 0" DataContext="{Binding NewDelivery}">
 
-                <Button Style="{StaticResource MaterialDesignFloatingActionSecondaryDarkButton}" ToolTip="Agregar nueva entrega" Margin="5, 5" materialDesign:ElevationAssist.Elevation="Dp4">
+                <Button Style="{StaticResource MaterialDesignFloatingActionSecondaryDarkButton}" 
+                        ToolTip="Agregar nueva entrega" Margin="5, 5" 
+                        materialDesign:ElevationAssist.Elevation="Dp4"
+                        Command="{Binding DataContext.AddDeliveryCommand, RelativeSource={RelativeSource AncestorType=Page}}">
                     <materialDesign:PackIcon Kind="Plus" Width="30" Height="30"/>
-            </Button>
-            <materialDesign:AutoSuggestBox materialDesign:HintAssist.Hint="Cliente" materialDesign:TextFieldAssist.HasClearButton="True"
-                                           DropDownElevation="Dp0" Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
-                                           Suggestions="{Binding AutoSuggestBox2Suggestions}"
-                                           Text="{Binding AutoSuggestBox2Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                           ValueMember="Key" Margin="20, 20" HorizontalContentAlignment="Left" Width="120"/>
-            
-            <materialDesign:AutoSuggestBox materialDesign:HintAssist.Hint="Teléfono" materialDesign:TextFieldAssist.HasClearButton="True"
-                                           DropDownElevation="Dp0" Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
-                                           Suggestions="{Binding AutoSuggestBox2Suggestions}"
-                                           Text="{Binding AutoSuggestBox2Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                           ValueMember="Key" Margin="20, 20" HorizontalContentAlignment="Left" Width="120"/>
+                </Button>
 
-            <materialDesign:AutoSuggestBox materialDesign:HintAssist.Hint="Dirección" materialDesign:TextFieldAssist.HasClearButton="True"
-                                           DropDownElevation="Dp0" Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
-                                           Suggestions="{Binding AutoSuggestBox2Suggestions}"
-                                           Text="{Binding AutoSuggestBox2Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                           ValueMember="Key"  Margin="20, 20" HorizontalContentAlignment="Left" Width="120"/>
+                <materialDesign:AutoSuggestBox materialDesign:HintAssist.Hint="Cliente" 
+                                                materialDesign:TextFieldAssist.HasClearButton="True"
+                                                DropDownElevation="Dp0" 
+                                                Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
+                                                Suggestions="{Binding DataContext.ClientNames, 
+                                                                RelativeSource={RelativeSource AncestorType=Page}}"
+                                                Text="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                                Margin="20, 20" 
+                                                HorizontalContentAlignment="Left" 
+                                                Width="150"
+                                                />
 
-            <materialDesign:AutoSuggestBox materialDesign:HintAssist.Hint="Descripción" materialDesign:TextFieldAssist.HasClearButton="True"
-                                           DropDownElevation="Dp0" Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
-                                           Suggestions="{Binding DeliveryTypes}"
-                                           Text="{Binding AutoSuggestBox2Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                           ValueMember="Key" Margin="20, 20" HorizontalContentAlignment="Left" Width="120" />
+                <materialDesign:AutoSuggestBox materialDesign:HintAssist.Hint="Teléfono" 
+                                                materialDesign:TextFieldAssist.HasClearButton="True"
+                                                DropDownElevation="Dp0" 
+                                                Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
+                                                Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                                Margin="20, 20" 
+                                                HorizontalContentAlignment="Left" 
+                                                Width="150"/>
 
-            <materialDesign:AutoSuggestBox materialDesign:HintAssist.Hint="Mensajero" materialDesign:TextFieldAssist.HasClearButton="True"
-                                           DropDownElevation="Dp0" Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
-                                           Suggestions="{Binding Drivers.FullName}"
-                                           Text="{Binding AutoSuggestBox2Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                           ValueMember="Key" Margin="20, 20" HorizontalContentAlignment="Left" Width="120"/>
+                <materialDesign:AutoSuggestBox materialDesign:HintAssist.Hint="Dirección" 
+                                                materialDesign:TextFieldAssist.HasClearButton="True"
+                                                DropDownElevation="Dp0" 
+                                                Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
+                                                Text="{Binding Address, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                                Margin="20, 20" 
+                                                HorizontalContentAlignment="Left" 
+                                                Width="150"/>
 
-        </StackPanel>
+
+                <ComboBox                       materialDesign:HintAssist.Hint="Descripción" 
+                                                materialDesign:TextFieldAssist.HasClearButton="True"
+                                                IsEditable="True"
+                                                Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                                ItemsSource="{Binding DataContext.DeliveryTypes, 
+                                                                RelativeSource={RelativeSource AncestorType=Page}}"
+                                                Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                                Margin="20, 20" 
+                                                HorizontalContentAlignment="Left" 
+                                                Width="150"/>
+
+                <ComboBox                       materialDesign:HintAssist.Hint="Mensajero" 
+                                                materialDesign:TextFieldAssist.HasClearButton="True"
+                                                Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                                ItemsSource="{Binding DataContext.DriverNames, 
+                                                                RelativeSource={RelativeSource AncestorType=Page}}"
+                                                SelectedItem="{Binding DataContext.SelectedDriverName, 
+                                                                RelativeSource={RelativeSource AncestorType=Page},
+                                                                UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                                Margin="20, 20" 
+                                                HorizontalContentAlignment="Left" 
+                                                Width="150" />
+
+            </StackPanel>
 
         </materialDesign:ColorZone>
 
@@ -64,16 +93,30 @@
                   AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Extended"  
                   ItemsSource="{Binding Deliveries}" RowHeight="50"
                   Margin="5,130,5,80" CanUserDeleteRows="True" CanUserAddRows="False"
-                  RowEditEnding="DeliveriesDataGrid_RowEditEnding" AlternationCount="2"
+                  AlternationCount="2"
                   RowStyle="{StaticResource MaterialDesignDataGridRow}"
                   AlternatingRowBackground="{StaticResource MaterialDesignLightSeparatorBackground}"
                   Style="{StaticResource MaterialDesignDataGrid}">
 
+            <behaviors:Interaction.Triggers>
+                <behaviors:EventTrigger EventName="RowEditEnding">
+                    <behaviors:InvokeCommandAction Command="{Binding UpdateDeliveryCommand}" PassEventArgsToCommand="True"/>
+                </behaviors:EventTrigger>
+            </behaviors:Interaction.Triggers>
+
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Fecha" Binding="{Binding DateCreated}" Width="*" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Cliente" Binding="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged}" Width="*" />
-                <DataGridTextColumn Header="Teléfono" Binding="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}" Width="*" />
-                <DataGridTextColumn Header="Dirección" Binding="{Binding Address,UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                <DataGridTextColumn Header="Fecha" Binding="{Binding DateCreated}" 
+                                    Width="*" IsReadOnly="True"/>
+                
+                <DataGridTextColumn Header="Cliente" Binding="{Binding CustomerName, 
+                                    UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                
+                <DataGridTextColumn Header="Teléfono" Binding="{Binding PhoneNumber, 
+                                    UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                
+                <DataGridTextColumn Header="Dirección" Binding="{Binding Address,
+                                    UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                
                 <DataGridTemplateColumn Header="Descripción">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -82,14 +125,18 @@
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <ComboBox ItemsSource="{Binding DataContext.DeliveryTypes, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                      SelectedItem="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
-                                      IsEditable="True" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
+                            <ComboBox ItemsSource="{Binding DataContext.DeliveryTypes, 
+                                                    RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    SelectedItem="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                                                    IsEditable="True" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Mensajero" Binding="{Binding Driver.FullName, UpdateSourceTrigger=PropertyChanged}" Width="*" />
-                <DataGridTextColumn Header="Estado" Binding="{Binding Status, UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                
+                <DataGridTextColumn Header="Mensajero" Binding="{Binding Driver.FullName, 
+                                    UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                <DataGridTextColumn Header="Estado" Binding="{Binding Status, 
+                                    UpdateSourceTrigger=PropertyChanged}" Width="*" />
 
             </DataGrid.Columns>
         </DataGrid>

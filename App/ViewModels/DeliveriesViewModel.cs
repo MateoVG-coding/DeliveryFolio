@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Courier_Data_Control_App.ViewModels
@@ -21,8 +22,22 @@ namespace Courier_Data_Control_App.ViewModels
         private readonly DeliveryRepository _deliveryRepository;
         private readonly ISharedDataService _sharedDataService;
         public ObservableCollection<Delivery> Deliveries => _sharedDataService.Deliveries;
-        public ObservableCollection<Client> Clients => _sharedDataService.Clients;
-        public ObservableCollection<Driver> Drivers => _sharedDataService.Drivers;
+
+        // Properties to hold the drivers and clients names without accessing 
+        // directly the others view models.
+        public IEnumerable<string> DriverNames  => _sharedDataService.Drivers.Select(driver => driver.FullName);
+        public IEnumerable<string> ClientNames => _sharedDataService.Clients.Select(Client => Client.Name);
+
+        [ObservableProperty]
+        private Delivery _newDelivery = new Delivery();
+
+        // Property to hold the selected driver name
+        [ObservableProperty]
+        private string _selectedDriverName;
+
+        // Property to hold the selected driver name
+        [ObservableProperty]
+        private string _selectedClient;
 
         public ObservableCollection<string> DeliveryTypes { get; set; } = new ObservableCollection<string>
         {
@@ -119,20 +134,31 @@ namespace Courier_Data_Control_App.ViewModels
         /// of the view model
         /// </summary>
         [RelayCommand]
-        async Task AddDeliveryAsync(Delivery newDelivery)
+        async Task AddDeliveryAsync()
         {
-            await _deliveryRepository.AddDeliveryAsync(newDelivery);
+            var selectedDriver = _sharedDataService.Drivers
+                 .FirstOrDefault(d => d.FullName == SelectedDriverName);
+
+            NewDelivery.Driver = selectedDriver;
+
+            await _deliveryRepository.AddDeliveryAsync(NewDelivery);
             await LoadDeliveriesAsync(CurrentPage);
+
+            NewDelivery = new Delivery();
+            SelectedDriverName = null;
         }
 
         /// <summary>
         /// Update the selected delivery in the view model collection with their new data
         /// </summary>
         [RelayCommand]
-        async Task UpdateDeliveryAsync(Delivery updatedDelivery)
+        async Task UpdateDeliveryAsync(DataGridRowEditEndingEventArgs args)
         {
-            await _deliveryRepository.UpdateDeliveryAsync(updatedDelivery);
-            await LoadDeliveriesAsync(CurrentPage);
+            if (args.Row.DataContext is Delivery updatedDelivery)
+            {
+                await _deliveryRepository.UpdateDeliveryAsync(updatedDelivery);
+                await LoadDeliveriesAsync(CurrentPage);
+            }
         }
 
         /// <summary>

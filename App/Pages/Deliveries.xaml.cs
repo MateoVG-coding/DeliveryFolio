@@ -32,35 +32,5 @@ namespace Courier_Data_Control_App.Pages
             var app = (App)Application.Current;
             DataContext = app.ServiceProvider.GetRequiredService<DeliveriesViewModel>();
         }
-
-        private void DeliveriesDataGrid_AddingNewItem(object sender, AddingNewItemEventArgs e)
-        {
-            if (e.NewItem is Delivery newDelivery)
-            {
-                var viewModel = (DeliveriesViewModel)DataContext;
-                if (viewModel.AddDeliveryCommand.CanExecute(newDelivery))
-                {
-                    viewModel.AddDeliveryCommand.Execute(newDelivery);
-                }
-            }
-        }
-
-        private void DeliveriesDataGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
-        {
-            if (e.Row.IsEditing)
-            {
-                var delivery = e.Row.Item as Delivery;
-
-                if (delivery != null)
-                {
-                    var viewModel = (DeliveriesViewModel)DataContext;
-
-                    if (viewModel.UpdateDeliveryCommand.CanExecute(delivery))
-                    {
-                        viewModel.UpdateDeliveryCommand.Execute(delivery);
-                    }
-                }
-            }
-        }
     }
 }

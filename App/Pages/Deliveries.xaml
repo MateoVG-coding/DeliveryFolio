@@ -21,53 +21,57 @@
                                   ClipToBounds="False" CornerRadius="10" Mode="Standard" Height="96">
 
             <StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Orientation="Horizontal" 
-                        Margin="25, 0" DataContext="{Binding NewDelivery}">
+                        Margin="25, 0">
 
                 <Button Style="{StaticResource MaterialDesignFloatingActionSecondaryDarkButton}" 
                         ToolTip="Agregar nueva entrega" Margin="5, 5" 
                         materialDesign:ElevationAssist.Elevation="Dp4"
-                        Command="{Binding DataContext.AddDeliveryCommand, RelativeSource={RelativeSource AncestorType=Page}}">
+                        Command="{Binding AddDeliveryCommand}">
                     <materialDesign:PackIcon Kind="Plus" Width="30" Height="30"/>
                 </Button>
 
-                <materialDesign:AutoSuggestBox materialDesign:HintAssist.Hint="Cliente" 
+                <ComboBox                       materialDesign:HintAssist.Hint="Cliente" 
                                                 materialDesign:TextFieldAssist.HasClearButton="True"
-                                                DropDownElevation="Dp0" 
-                                                Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
-                                                Suggestions="{Binding DataContext.ClientNames, 
-                                                                RelativeSource={RelativeSource AncestorType=Page}}"
-                                                Text="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                                Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                                ItemsSource="{Binding Clients}"
+                                                DisplayMemberPath="Name" 
+                                                SelectedValuePath="Name"
+                                                SelectedValue="{Binding NewDelivery.CustomerName, Mode=TwoWay}" 
+                                                IsEditable="True"
                                                 Margin="20, 20" 
                                                 HorizontalContentAlignment="Left" 
-                                                Width="150"
-                                                />
+                                                Width="150">
 
-                <materialDesign:AutoSuggestBox materialDesign:HintAssist.Hint="Teléfono" 
-                                                materialDesign:TextFieldAssist.HasClearButton="True"
-                                                DropDownElevation="Dp0" 
-                                                Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
-                                                Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                                Margin="20, 20" 
-                                                HorizontalContentAlignment="Left" 
-                                                Width="150"/>
+                    <behaviors:Interaction.Triggers>
+                        <behaviors:EventTrigger EventName="LostFocus">
+                            <behaviors:InvokeCommandAction Command="{Binding SelectClientCommand}"/>
+                        </behaviors:EventTrigger>
+                    </behaviors:Interaction.Triggers>
 
-                <materialDesign:AutoSuggestBox materialDesign:HintAssist.Hint="Dirección" 
+                </ComboBox>
+
+                <TextBox                        materialDesign:HintAssist.Hint="Teléfono" 
                                                 materialDesign:TextFieldAssist.HasClearButton="True"
-                                                DropDownElevation="Dp0" 
-                                                Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
-                                                Text="{Binding Address, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                                Margin="20, 20" 
+                                                Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                                Text="{Binding NewDelivery.PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                Margin="20, 20"
                                                 HorizontalContentAlignment="Left" 
                                                 Width="150"/>
 
+                <TextBox                        materialDesign:HintAssist.Hint="Dirección" 
+                                                materialDesign:TextFieldAssist.HasClearButton="True"
+                                                Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                                Text="{Binding NewDelivery.Address, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                Margin="20, 20" 
+                                                HorizontalContentAlignment="Left" 
+                                                Width="150"/>
 
                 <ComboBox                       materialDesign:HintAssist.Hint="Descripción" 
                                                 materialDesign:TextFieldAssist.HasClearButton="True"
-                                                IsEditable="True"
                                                 Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                                ItemsSource="{Binding DataContext.DeliveryTypes, 
-                                                                RelativeSource={RelativeSource AncestorType=Page}}"
-                                                Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                                ItemsSource="{Binding DeliveryTypes}"
+                                                Text="{Binding NewDelivery.Description, UpdateSourceTrigger=PropertyChanged}"
+                                                IsEditable="True"
                                                 Margin="20, 20" 
                                                 HorizontalContentAlignment="Left" 
                                                 Width="150"/>
@@ -75,15 +79,12 @@
                 <ComboBox                       materialDesign:HintAssist.Hint="Mensajero" 
                                                 materialDesign:TextFieldAssist.HasClearButton="True"
                                                 Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                                ItemsSource="{Binding DataContext.DriverNames, 
-                                                                RelativeSource={RelativeSource AncestorType=Page}}"
-                                                SelectedItem="{Binding DataContext.SelectedDriverName, 
-                                                                RelativeSource={RelativeSource AncestorType=Page},
-                                                                UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                                ItemsSource="{Binding Drivers}"
+                                                DisplayMemberPath="FullName"
+                                                SelectedItem="{Binding NewDelivery.Driver, UpdateSourceTrigger=PropertyChanged}"
                                                 Margin="20, 20" 
                                                 HorizontalContentAlignment="Left" 
                                                 Width="150" />
-
             </StackPanel>
 
         </materialDesign:ColorZone>

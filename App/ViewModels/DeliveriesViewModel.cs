@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -21,23 +22,13 @@ namespace Courier_Data_Control_App.ViewModels
     {
         private readonly DeliveryRepository _deliveryRepository;
         private readonly ISharedDataService _sharedDataService;
-        public ObservableCollection<Delivery> Deliveries => _sharedDataService.Deliveries;
 
-        // Properties to hold the drivers and clients names without accessing 
-        // directly the others view models.
-        public IEnumerable<string> DriverNames  => _sharedDataService.Drivers.Select(driver => driver.FullName);
-        public IEnumerable<string> ClientNames => _sharedDataService.Clients.Select(Client => Client.Name);
+        public ObservableCollection<Delivery> Deliveries => _sharedDataService.Deliveries;
+        public ObservableCollection<Driver> Drivers  => _sharedDataService.Drivers;
+        public ObservableCollection<Client> Clients=> _sharedDataService.Clients;
 
         [ObservableProperty]
         private Delivery _newDelivery = new Delivery();
-
-        // Property to hold the selected driver name
-        [ObservableProperty]
-        private string _selectedDriverName;
-
-        // Property to hold the selected driver name
-        [ObservableProperty]
-        private string _selectedClient;
 
         public ObservableCollection<string> DeliveryTypes { get; set; } = new ObservableCollection<string>
         {
@@ -47,6 +38,8 @@ namespace Courier_Data_Control_App.ViewModels
             "Entrega bancaria",
             "Entrega programada"
         };
+
+        //Properties to apply paging
 
         private const int PageSize = 10;
         [ObservableProperty]
@@ -65,6 +58,86 @@ namespace Courier_Data_Control_App.ViewModels
             _sharedDataService = sharedDataService;
 
             InitializePagination();
+        }
+
+        /// <summary>
+        /// Gets the current deliveries in the database for the collection of
+        /// the view model using paging
+        /// </summary>
+        [RelayCommand]
+        async Task LoadDeliveriesAsync(int pageNumber)
+        {
+            if (pageNumber < 1 || pageNumber > TotalPages)
+            {
+                return;
+            }
+
+            CurrentPage = pageNumber;
+            var deliveries = await _deliveryRepository.GetAllDeliveriesAsync(CurrentPage, PageSize);
+
+            Deliveries.Clear();
+
+            foreach (var delivery in deliveries)
+            {
+                Deliveries.Add(delivery);
+            }
+
+            UpdateNavigationButtons();
+        }
+
+        /// <summary>
+        /// Add a delivery to the deliveries repository and add it to the collection
+        /// of the view model
+        /// </summary>
+        [RelayCommand]
+        async Task AddDeliveryAsync()
+        {
+            await _deliveryRepository.AddDeliveryAsync(NewDelivery);
+            await LoadDeliveriesAsync(CurrentPage);
+
+            // Reset the NewDelivery object for further use
+            NewDelivery = new Delivery();
+        }
+
+        /// <summary>
+        /// Update the selected delivery in the view model collection with their new data
+        /// </summary>
+        [RelayCommand]
+        async Task UpdateDeliveryAsync(DataGridRowEditEndingEventArgs args)
+        {
+            if (args.Row.DataContext is Delivery updatedDelivery)
+            {
+                await _deliveryRepository.UpdateDeliveryAsync(updatedDelivery);
+                await LoadDeliveriesAsync(CurrentPage);
+            }
+        }
+
+        /// <summary>
+        /// Delete a delivery from the deliveries repository and the view model collection.
+        /// </summary>
+        [RelayCommand]
+        async Task DeleteDeliveryAsync(Delivery selectedDelivery)
+        {
+            await _deliveryRepository.DeleteDeliveryAsync(selectedDelivery);
+            await LoadDeliveriesAsync(CurrentPage);
+        }
+
+        /// <summary>
+        /// Command to handle the selection of the client when the user chooses from the suggestions
+        /// </summary>
+        [RelayCommand]
+        private void SelectClient()
+        {
+            var client = Clients.FirstOrDefault(c => c.Name.Equals(NewDelivery.CustomerName, StringComparison.OrdinalIgnoreCase));
+
+            if (client != null)
+            {
+                NewDelivery.Address = client.Address;
+                NewDelivery.PhoneNumber = client.PhoneNumber;
+
+                OnPropertyChanged(nameof(NewDelivery));
+            }
+
         }
 
         /// <summary>
@@ -102,73 +175,6 @@ namespace Courier_Data_Control_App.ViewModels
             {
                 await LoadDeliveriesAsync(CurrentPage - 1);
             }
-        }
-
-        /// <summary>
-        /// Gets the current deliveries in the database for the collection of
-        /// the view model using paging
-        /// </summary>
-        [RelayCommand]
-        async Task LoadDeliveriesAsync(int pageNumber)
-        {
-            if (pageNumber < 1 || pageNumber > TotalPages)
-            {
-                return;
-            }
-
-            CurrentPage = pageNumber;
-            var deliveries = await _deliveryRepository.GetAllDeliveriesAsync(CurrentPage, PageSize);
-
-            Deliveries.Clear();
-
-            foreach (var delivery in deliveries)
-            {
-                Deliveries.Add(delivery);
-            }
-
-            UpdateNavigationButtons();
-        }
-
-        /// <summary>
-        /// Add a delivery to the deliveries repository and add it to the collection
-        /// of the view model
-        /// </summary>
-        [RelayCommand]
-        async Task AddDeliveryAsync()
-        {
-            var selectedDriver = _sharedDataService.Drivers
-                 .FirstOrDefault(d => d.FullName == SelectedDriverName);
-
-            NewDelivery.Driver = selectedDriver;
-
-            await _deliveryRepository.AddDeliveryAsync(NewDelivery);
-            await LoadDeliveriesAsync(CurrentPage);
-
-            NewDelivery = new Delivery();
-            SelectedDriverName = null;
-        }
-
-        /// <summary>
-        /// Update the selected delivery in the view model collection with their new data
-        /// </summary>
-        [RelayCommand]
-        async Task UpdateDeliveryAsync(DataGridRowEditEndingEventArgs args)
-        {
-            if (args.Row.DataContext is Delivery updatedDelivery)
-            {
-                await _deliveryRepository.UpdateDeliveryAsync(updatedDelivery);
-                await LoadDeliveriesAsync(CurrentPage);
-            }
-        }
-
-        /// <summary>
-        /// Delete a delivery from the deliveries repository and the view model collection.
-        /// </summary>
-        [RelayCommand]
-        async Task DeleteDeliveryAsync(Delivery selectedDelivery)
-        {
-            await _deliveryRepository.DeleteDeliveryAsync(selectedDelivery);
-            await LoadDeliveriesAsync(CurrentPage);
         }
     }
 }

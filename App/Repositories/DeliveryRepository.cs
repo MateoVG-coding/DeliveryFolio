@@ -56,7 +56,7 @@ namespace Courier_Data_Control_App.Repositories
             var query = _context.Deliveries.Include(d => d.Driver).AsQueryable();
 
             return await query
-            .OrderBy(d => d.DateCreated)
+            .OrderByDescending(d => d.DateCreated)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

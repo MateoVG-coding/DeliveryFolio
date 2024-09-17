@@ -6,17 +6,15 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
       mc:Ignorable="d" 
-      x:Name="DeliveriesPage"
       d:DesignHeight="450" d:DesignWidth="800"
       TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Primary.Dark.Foreground}"
       Background="{DynamicResource MaterialDesign.Brush.Background}"
       TextElement.FontWeight="Regular"
       TextElement.FontSize="14"
-      FontFamily="{materialDesign:RobotoFont}"
-      Title="Deliveries">
+      FontFamily="{materialDesign:RobotoFont}">
 
-    <Grid x:Name="DeliveriesGrid">
-
+    <Grid>
+        <!-- Start: Fields to add new deliveries -->
         <materialDesign:ColorZone materialDesign:ElevationAssist.Elevation="Dp2" 
                                   ClipToBounds="False" CornerRadius="10" Mode="Standard" Height="96">
 
@@ -36,7 +34,7 @@
                                                 ItemsSource="{Binding Clients}"
                                                 DisplayMemberPath="Name" 
                                                 SelectedValuePath="Name"
-                                                SelectedValue="{Binding NewDelivery.CustomerName, Mode=TwoWay}" 
+                                                SelectedValue="{Binding NewDelivery.CustomerName}" 
                                                 IsEditable="True"
                                                 Margin="20, 20" 
                                                 HorizontalContentAlignment="Left" 
@@ -53,7 +51,7 @@
                 <TextBox                        materialDesign:HintAssist.Hint="Teléfono" 
                                                 materialDesign:TextFieldAssist.HasClearButton="True"
                                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                                                Text="{Binding NewDelivery.PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                Text="{Binding NewDelivery.PhoneNumber, Mode=TwoWay}" 
                                                 Margin="20, 20"
                                                 HorizontalContentAlignment="Left" 
                                                 Width="150"/>
@@ -61,7 +59,7 @@
                 <TextBox                        materialDesign:HintAssist.Hint="Dirección" 
                                                 materialDesign:TextFieldAssist.HasClearButton="True"
                                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                                                Text="{Binding NewDelivery.Address, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                Text="{Binding NewDelivery.Address, Mode=TwoWay}"
                                                 Margin="20, 20" 
                                                 HorizontalContentAlignment="Left" 
                                                 Width="150"/>
@@ -70,7 +68,7 @@
                                                 materialDesign:TextFieldAssist.HasClearButton="True"
                                                 Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                                 ItemsSource="{Binding DeliveryTypes}"
-                                                Text="{Binding NewDelivery.Description, UpdateSourceTrigger=PropertyChanged}"
+                                                Text="{Binding NewDelivery.Description}"
                                                 IsEditable="True"
                                                 Margin="20, 20" 
                                                 HorizontalContentAlignment="Left" 
@@ -81,43 +79,55 @@
                                                 Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                                 ItemsSource="{Binding Drivers}"
                                                 DisplayMemberPath="FullName"
-                                                SelectedItem="{Binding NewDelivery.Driver, UpdateSourceTrigger=PropertyChanged}"
+                                                SelectedItem="{Binding NewDelivery.Driver}"
                                                 Margin="20, 20" 
                                                 HorizontalContentAlignment="Left" 
                                                 Width="150" />
             </StackPanel>
-
         </materialDesign:ColorZone>
+        <!-- End: Fields to add new deliveries -->
 
-        <!-- List of Deliveries -->
+        <!-- Start: List of Deliveries -->
+        <FrameworkElement x:Name="DataContextProxy" DataContext="{Binding}" />
         <DataGrid x:Name="DeliveriesDataGrid"
                   AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Extended"  
-                  ItemsSource="{Binding Deliveries}" RowHeight="50"
-                  Margin="5,130,5,80" CanUserDeleteRows="True" CanUserAddRows="False"
+                  EnableRowVirtualization="True"
+                  EnableColumnVirtualization="True"
+                  ItemsSource="{Binding Deliveries}"
+                  RowHeight="50"
+                  Margin="5,130,5,80" CanUserDeleteRows="False" CanUserAddRows="False"
                   AlternationCount="2"
                   RowStyle="{StaticResource MaterialDesignDataGridRow}"
                   AlternatingRowBackground="{StaticResource MaterialDesignLightSeparatorBackground}"
                   Style="{StaticResource MaterialDesignDataGrid}">
 
-            <behaviors:Interaction.Triggers>
-                <behaviors:EventTrigger EventName="RowEditEnding">
-                    <behaviors:InvokeCommandAction Command="{Binding UpdateDeliveryCommand}" PassEventArgsToCommand="True"/>
-                </behaviors:EventTrigger>
-            </behaviors:Interaction.Triggers>
-
             <DataGrid.Columns>
+                <DataGridCheckBoxColumn Binding="{Binding IsSelected, Mode=TwoWay}">
+                    <DataGridCheckBoxColumn.Header>
+                        <Border Background="Transparent">
+                            <CheckBox IsChecked="{Binding DataContext.IsAllItemsSelected, 
+                                            Source={x:Reference DataContextProxy}, Mode=TwoWay}"/>
+                        </Border>
+                    </DataGridCheckBoxColumn.Header>
+                    <DataGridCheckBoxColumn.HeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridCheckBoxColumn.HeaderStyle>
+                </DataGridCheckBoxColumn>
+
                 <DataGridTextColumn Header="Fecha" Binding="{Binding DateCreated}" 
                                     Width="*" IsReadOnly="True"/>
-                
+
                 <DataGridTextColumn Header="Cliente" Binding="{Binding CustomerName, 
                                     UpdateSourceTrigger=PropertyChanged}" Width="*" />
-                
+
                 <DataGridTextColumn Header="Teléfono" Binding="{Binding PhoneNumber, 
                                     UpdateSourceTrigger=PropertyChanged}" Width="*" />
-                
+
                 <DataGridTextColumn Header="Dirección" Binding="{Binding Address,
                                     UpdateSourceTrigger=PropertyChanged}" Width="*" />
-                
+
                 <DataGridTemplateColumn Header="Descripción">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -127,21 +137,22 @@
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
                             <ComboBox ItemsSource="{Binding DataContext.DeliveryTypes, 
-                                                    RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    RelativeSource={RelativeSource AncestorType=Page}}"
                                                     SelectedItem="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
                                                     IsEditable="True" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                
+
                 <DataGridTextColumn Header="Mensajero" Binding="{Binding Driver.FullName, 
                                     UpdateSourceTrigger=PropertyChanged}" Width="*" />
                 <DataGridTextColumn Header="Estado" Binding="{Binding Status, 
                                     UpdateSourceTrigger=PropertyChanged}" Width="*" />
-
             </DataGrid.Columns>
         </DataGrid>
+        <!-- End: List of Deliveries -->
 
+        <!-- Start: Paging Buttons -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20">
             <!-- Previous Page Button -->
             <Button materialDesign:ElevationAssist.Elevation="Dp2"
@@ -149,7 +160,7 @@
                     Command="{Binding PreviousPageCommand}"
                     IsEnabled="{Binding CanNavigatePrevious}"
                     Margin="5">
-                <materialDesign:PackIcon Kind="ArrowLeft"/>
+                <materialDesign:PackIcon Kind="ArrowLeft" Width="20" Height="20"/>
             </Button>
 
             <!-- Page Information -->
@@ -166,8 +177,23 @@
                     Command="{Binding NextPageCommand}"
                     IsEnabled="{Binding CanNavigateNext}"
                     Margin="5">
-                <materialDesign:PackIcon Kind="ArrowRight"/>
+                <materialDesign:PackIcon Kind="ArrowRight" Width="20" Height="20"/>
             </Button>
         </StackPanel>
+        <!-- End: Paging Buttons -->
+
+        <Button Style="{StaticResource MaterialDesignFloatingActionSecondaryDarkButton}" ToolTip="Eliminar entregas seleccionadas"
+                ToolTipService.Placement="Left"
+                Margin="20, 15" materialDesign:ElevationAssist.Elevation="Dp4" Command="{Binding DeleteSelectedDeliveriesCommand}"
+                HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <materialDesign:PackIcon Kind="Delete" Width="30" Height="30"/>
+        </Button>
     </Grid>
+
+    <!-- Behavior Editing Deliveries Data Grid -->
+    <behaviors:Interaction.Triggers>
+        <behaviors:EventTrigger EventName="RowEditEnding">
+            <behaviors:InvokeCommandAction Command="{Binding UpdateDeliveryCommand}" PassEventArgsToCommand="True"/>
+        </behaviors:EventTrigger>
+    </behaviors:Interaction.Triggers>
 </Page>

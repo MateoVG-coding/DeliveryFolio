@@ -2,15 +2,18 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Courier_Data_Control_App.Classes;
+using Courier_Data_Control_App.Pages;
 using Courier_Data_Control_App.Repositories;
 using Courier_Data_Control_App.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Courier_Data_Control_App.ViewModels
@@ -28,36 +31,48 @@ namespace Courier_Data_Control_App.ViewModels
         public ObservableCollection<Client> Clients=> _sharedDataService.Clients;
 
         [ObservableProperty]
-        private Delivery _newDelivery = new Delivery();
-
-        public ObservableCollection<string> DeliveryTypes { get; set; } = new ObservableCollection<string>
-        {
-            "Entrega estándar",
-            "Entrega urgente",
-            "Entrega de compras",
-            "Entrega bancaria",
-            "Entrega programada"
-        };
+        private Delivery newDelivery = new Delivery();
+        public ObservableCollection<string> DeliveryTypes { get; set; }
 
         //Properties to apply paging
-
         private const int PageSize = 10;
         [ObservableProperty]
-        private int _totalPages;
+        private int totalPages;
         [ObservableProperty]
-        private int _currentPage;
+        private int currentPage;
 
         [ObservableProperty]
-        private bool _canNavigatePrevious;
+        private bool canNavigatePrevious;
         [ObservableProperty]
-        private bool _canNavigateNext;
+        private bool canNavigateNext;
+
+        // Property and method for the header CheckBox
+        [ObservableProperty]
+        private bool isAllItemsSelected;
+        partial void OnIsAllItemsSelectedChanged(bool value)
+        {
+            foreach (var delivery in Deliveries)
+            {
+                delivery.IsSelected = value;
+            }
+
+            LoadDeliveriesAsync(CurrentPage);
+        }
 
         public DeliveriesViewModel(DeliveryRepository deliveryRepository, ISharedDataService sharedDataService)
         {
             _deliveryRepository = deliveryRepository;
             _sharedDataService = sharedDataService;
 
-            InitializePagination();
+            DeliveryTypes = new ObservableCollection<string>
+            {
+                "Entrega estándar", "Entrega urgente", "Entrega de compras", "Entrega bancaria", "Entrega programada"
+            };
+
+            int pageNumber = 1;
+
+            CalculatePagination();
+            _ = LoadDeliveriesAsync(pageNumber);
         }
 
         /// <summary>
@@ -93,9 +108,10 @@ namespace Courier_Data_Control_App.ViewModels
         async Task AddDeliveryAsync()
         {
             await _deliveryRepository.AddDeliveryAsync(NewDelivery);
+
+            CalculatePagination();
             await LoadDeliveriesAsync(CurrentPage);
 
-            // Reset the NewDelivery object for further use
             NewDelivery = new Delivery();
         }
 
@@ -108,22 +124,41 @@ namespace Courier_Data_Control_App.ViewModels
             if (args.Row.DataContext is Delivery updatedDelivery)
             {
                 await _deliveryRepository.UpdateDeliveryAsync(updatedDelivery);
-                await LoadDeliveriesAsync(CurrentPage);
+
+                var deliveryInCollection = Deliveries.FirstOrDefault(d => d.Id == updatedDelivery.Id);
+                if (deliveryInCollection != null)
+                {
+                    deliveryInCollection = updatedDelivery;
+                }
             }
         }
 
         /// <summary>
-        /// Delete a delivery from the deliveries repository and the view model collection.
+        /// Delete the selected deliveries from the deliveries repository and the view model collection.
         /// </summary>
         [RelayCommand]
-        async Task DeleteDeliveryAsync(Delivery selectedDelivery)
+        async Task DeleteSelectedDeliveriesAsync(Delivery selectedDelivery)
         {
-            await _deliveryRepository.DeleteDeliveryAsync(selectedDelivery);
+            var deliveriesToDelete = Deliveries.Where(d => d.IsSelected).ToList();
+
+            foreach (var delivery in deliveriesToDelete)
+            {
+                await _deliveryRepository.DeleteDeliveryAsync(delivery);
+                Deliveries.Remove(delivery);
+            }
+
+            //Ensure the user stays within valid page range
+            CalculatePagination();
+            if (CurrentPage > TotalPages)
+            {
+                CurrentPage = CurrentPage = TotalPages;
+            }
+
             await LoadDeliveriesAsync(CurrentPage);
         }
 
         /// <summary>
-        /// Command to handle the selection of the client when the user chooses from the suggestions
+        /// Handles the selection of the client when the user chooses from the suggestions
         /// </summary>
         [RelayCommand]
         private void SelectClient()
@@ -137,7 +172,6 @@ namespace Courier_Data_Control_App.ViewModels
 
                 OnPropertyChanged(nameof(NewDelivery));
             }
-
         }
 
         /// <summary>
@@ -149,14 +183,10 @@ namespace Courier_Data_Control_App.ViewModels
             CanNavigateNext = CurrentPage < TotalPages;
         }
 
-        async void InitializePagination()
+        async void CalculatePagination()
         {
-            CurrentPage = 1;
-
             var totalDeliveries = await _deliveryRepository.GetTotalDeliveriesCountAsync();
             TotalPages = (int)Math.Ceiling(totalDeliveries / (double)PageSize);
-
-            await LoadDeliveriesAsync(CurrentPage);
         }
 
         [RelayCommand]
@@ -166,6 +196,10 @@ namespace Courier_Data_Control_App.ViewModels
             {
                 await LoadDeliveriesAsync(CurrentPage + 1);
             }
+
+            //Reset the checkbox header of Deliveries data grid
+            IsAllItemsSelected = false;
+
         }
 
         [RelayCommand]
@@ -175,6 +209,9 @@ namespace Courier_Data_Control_App.ViewModels
             {
                 await LoadDeliveriesAsync(CurrentPage - 1);
             }
+
+            //Reset the checkbox header of Deliveries data grid
+            IsAllItemsSelected = false;
         }
     }
 }

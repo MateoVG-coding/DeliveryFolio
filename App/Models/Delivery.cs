@@ -1,5 +1,7 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Net;
 using System.Security.AccessControl;
@@ -20,5 +22,8 @@ namespace Courier_Data_Control_App.Classes
         public DateTime DateCreated { get; set; } = DateTime.Now;
         public int DriverId { get; set; }
         public Driver Driver { get; set; }
+
+        [NotMapped]
+        public bool IsSelected { get; set; }
     }
 }

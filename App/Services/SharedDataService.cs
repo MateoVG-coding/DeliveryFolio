@@ -15,9 +15,9 @@ namespace Courier_Data_Control_App.Services
         private readonly DriverRepository _driverRepository;
         private readonly ClientRepository _clientRepository;
 
-        public ObservableCollection<Driver> Drivers { get; } = new ObservableCollection<Driver>();
-        public ObservableCollection<Client> Clients { get; } = new ObservableCollection<Client>();
-        public ObservableCollection<Delivery> Deliveries { get; } = new ObservableCollection<Delivery>();
+        public ObservableCollection<Driver> Drivers { get; set; } = new ObservableCollection<Driver>();
+        public ObservableCollection<Client> Clients { get; set; } = new ObservableCollection<Client>();
+        public ObservableCollection<Delivery> Deliveries { get; set; } = new ObservableCollection<Delivery>();
 
         public SharedDataService(DeliveryRepository deliveryRepository, DriverRepository driverRepository, ClientRepository clientRepository)
         {

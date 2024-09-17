@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Courier_Data_Control_App"
         mc:Ignorable="d" Name="home"
-        Title="MainWindow" Height="650" Width="1000"
+        Height="650" Width="1000"
         WindowStyle="None" ResizeMode="NoResize"
         AllowsTransparency="True" WindowStartupLocation="CenterScreen"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -63,8 +63,8 @@
                             <TabItem Width="180" HorizontalContentAlignment="Left" Tag="Home">
                                 <TabItem.Header>
                                     <StackPanel Orientation="Horizontal" Width="160" Height="auto">
-                                        <materialDesign:PackIcon Width="24" Height="24" Kind="Home" Margin="12,0,0,0" 
-                                             ToolTipService.ToolTip="Inicio" ToolTipService.InitialShowDelay="10"/>
+                                        <materialDesign:PackIcon Width="24" Height="24" Kind="Home" 
+                                                                 Margin="12,0,0,0" ToolTipService.ToolTip="Inicio"/>
                                         <TextBlock Margin="20,0,20,0" VerticalAlignment="Center" Text="Inicio"/>
                                     </StackPanel>
                                 </TabItem.Header>
@@ -73,8 +73,8 @@
                             <TabItem Width="180" HorizontalContentAlignment="Left" Tag="Deliveries">
                                 <TabItem.Header>
                                     <StackPanel Orientation="Horizontal" Width="160" Height="auto">
-                                        <materialDesign:PackIcon Width="24" Height="24" Kind="PackageVariantClosed" Margin="12,0,0,0"
-                                             ToolTipService.ToolTip="Entregas" ToolTipService.InitialShowDelay="10"/>
+                                        <materialDesign:PackIcon Width="24" Height="24" Kind="PackageVariantClosed" 
+                                                                 Margin="12,0,0,0" ToolTipService.ToolTip="Entregas" />
                                         <TextBlock Margin="20,0,20,0" VerticalAlignment="Center" Text="Entregas"/>
                                     </StackPanel>
                                 </TabItem.Header>
@@ -83,8 +83,8 @@
                             <TabItem Width="180" HorizontalContentAlignment="Left" Tag="Clients">
                                 <TabItem.Header>
                                     <StackPanel Orientation="Horizontal" Width="160" Height="auto">
-                                        <materialDesign:PackIcon Width="24" Height="24" Kind="AccountGroup" Margin="12,0,0,0"
-                                             ToolTipService.ToolTip="Clientes" ToolTipService.InitialShowDelay="10"/>
+                                        <materialDesign:PackIcon Width="24" Height="24" Kind="AccountGroup" 
+                                                                 Margin="12,0,0,0" ToolTipService.ToolTip="Clientes"/>
                                         <TextBlock Margin="20,0,20,0" VerticalAlignment="Center" Text="Clientes"/>
                                     </StackPanel>
                                 </TabItem.Header>
@@ -93,8 +93,8 @@
                             <TabItem Width="180" HorizontalContentAlignment="Left" Tag="Couriers">
                                 <TabItem.Header>
                                     <StackPanel Orientation="Horizontal" Width="160" Height="auto">
-                                        <materialDesign:PackIcon Width="24" Height="24" Kind="Steering" Margin="12,0,0,0"
-                                             ToolTipService.ToolTip="Mensajeros" ToolTipService.InitialShowDelay="10"/>
+                                        <materialDesign:PackIcon Width="24" Height="24" Kind="Steering"
+                                                                 Margin="12,0,0,0" ToolTipService.ToolTip="Mensajeros"/>
                                         <TextBlock Margin="20,0,20,0" VerticalAlignment="Center" Text="Mensajeros"/>
                                     </StackPanel>
                                 </TabItem.Header>
@@ -103,8 +103,8 @@
                             <TabItem Width="180" HorizontalContentAlignment="Left" Tag="Settings">
                                 <TabItem.Header>
                                     <StackPanel Orientation="Horizontal" Width="160" Height="auto">
-                                        <materialDesign:PackIcon Width="24" Height="24" Kind="Settings" Margin="12,0,0,0"
-                                             ToolTipService.ToolTip="Configuración" ToolTipService.InitialShowDelay="10"/>
+                                        <materialDesign:PackIcon Width="24" Height="24" Kind="Settings" 
+                                                                 Margin="12,0,0,0" ToolTipService.ToolTip="Configuración"/>
                                         <TextBlock Margin="20,0,20,0" VerticalAlignment="Center" Text="Configuración"/>
                                     </StackPanel>
                                 </TabItem.Header>

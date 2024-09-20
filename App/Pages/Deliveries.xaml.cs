@@ -32,5 +32,16 @@ namespace Courier_Data_Control_App.Pages
             var app = (App)Application.Current;
             DataContext = app.ServiceProvider.GetRequiredService<DeliveriesViewModel>();
         }
+        private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var dataGrid = sender as System.Windows.Controls.DataGrid;
+
+            if (dataGrid.SelectedItem != null)
+            {
+                dataGrid.IsReadOnly = false;
+                dataGrid.BeginEdit();
+                dataGrid.CellEditEnding += (s, args) => dataGrid.IsReadOnly = true;
+            }
+        }
     }
 }

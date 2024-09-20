@@ -28,7 +28,8 @@
                     <materialDesign:PackIcon Kind="Plus" Width="30" Height="30"/>
                 </Button>
 
-                <ComboBox                       materialDesign:HintAssist.Hint="Cliente" 
+                <ComboBox                       x:Name="ComboboxClient"
+                                                materialDesign:HintAssist.Hint="Cliente" 
                                                 materialDesign:TextFieldAssist.HasClearButton="True"
                                                 Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                                 ItemsSource="{Binding Clients}"
@@ -39,13 +40,6 @@
                                                 Margin="20, 20" 
                                                 HorizontalContentAlignment="Left" 
                                                 Width="150">
-
-                    <behaviors:Interaction.Triggers>
-                        <behaviors:EventTrigger EventName="LostFocus">
-                            <behaviors:InvokeCommandAction Command="{Binding SelectClientCommand}"/>
-                        </behaviors:EventTrigger>
-                    </behaviors:Interaction.Triggers>
-
                 </ComboBox>
 
                 <TextBox                        materialDesign:HintAssist.Hint="Teléfono" 
@@ -90,17 +84,19 @@
         <!-- Start: List of Deliveries -->
         <FrameworkElement x:Name="DataContextProxy" DataContext="{Binding}" />
         <DataGrid x:Name="DeliveriesDataGrid"
-                  AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Extended"  
+                  AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
                   EnableRowVirtualization="True"
                   EnableColumnVirtualization="True"
                   ItemsSource="{Binding Deliveries}"
-                  RowHeight="50"
-                  Margin="5,130,5,80" CanUserDeleteRows="False" CanUserAddRows="False"
+                  RowHeight="50" Margin="5,130,5,80" 
+                  CanUserDeleteRows="False" CanUserAddRows="False"
                   AlternationCount="2"
                   RowStyle="{StaticResource MaterialDesignDataGridRow}"
                   AlternatingRowBackground="{StaticResource MaterialDesignLightSeparatorBackground}"
-                  Style="{StaticResource MaterialDesignDataGrid}">
+                  Style="{StaticResource MaterialDesignDataGrid}"
+                  MouseDoubleClick="DataGrid_MouseDoubleClick">
 
+            <!-- Start: Deliveries Data Grid Columns -->
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn Binding="{Binding IsSelected, Mode=TwoWay}">
                     <DataGridCheckBoxColumn.Header>
@@ -126,9 +122,9 @@
                                     UpdateSourceTrigger=PropertyChanged}" Width="*" />
 
                 <DataGridTextColumn Header="Dirección" Binding="{Binding Address,
-                                    UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                                    UpdateSourceTrigger=PropertyChanged}" Width="*"/>
 
-                <DataGridTemplateColumn Header="Descripción">
+                <DataGridTemplateColumn Header="Descripción" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Description}"/>
@@ -146,9 +142,43 @@
 
                 <DataGridTextColumn Header="Mensajero" Binding="{Binding Driver.FullName, 
                                     UpdateSourceTrigger=PropertyChanged}" Width="*" />
-                <DataGridTextColumn Header="Estado" Binding="{Binding Status, 
-                                    UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                
+                <DataGridTemplateColumn Header="Estado" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" 
+                                          IsChecked="{Binding Status, UpdateSourceTrigger=PropertyChanged}"
+                                          IsHitTestVisible="False">
+                                <materialDesign:PackIcon Kind="ProgressClock" RenderTransformOrigin=".5,.5">
+                                    <materialDesign:PackIcon.RenderTransform>
+                                        <RotateTransform Angle="45" />
+                                    </materialDesign:PackIcon.RenderTransform>
+                                </materialDesign:PackIcon>
+                                <materialDesign:ToggleButtonAssist.OnContent>
+                                    <materialDesign:PackIcon Kind="PackageVariantClosedCheck" />
+                                </materialDesign:ToggleButtonAssist.OnContent>
+                            </ToggleButton>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" 
+                                          IsChecked="{Binding Status, UpdateSourceTrigger=PropertyChanged}">
+                                <materialDesign:PackIcon Kind="ProgressClock" RenderTransformOrigin=".5,.5">
+                                    <materialDesign:PackIcon.RenderTransform>
+                                        <RotateTransform Angle="45" />
+                                    </materialDesign:PackIcon.RenderTransform>
+                                </materialDesign:PackIcon>
+                                <materialDesign:ToggleButtonAssist.OnContent>
+                                    <materialDesign:PackIcon Kind="PackageVariantClosedCheck" />
+                                </materialDesign:ToggleButtonAssist.OnContent>
+                            </ToggleButton>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
+            <!-- End: Deliveries Data Grid Columns -->
+            
         </DataGrid>
         <!-- End: List of Deliveries -->
 
@@ -190,10 +220,19 @@
         </Button>
     </Grid>
 
-    <!-- Behavior Editing Deliveries Data Grid -->
+    <!-- Start: Behaviors -->
     <behaviors:Interaction.Triggers>
-        <behaviors:EventTrigger EventName="RowEditEnding">
+        <!-- Behavior Editing Deliveries Data Grid -->
+        <behaviors:EventTrigger EventName="RowEditEnding" x:Name="DeliveriesDataGridEndingEdit" SourceName="DeliveriesDataGrid">
             <behaviors:InvokeCommandAction Command="{Binding UpdateDeliveryCommand}" PassEventArgsToCommand="True"/>
         </behaviors:EventTrigger>
+
+        <!-- Behavior Selecting client from Combobox -->
+        <behaviors:EventTrigger EventName="LostFocus" x:Name="LostFocusClientCombobox" SourceName="ComboboxClient">
+            <behaviors:InvokeCommandAction Command="{Binding SelectClientCommand}"/>
+        </behaviors:EventTrigger>
+
     </behaviors:Interaction.Triggers>
+    <!-- End: Behaviors -->
+
 </Page>

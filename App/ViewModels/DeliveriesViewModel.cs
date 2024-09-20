@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,7 +22,7 @@ namespace Courier_Data_Control_App.ViewModels
     /// <summary>
     /// A view model for list of deliveries.
     /// </summary>
-    public partial class DeliveriesViewModel : ObservableObject
+    public partial class DeliveriesViewModel : ObservableValidator
     {
         private readonly DeliveryRepository _deliveryRepository;
         private readonly ISharedDataService _sharedDataService;
@@ -32,10 +33,16 @@ namespace Courier_Data_Control_App.ViewModels
 
         [ObservableProperty]
         private Delivery newDelivery = new Delivery();
-        public ObservableCollection<string> DeliveryTypes { get; set; }
+
+        public IReadOnlyList<string> DeliveryTypes { get; } = new[]
+        {
+            "Entrega estándar", "Entrega urgente",
+            "Entrega de compras", "Entrega bancaria",
+            "Entrega programada"
+        };
 
         //Properties to apply paging
-        private const int PageSize = 10;
+        private const int _pageSize = 10;
         [ObservableProperty]
         private int totalPages;
         [ObservableProperty]
@@ -64,11 +71,6 @@ namespace Courier_Data_Control_App.ViewModels
             _deliveryRepository = deliveryRepository;
             _sharedDataService = sharedDataService;
 
-            DeliveryTypes = new ObservableCollection<string>
-            {
-                "Entrega estándar", "Entrega urgente", "Entrega de compras", "Entrega bancaria", "Entrega programada"
-            };
-
             int pageNumber = 1;
 
             CalculatePagination();
@@ -88,7 +90,7 @@ namespace Courier_Data_Control_App.ViewModels
             }
 
             CurrentPage = pageNumber;
-            var deliveries = await _deliveryRepository.GetAllDeliveriesAsync(CurrentPage, PageSize);
+            var deliveries = await _deliveryRepository.GetAllDeliveriesAsync(CurrentPage, _pageSize);
 
             Deliveries.Clear();
 
@@ -110,13 +112,15 @@ namespace Courier_Data_Control_App.ViewModels
             await _deliveryRepository.AddDeliveryAsync(NewDelivery);
 
             CalculatePagination();
+
             await LoadDeliveriesAsync(CurrentPage);
 
             NewDelivery = new Delivery();
+
         }
 
         /// <summary>
-        /// Update the selected delivery in the view model collection with their new data
+        /// Update the selected delivery in the view model collection and db with their new data
         /// </summary>
         [RelayCommand]
         async Task UpdateDeliveryAsync(DataGridRowEditEndingEventArgs args)
@@ -186,7 +190,7 @@ namespace Courier_Data_Control_App.ViewModels
         async void CalculatePagination()
         {
             var totalDeliveries = await _deliveryRepository.GetTotalDeliveriesCountAsync();
-            TotalPages = (int)Math.Ceiling(totalDeliveries / (double)PageSize);
+            TotalPages = (int)Math.Ceiling(totalDeliveries / (double)_pageSize);
         }
 
         [RelayCommand]

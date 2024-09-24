@@ -23,6 +23,7 @@ namespace Courier_Data_Control_App
         public MainWindow()
         {
             InitializeComponent();
+            this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
         }
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

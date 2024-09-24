@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Courier_Data_Control_App"
         mc:Ignorable="d" Name="home"
-        Height="650" Width="1000"
+        Height="750" Width="1250"
         WindowStyle="None" ResizeMode="NoResize"
         AllowsTransparency="True" WindowStartupLocation="CenterScreen"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"

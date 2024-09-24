@@ -12,17 +12,20 @@ using System.Xml.Linq;
 
 namespace Courier_Data_Control_App.Classes
 {
-    public class Delivery
+    public class Delivery : ObservableValidator
     {
         public int Id { get; set; }
         public string CustomerName { get; set; }
         [Required]
         public string PhoneNumber { get; set; }
+        [Required]
         public string Address { get; set; }
         public string Description { get; set; }
         public bool Status { get; set; }
         public DateTime DateCreated { get; set; } = DateTime.Now;
+        [Required]
         public int DriverId { get; set; }
+        [Required]
         public Driver Driver { get; set; }
 
         [NotMapped]

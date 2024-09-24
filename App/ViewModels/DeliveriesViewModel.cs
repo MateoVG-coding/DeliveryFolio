@@ -10,12 +10,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Xml.Linq;
+
 
 namespace Courier_Data_Control_App.ViewModels
 {
@@ -32,7 +35,8 @@ namespace Courier_Data_Control_App.ViewModels
         public ObservableCollection<Client> Clients=> _sharedDataService.Clients;
 
         [ObservableProperty]
-        private Delivery newDelivery = new Delivery();
+        private Delivery currentDelivery = new Delivery();
+        public bool CanAddDelivery => !HasErrors;
 
         public IReadOnlyList<string> DeliveryTypes { get; } = new[]
         {
@@ -42,7 +46,7 @@ namespace Courier_Data_Control_App.ViewModels
         };
 
         //Properties to apply paging
-        private const int _pageSize = 10;
+        private const int _pageSize = 9;
         [ObservableProperty]
         private int totalPages;
         [ObservableProperty]
@@ -72,7 +76,6 @@ namespace Courier_Data_Control_App.ViewModels
             _sharedDataService = sharedDataService;
 
             int pageNumber = 1;
-
             CalculatePagination();
             _ = LoadDeliveriesAsync(pageNumber);
         }
@@ -109,14 +112,18 @@ namespace Courier_Data_Control_App.ViewModels
         [RelayCommand]
         async Task AddDeliveryAsync()
         {
-            await _deliveryRepository.AddDeliveryAsync(NewDelivery);
+            if (CurrentDelivery == null)
+            {
+                CurrentDelivery = new Delivery();
+            }
 
-            CalculatePagination();
-
-            await LoadDeliveriesAsync(CurrentPage);
-
-            NewDelivery = new Delivery();
-
+            if (!CurrentDelivery.HasErrors)
+            {
+                await _deliveryRepository.AddDeliveryAsync(CurrentDelivery);
+                CurrentDelivery = new Delivery();
+                CalculatePagination();
+                await LoadDeliveriesAsync(CurrentPage);
+            }
         }
 
         /// <summary>
@@ -151,6 +158,9 @@ namespace Courier_Data_Control_App.ViewModels
                 Deliveries.Remove(delivery);
             }
 
+            //Reset the checkbox header of Deliveries data grid
+            IsAllItemsSelected = false;
+
             //Ensure the user stays within valid page range
             CalculatePagination();
             if (CurrentPage > TotalPages)
@@ -167,14 +177,19 @@ namespace Courier_Data_Control_App.ViewModels
         [RelayCommand]
         private void SelectClient()
         {
-            var client = Clients.FirstOrDefault(c => c.Name.Equals(NewDelivery.CustomerName, StringComparison.OrdinalIgnoreCase));
+            if (CurrentDelivery == null)
+            {
+                CurrentDelivery = new Delivery();
+            }
+
+            var client = Clients.FirstOrDefault(c => c.Name.Equals(CurrentDelivery.CustomerName, StringComparison.OrdinalIgnoreCase));
 
             if (client != null)
             {
-                NewDelivery.Address = client.Address;
-                NewDelivery.PhoneNumber = client.PhoneNumber;
+                CurrentDelivery.Address = client.Address;
+                CurrentDelivery.PhoneNumber = client.PhoneNumber;
 
-                OnPropertyChanged(nameof(NewDelivery));
+                OnPropertyChanged(nameof(CurrentDelivery));
             }
         }
 

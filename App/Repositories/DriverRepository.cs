@@ -40,7 +40,9 @@ namespace Courier_Data_Control_App.Repositories
 
         public async Task<List<Driver>> GetAllDriversAsync()
         {
-            return await _context.Drivers.OrderBy(d => d.FullName).ToListAsync();
+            return await _context.Drivers.Where(d => d.Status)
+                .OrderBy(d => d.FullName) 
+                .ToListAsync();
         }
 
         public async Task AddDriverAsync(Driver driver)

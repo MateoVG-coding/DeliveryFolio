@@ -36,7 +36,6 @@ namespace Courier_Data_Control_App.ViewModels
 
         [ObservableProperty]
         private Delivery currentDelivery = new Delivery();
-        public bool CanAddDelivery => !HasErrors;
 
         public IReadOnlyList<string> DeliveryTypes { get; } = new[]
         {
@@ -117,13 +116,10 @@ namespace Courier_Data_Control_App.ViewModels
                 CurrentDelivery = new Delivery();
             }
 
-            if (!CurrentDelivery.HasErrors)
-            {
-                await _deliveryRepository.AddDeliveryAsync(CurrentDelivery);
-                CurrentDelivery = new Delivery();
-                CalculatePagination();
-                await LoadDeliveriesAsync(CurrentPage);
-            }
+            await _deliveryRepository.AddDeliveryAsync(CurrentDelivery);
+            CurrentDelivery = new Delivery();
+            CalculatePagination();
+            await LoadDeliveriesAsync(CurrentPage);
         }
 
         /// <summary>

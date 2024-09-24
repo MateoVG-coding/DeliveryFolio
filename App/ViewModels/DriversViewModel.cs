@@ -2,7 +2,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Courier_Data_Control_App.Classes;
+using Courier_Data_Control_App.Pages;
 using Courier_Data_Control_App.Repositories;
+using Courier_Data_Control_App.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,16 +21,32 @@ namespace Courier_Data_Control_App.ViewModels
     public partial class DriversViewModel : ObservableObject
     {
         private readonly DriverRepository _driverRepository;
-        public ObservableCollection<Driver> Drivers { get; private set; } = new ObservableCollection<Driver>();
+        private readonly ISharedDataService _sharedDataService;
+
+        [ObservableProperty]
+        private Driver currentDriver = new Driver();
+
+        public ObservableCollection<Driver> Drivers => _sharedDataService.Drivers;
+
+        public DriversViewModel(DriverRepository driverRepository, ISharedDataService sharedDataService)
+        {
+            _driverRepository = driverRepository;
+            _sharedDataService = sharedDataService;
+        }
 
         /// <summary>
         /// Gets the current drivers in the database for the collection of
         /// the view model
         /// </summary>
-        private async Task LoadDriversAsync()
+        [RelayCommand]
+        async Task LoadDriversAsync()
         {
             var drivers = await _driverRepository.GetAllDriversAsync();
 
+            foreach (var driver in drivers)
+            {
+                Drivers.Add(driver);
+            }
         }
 
         /// <summary>

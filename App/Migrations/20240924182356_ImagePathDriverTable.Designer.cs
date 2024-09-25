@@ -3,6 +3,7 @@ using System;
 using Courier_Data_Control_App.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,14 +11,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Courier_Data_Control_App.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240924182356_ImagePathDriverTable")]
+    partial class ImagePathDriverTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
 
-            modelBuilder.Entity("Courier_Data_Control_App.Models.Client", b =>
+            modelBuilder.Entity("Courier_Data_Control_App.Classes.Client", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -40,7 +43,7 @@ namespace Courier_Data_Control_App.Migrations
                     b.ToTable("Clients");
                 });
 
-            modelBuilder.Entity("Courier_Data_Control_App.Models.Delivery", b =>
+            modelBuilder.Entity("Courier_Data_Control_App.Classes.Delivery", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -76,7 +79,7 @@ namespace Courier_Data_Control_App.Migrations
                     b.ToTable("Deliveries");
                 });
 
-            modelBuilder.Entity("Courier_Data_Control_App.Models.Driver", b =>
+            modelBuilder.Entity("Courier_Data_Control_App.Classes.Driver", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -86,18 +89,15 @@ namespace Courier_Data_Control_App.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ImagePath")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LicensePlate")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("Status")
@@ -108,9 +108,9 @@ namespace Courier_Data_Control_App.Migrations
                     b.ToTable("Drivers");
                 });
 
-            modelBuilder.Entity("Courier_Data_Control_App.Models.Delivery", b =>
+            modelBuilder.Entity("Courier_Data_Control_App.Classes.Delivery", b =>
                 {
-                    b.HasOne("Courier_Data_Control_App.Models.Driver", "Driver")
+                    b.HasOne("Courier_Data_Control_App.Classes.Driver", "Driver")
                         .WithMany()
                         .HasForeignKey("DriverId")
                         .OnDelete(DeleteBehavior.Cascade)

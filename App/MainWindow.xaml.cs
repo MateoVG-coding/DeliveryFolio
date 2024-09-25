@@ -37,16 +37,16 @@ namespace Courier_Data_Control_App
                         //fContainer.Navigate(new Uri("Pages/HomePage.xaml", UriKind.Relative));
                         break;
                     case "Deliveries":
-                        fContainer.Navigate(new Uri("Pages/Deliveries.xaml", UriKind.Relative));
+                        fContainer.Navigate(new Uri("Views/Deliveries.xaml", UriKind.Relative));
                         break;
                     case "Clients":
-                        //fContainer.Navigate(new Uri("Views/ClientsPage.xaml", UriKind.Relative));
+                        //fContainer.Navigate(new Uri("Pages/ClientsPage.xaml", UriKind.Relative));
                         break;
                     case "Couriers":
-                        //fContainer.Navigate(new Uri("Views/CouriersPage.xaml", UriKind.Relative));
+                        fContainer.Navigate(new Uri("Views/Drivers.xaml", UriKind.Relative));
                         break;
                     case "Settings":
-                        //fContainer.Navigate(new Uri("Views/SettingsPage.xaml", UriKind.Relative));
+                        //fContainer.Navigate(new Uri("Pages/SettingsPage.xaml", UriKind.Relative));
                         break;
                 }
             }

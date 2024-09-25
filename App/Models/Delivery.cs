@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Courier_Data_Control_App.Classes
+namespace Courier_Data_Control_App.Models
 {
     public class Delivery : ObservableValidator
     {

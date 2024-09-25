@@ -1,4 +1,4 @@
-﻿using Courier_Data_Control_App.Classes;
+﻿using Courier_Data_Control_App.Models;
 using Courier_Data_Control_App.Repositories;
 using System;
 using System.Collections.Generic;

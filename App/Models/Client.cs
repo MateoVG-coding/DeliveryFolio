@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Courier_Data_Control_App.Classes
+namespace Courier_Data_Control_App.Models
 {
     public class Client
     {

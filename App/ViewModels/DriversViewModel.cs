@@ -1,16 +1,21 @@
 ﻿using CommunityToolkit.Mvvm.Collections;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Courier_Data_Control_App.Classes;
+using Courier_Data_Control_App.Models;
 using Courier_Data_Control_App.Pages;
 using Courier_Data_Control_App.Repositories;
 using Courier_Data_Control_App.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Data;
+using System.Windows;
 using System.Windows.Input;
+using System.ComponentModel;
+using Courier_Data_Control_App.Validations;
 
 
 namespace Courier_Data_Control_App.ViewModels
@@ -24,7 +29,7 @@ namespace Courier_Data_Control_App.ViewModels
         private readonly ISharedDataService _sharedDataService;
 
         [ObservableProperty]
-        private Driver currentDriver = new Driver();
+        private Driver currentDriver = new();
 
         public ObservableCollection<Driver> Drivers => _sharedDataService.Drivers;
 
@@ -61,13 +66,13 @@ namespace Courier_Data_Control_App.ViewModels
         }
 
         /// <summary>
-        /// Update the selected driver in the view model collection with their new data
+        /// Update the selected driver in the db with its new data
         /// </summary>
         [RelayCommand]
-        async Task UpdateDriverAsync(Driver updatedDriver)
+        async Task UpdateDriverAsync()
         {
-            await _driverRepository.UpdateDriverAsync(updatedDriver);
-            await LoadDriversAsync();
+            await _driverRepository.UpdateDriverAsync(CurrentDriver);
+            MessageBox.Show("Changes saved successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         /// <summary>
@@ -78,6 +83,24 @@ namespace Courier_Data_Control_App.ViewModels
         {
             await _driverRepository.DeleteDriverAsync(selectedDriver);
             await LoadDriversAsync();
+        }
+    }
+
+    public class ImageSourceToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // Check if the value is null or empty
+            if (string.IsNullOrEmpty(value as string))
+            {
+                return Visibility.Visible; // Show PackIcon if image source is not available
+            }
+            return Visibility.Collapsed; // Hide PackIcon if image source is available
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

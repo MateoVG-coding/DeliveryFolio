@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
-      xmlns:local="clr-namespace:Courier_Data_Control_App.Validations"
+      xmlns:validations="clr-namespace:Courier_Data_Control_App.Validations"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Primary.Dark.Foreground}"
@@ -64,8 +64,7 @@
                 <ComboBox x:Name="ComboboxClient" materialDesign:HintAssist.Hint="Cliente" 
                           materialDesign:TextFieldAssist.HasClearButton="True" Style="{StaticResource MaterialDesignOutlinedComboBox}"
                           ItemsSource="{Binding Clients}" DisplayMemberPath="Name" SelectedValuePath="Name"
-                          SelectedValue="{Binding CurrentDelivery.CustomerName, Mode=TwoWay, 
-                                            UpdateSourceTrigger=PropertyChanged}" 
+                          SelectedValue="{Binding CurrentDelivery.CustomerName, UpdateSourceTrigger=PropertyChanged}" 
                           IsEditable="True" Margin="20, 20" HorizontalContentAlignment="Left" Width="150">
                 </ComboBox>
 
@@ -74,9 +73,9 @@
                          Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="20, 20"
                          HorizontalContentAlignment="Left" Width="150">
                         <TextBox.Text>
-                        <Binding Path="CurrentDelivery.PhoneNumber" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
+                        <Binding Path="CurrentDelivery.PhoneNumber" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
                                 <Binding.ValidationRules>
-                                    <local:PhoneNumberValidationRule />
+                                    <validations:PhoneNumberValidationRule />
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
@@ -87,9 +86,9 @@
                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
                          Margin="20, 20" HorizontalContentAlignment="Left" Width="150">
                         <TextBox.Text>
-                        <Binding Path="CurrentDelivery.Address" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
+                        <Binding Path="CurrentDelivery.Address" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
                                 <Binding.ValidationRules>
-                                    <local:AddressValidationRule/>
+                                    <validations:AddressValidationRule/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
@@ -107,9 +106,9 @@
                           ItemsSource="{Binding Drivers}" DisplayMemberPath="FullName"
                           Margin="20, 20" HorizontalContentAlignment="Left" Width="150">
                         <ComboBox.SelectedItem>
-                            <Binding Path="CurrentDelivery.Driver" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
+                            <Binding Path="CurrentDelivery.Driver" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
                                 <Binding.ValidationRules>
-                                    <local:DriverValidationRule/>
+                                    <validations:DriverValidationRule/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </ComboBox.SelectedItem>
@@ -127,6 +126,7 @@
                   EnableColumnVirtualization="True"
                   ItemsSource="{Binding Deliveries}"
                   RowHeight="50" Margin="5,130,5,80" 
+                  FontSize="15"
                   CanUserDeleteRows="False" CanUserAddRows="False"
                   AlternationCount="2"
                   RowStyle="{StaticResource MaterialDesignDataGridRow}"
@@ -136,11 +136,11 @@
 
             <!-- Start: Deliveries Data Grid Columns -->
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <DataGridCheckBoxColumn Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
                     <DataGridCheckBoxColumn.Header>
                         <Border Background="Transparent">
                             <CheckBox IsChecked="{Binding DataContext.IsAllItemsSelected, 
-                                            Source={x:Reference DataContextProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                            Source={x:Reference DataContextProxy}, UpdateSourceTrigger=PropertyChanged}"/>
                         </Border>
                     </DataGridCheckBoxColumn.Header>
                     <DataGridCheckBoxColumn.HeaderStyle>
@@ -160,7 +160,7 @@
                     <DataGridTextColumn.Binding>
                         <Binding Path="PhoneNumber" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
-                                <local:PhoneNumberValidationRule/>
+                                <validations:PhoneNumberValidationRule/>
                             </Binding.ValidationRules>
                         </Binding>
                     </DataGridTextColumn.Binding>
@@ -170,7 +170,7 @@
                     <DataGridTextColumn.Binding>
                         <Binding Path="Address" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
-                                <local:AddressValidationRule/>
+                                <validations:AddressValidationRule/>
                             </Binding.ValidationRules>
                         </Binding>
                     </DataGridTextColumn.Binding>

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
@@ -56,17 +57,47 @@ namespace Courier_Data_Control_App.ViewModels
         [ObservableProperty]
         private bool canNavigateNext;
 
-        // Property and method for the header CheckBox
+        // Properties and method for the header CheckBox
         [ObservableProperty]
-        private bool isAllItemsSelected;
-        partial void OnIsAllItemsSelectedChanged(bool value)
+        private bool isAllDeliveriesSelected;
+        [ObservableProperty]
+        private bool isAnyDeliverySelected;
+        partial void OnIsAllDeliveriesSelectedChanged(bool value)
+        {
+            if(!value)
+            {
+                DeselectAllDeliveries();
+                return;
+            }
+
+            SelectAllDeliveries();
+        }
+
+        private void Delivery_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Delivery.IsSelected))
+            {
+                IsAnyDeliverySelected = Deliveries.Any(d => d.IsSelected);
+            }
+        }
+
+        public void SelectAllDeliveries()
         {
             foreach (var delivery in Deliveries)
             {
-                delivery.IsSelected = value;
+                delivery.IsSelected = true;
             }
 
-            LoadDeliveriesAsync(CurrentPage);
+            IsAllDeliveriesSelected = IsAnyDeliverySelected = true;
+        }
+        public void DeselectAllDeliveries()
+        {
+            foreach (var delivery in Deliveries)
+            {
+                delivery.IsSelected = false; 
+            }
+
+            IsAllDeliveriesSelected = IsAnyDeliverySelected = false;
         }
 
         public DeliveriesViewModel(DeliveryRepository deliveryRepository, ISharedDataService sharedDataService)
@@ -98,6 +129,7 @@ namespace Courier_Data_Control_App.ViewModels
 
             foreach (var delivery in deliveries)
             {
+                delivery.PropertyChanged += Delivery_PropertyChanged;
                 Deliveries.Add(delivery);
             }
 
@@ -155,7 +187,7 @@ namespace Courier_Data_Control_App.ViewModels
             }
 
             //Reset the checkbox header of Deliveries data grid
-            IsAllItemsSelected = false;
+            IsAllDeliveriesSelected = false;
 
             //Ensure the user stays within valid page range
             CalculatePagination();
@@ -213,7 +245,7 @@ namespace Courier_Data_Control_App.ViewModels
             }
 
             //Reset the checkbox header of Deliveries data grid
-            IsAllItemsSelected = false;
+            DeselectAllDeliveries();
 
         }
 
@@ -226,7 +258,7 @@ namespace Courier_Data_Control_App.ViewModels
             }
 
             //Reset the checkbox header of Deliveries data grid
-            IsAllItemsSelected = false;
+            DeselectAllDeliveries();
         }
     }
 }

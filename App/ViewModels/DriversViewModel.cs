@@ -32,26 +32,13 @@ namespace Courier_Data_Control_App.ViewModels
         private Driver currentDriver = new();
 
         public ObservableCollection<Driver> Drivers => _sharedDataService.Drivers;
+        public ObservableCollection<Driver> ActiveDrivers { get; } = new();
+        public ObservableCollection<Driver> InactiveDrivers { get; } = new();
 
         public DriversViewModel(DriverRepository driverRepository, ISharedDataService sharedDataService)
         {
             _driverRepository = driverRepository;
             _sharedDataService = sharedDataService;
-        }
-
-        /// <summary>
-        /// Gets the current drivers in the database for the collection of
-        /// the view model
-        /// </summary>
-        [RelayCommand]
-        async Task LoadDriversAsync()
-        {
-            var drivers = await _driverRepository.GetAllDriversAsync();
-
-            foreach (var driver in drivers)
-            {
-                Drivers.Add(driver);
-            }
         }
 
         /// <summary>
@@ -62,7 +49,6 @@ namespace Courier_Data_Control_App.ViewModels
         async Task AddDriverAsync(Driver newDriver)
         {
             await _driverRepository.AddDriverAsync(newDriver);
-            await LoadDriversAsync();
         }
 
         /// <summary>
@@ -82,7 +68,6 @@ namespace Courier_Data_Control_App.ViewModels
         async Task DeleteDriverAsync(Driver selectedDriver)
         {
             await _driverRepository.DeleteDriverAsync(selectedDriver);
-            await LoadDriversAsync();
         }
     }
 

@@ -29,6 +29,13 @@ namespace Courier_Data_Control_App.Models
         public Driver Driver { get; set; }
 
         [NotMapped]
-        public bool IsSelected { get; set; }
+        private bool _isSelected;
+
+        [NotMapped]
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set => SetProperty(ref _isSelected, value);
+        }
     }
 }

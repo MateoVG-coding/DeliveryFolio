@@ -25,7 +25,7 @@
                 <Button ToolTip="Agregar nueva entrega" Margin="5, 5" materialDesign:ElevationAssist.Elevation="Dp4"
                         Command="{Binding AddDeliveryCommand}">
                     <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionSecondaryDarkButton}">
+                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=Text, ElementName=TextBoxAddress}" Value="">
                                     <Setter Property="IsEnabled" Value="False" />
@@ -60,7 +60,8 @@
 
                     <materialDesign:PackIcon Kind="Plus" Width="30" Height="30"/>
                 </Button>
-
+                
+                <!-- Customer Name Field -->
                 <ComboBox x:Name="ComboboxClient" materialDesign:HintAssist.Hint="Cliente" 
                           materialDesign:TextFieldAssist.HasClearButton="True" Style="{StaticResource MaterialDesignOutlinedComboBox}"
                           ItemsSource="{Binding Clients}" DisplayMemberPath="Name" SelectedValuePath="Name"
@@ -68,6 +69,7 @@
                           IsEditable="True" Margin="20, 20" HorizontalContentAlignment="Left" Width="150">
                 </ComboBox>
 
+                <!-- Phone Number Field -->
                 <TextBox x:Name="TextBoxPhoneNumber" materialDesign:HintAssist.Hint="Teléfono" 
                          materialDesign:TextFieldAssist.HasClearButton="True"
                          Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="20, 20"
@@ -80,7 +82,8 @@
                             </Binding>
                         </TextBox.Text>
                 </TextBox>
-
+                
+                <!-- Address Field -->
                 <TextBox x:Name="TextBoxAddress" materialDesign:HintAssist.Hint="Dirección" 
                          materialDesign:TextFieldAssist.HasClearButton="True"
                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
@@ -93,13 +96,15 @@
                             </Binding>
                         </TextBox.Text>
                 </TextBox>
-
+                
+                <!-- Description Field -->
                 <ComboBox materialDesign:HintAssist.Hint="Descripción" materialDesign:TextFieldAssist.HasClearButton="True"
                           Style="{StaticResource MaterialDesignOutlinedComboBox}" ItemsSource="{Binding DeliveryTypes}"
                           Text="{Binding CurrentDelivery.Description}" IsEditable="True"
                           Margin="20, 20" HorizontalContentAlignment="Left" Width="150">
                 </ComboBox>
 
+                <!-- Driver Field -->
                 <ComboBox x:Name="ComboboxDriver" materialDesign:HintAssist.Hint="Mensajero" 
                           materialDesign:TextFieldAssist.HasClearButton="True"
                           Style="{StaticResource MaterialDesignOutlinedComboBox}" IsTextSearchEnabled="True"
@@ -120,7 +125,7 @@
 
         <!-- Start: List of Deliveries -->
         <FrameworkElement x:Name="DataContextProxy" DataContext="{Binding}" Validation.ErrorTemplate="{x:Null}"/>
-        <DataGrid x:Name="DeliveriesDataGrid"
+        <DataGrid x:Name="DeliveriesDataGrid" CanUserSortColumns="False"
                   AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
                   EnableRowVirtualization="True"
                   EnableColumnVirtualization="True"
@@ -136,11 +141,13 @@
 
             <!-- Start: Deliveries Data Grid Columns -->
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
+                
+                <!-- Selection Column -->
+                <DataGridCheckBoxColumn Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" >
                     <DataGridCheckBoxColumn.Header>
                         <Border Background="Transparent">
-                            <CheckBox IsChecked="{Binding DataContext.IsAllItemsSelected, 
-                                            Source={x:Reference DataContextProxy}, UpdateSourceTrigger=PropertyChanged}"/>
+                            <CheckBox IsChecked="{Binding DataContext.IsAllDeliveriesSelected, 
+                                            Source={x:Reference DataContextProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Border>
                     </DataGridCheckBoxColumn.Header>
                     <DataGridCheckBoxColumn.HeaderStyle>
@@ -150,12 +157,15 @@
                     </DataGridCheckBoxColumn.HeaderStyle>
                 </DataGridCheckBoxColumn>
 
+                <!-- Date Created Column -->
                 <DataGridTextColumn Header="Fecha" Binding="{Binding DateCreated}" 
                                     Width="*" IsReadOnly="True" />
 
+                <!-- Customer Name Column -->
                 <DataGridTextColumn Header="Cliente" Binding="{Binding CustomerName, 
                                     UpdateSourceTrigger=PropertyChanged}" Width="*" />
 
+                <!-- Phone Number Column -->
                 <DataGridTextColumn Header="Teléfono" Width="*">
                     <DataGridTextColumn.Binding>
                         <Binding Path="PhoneNumber" UpdateSourceTrigger="PropertyChanged">
@@ -166,6 +176,7 @@
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
 
+                <!-- Address Column -->
                 <DataGridTextColumn Header="Dirección"  Width="*">
                     <DataGridTextColumn.Binding>
                         <Binding Path="Address" UpdateSourceTrigger="PropertyChanged">
@@ -176,6 +187,7 @@
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
 
+                <!-- Description Column -->
                 <DataGridTemplateColumn Header="Descripción" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -193,6 +205,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
+                <!-- Driver Column -->
                 <DataGridTemplateColumn Header="Mensajero" Width="*" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -209,6 +222,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
+                <!-- Status Column -->
                 <DataGridTemplateColumn Header="Estado" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -252,7 +266,7 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20">
             <!-- Previous Page Button -->
             <Button materialDesign:ElevationAssist.Elevation="Dp2"
-                    Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                    Style="{StaticResource MaterialDesignIconButton}"
                     Command="{Binding PreviousPageCommand}"
                     IsEnabled="{Binding CanNavigatePrevious}"
                     Margin="5">
@@ -269,7 +283,7 @@
 
             <!-- Next Page Button -->
             <Button materialDesign:ElevationAssist.Elevation="Dp2"
-                    Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                    Style="{StaticResource MaterialDesignIconButton}"
                     Command="{Binding NextPageCommand}"
                     IsEnabled="{Binding CanNavigateNext}"
                     Margin="5">
@@ -278,12 +292,14 @@
         </StackPanel>
         <!-- End: Paging Buttons -->
 
-        <Button Style="{StaticResource MaterialDesignFloatingActionSecondaryDarkButton}" ToolTip="Eliminar entregas seleccionadas"
+        <!-- Start: Delete deliveries button -->
+        <Button Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Eliminar entregas seleccionadas"
                 ToolTipService.Placement="Left"
                 Margin="20, 15" materialDesign:ElevationAssist.Elevation="Dp4" Command="{Binding DeleteSelectedDeliveriesCommand}"
-                HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                HorizontalAlignment="Right" VerticalAlignment="Bottom" IsEnabled="{Binding IsAnyDeliverySelected}">
             <materialDesign:PackIcon Kind="Delete" Width="30" Height="30"/>
         </Button>
+        <!-- End: Delete deliveries button -->
     </Grid>
 
     <!-- Start: Behaviors -->

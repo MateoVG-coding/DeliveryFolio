@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Courier_Data_Control_App.Models;
-using Courier_Data_Control_App.Pages;
 using Courier_Data_Control_App.Repositories;
 using Courier_Data_Control_App.Services;
 using System;
@@ -16,6 +15,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.ComponentModel;
 using Courier_Data_Control_App.Validations;
+using System.Collections.Specialized;
 
 
 namespace Courier_Data_Control_App.ViewModels
@@ -28,17 +28,60 @@ namespace Courier_Data_Control_App.ViewModels
         private readonly DriverRepository _driverRepository;
         private readonly ISharedDataService _sharedDataService;
 
-        [ObservableProperty]
-        private Driver currentDriver = new();
-
         public ObservableCollection<Driver> Drivers => _sharedDataService.Drivers;
         public ObservableCollection<Driver> ActiveDrivers { get; } = new();
         public ObservableCollection<Driver> InactiveDrivers { get; } = new();
+
+        private Driver _currentDriver;
+
+        public Driver CurrentDriver
+        {
+            get => _currentDriver;
+            set
+            {
+                if (SetProperty(ref _currentDriver, value))
+                {
+                    _currentDriver?.BeginEdit();
+                }
+            }
+        }
+        public void CancelEdit()
+        {
+            CurrentDriver?.CancelEdit();
+        }
+
+        private void OnDriversCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.OldItems != null)
+            {
+                foreach (INotifyPropertyChanged item in e.OldItems)
+                    item.PropertyChanged -= OnDriverPropertyChanged;
+            }
+            if (e.NewItems != null)
+            {
+                foreach (INotifyPropertyChanged item in e.NewItems)
+                    item.PropertyChanged += OnDriverPropertyChanged;
+            }
+        }
+        private void OnDriverPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (CurrentDriver.HasErrors)
+            {
+                Console.WriteLine("Driver has validation errors.");
+            }
+        }
 
         public DriversViewModel(DriverRepository driverRepository, ISharedDataService sharedDataService)
         {
             _driverRepository = driverRepository;
             _sharedDataService = sharedDataService;
+
+            foreach (var driver in Drivers)
+            {
+                driver.PropertyChanged += OnDriverPropertyChanged;
+            }
+
+            Drivers.CollectionChanged += OnDriversCollectionChanged;
         }
 
         /// <summary>
@@ -58,6 +101,7 @@ namespace Courier_Data_Control_App.ViewModels
         async Task UpdateDriverAsync()
         {
             await _driverRepository.UpdateDriverAsync(CurrentDriver);
+            CurrentDriver.EndEdit(); // Clear backup if successful
             MessageBox.Show("Changes saved successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -68,24 +112,6 @@ namespace Courier_Data_Control_App.ViewModels
         async Task DeleteDriverAsync(Driver selectedDriver)
         {
             await _driverRepository.DeleteDriverAsync(selectedDriver);
-        }
-    }
-
-    public class ImageSourceToVisibilityConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            // Check if the value is null or empty
-            if (string.IsNullOrEmpty(value as string))
-            {
-                return Visibility.Visible; // Show PackIcon if image source is not available
-            }
-            return Visibility.Collapsed; // Hide PackIcon if image source is available
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -53,4 +53,10 @@
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
+  <ItemGroup>
+    <Page Include="App.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Client\" />
+  </ItemGroup>
 </Project>

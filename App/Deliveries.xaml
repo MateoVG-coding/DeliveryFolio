@@ -1,4 +1,4 @@
-﻿<Page x:Class="Courier_Data_Control_App.Pages.Deliveries"
+﻿<Page x:Class="Courier_Data_Control_App.Deliveries"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -170,7 +170,7 @@
                     <DataGridTextColumn.Binding>
                         <Binding Path="PhoneNumber" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
-                                <validations:PhoneNumberValidationRule/>
+                                <validations:PhoneNumberValidationRule />
                             </Binding.ValidationRules>
                         </Binding>
                     </DataGridTextColumn.Binding>

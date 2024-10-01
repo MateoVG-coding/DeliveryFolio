@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Policy;
@@ -9,17 +10,55 @@ using System.Threading.Tasks;
 
 namespace Courier_Data_Control_App.Models
 {
-    public class Driver : ObservableValidator
+    public partial class Driver : ObservableValidator, IEditableObject
     {
         public int Id { get; set; }
+
+        [ObservableProperty]
         [Required]
-        public string FullName { get; set; }
+        private string fullName;
+
+        [ObservableProperty]
         [Required]
-        public string PhoneNumber { get;set; }
+        private string phoneNumber;
+
+        [ObservableProperty]
         [Required]
-        public string LicensePlate { get; set; }
-        public DateTime DateCreated { get; set; }
-        public bool Status { get; set; }
-        public string ImagePath { get; set; }
+        private string licensePlate;
+
+        [ObservableProperty]
+        private DateTime dateCreated;
+
+        [ObservableProperty]
+        private bool status;
+
+        [ObservableProperty]
+        private string imagePath;
+
+        private Driver _backupDriver;
+
+        public void BeginEdit()
+        {
+            _backupDriver = (Driver)this.MemberwiseClone();
+        }
+
+        public void CancelEdit()
+        {
+            if (_backupDriver != null)
+            {
+                Id = _backupDriver.Id;
+                FullName = _backupDriver.FullName;
+                PhoneNumber = _backupDriver.PhoneNumber;
+                LicensePlate = _backupDriver.LicensePlate;
+                DateCreated = _backupDriver.DateCreated;
+                Status = _backupDriver.Status;
+                ImagePath = _backupDriver.ImagePath;
+            }
+        }
+
+        public void EndEdit()
+        {
+            _backupDriver = null;
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace Courier_Data_Control_App
         public MainWindow()
         {
             InitializeComponent();
-            this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
+            MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
         }
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -37,13 +37,13 @@ namespace Courier_Data_Control_App
                         //fContainer.Navigate(new Uri("Pages/HomePage.xaml", UriKind.Relative));
                         break;
                     case "Deliveries":
-                        fContainer.Navigate(new Uri("Views/Deliveries.xaml", UriKind.Relative));
+                        fContainer.Navigate(new Uri("Deliveries.xaml", UriKind.Relative));
                         break;
                     case "Clients":
                         //fContainer.Navigate(new Uri("Pages/ClientsPage.xaml", UriKind.Relative));
                         break;
                     case "Couriers":
-                        fContainer.Navigate(new Uri("Views/Drivers.xaml", UriKind.Relative));
+                        fContainer.Navigate(new Uri("Drivers.xaml", UriKind.Relative));
                         break;
                     case "Settings":
                         //fContainer.Navigate(new Uri("Pages/SettingsPage.xaml", UriKind.Relative));
@@ -55,7 +55,7 @@ namespace Courier_Data_Control_App
         // Start: Button Close | Restore | Minimize 
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
-            this.WindowState = WindowState.Minimized;
+            WindowState = WindowState.Minimized;
         }
 
         private void BG_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -65,19 +65,19 @@ namespace Courier_Data_Control_App
 
         private void RestoreButton_Click(object sender, RoutedEventArgs e)
         {
-            if (this.WindowState == WindowState.Maximized)
+            if (WindowState == WindowState.Maximized)
             {
-                this.WindowState = WindowState.Normal;
+                WindowState = WindowState.Normal;
             }
             else
             {
-                this.WindowState = WindowState.Maximized;
+                WindowState = WindowState.Maximized;
             }
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         // End: Button Close | Restore | Minimize

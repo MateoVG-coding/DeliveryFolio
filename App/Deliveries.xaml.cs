@@ -18,7 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using static MaterialDesignThemes.Wpf.Theme;
 
-namespace Courier_Data_Control_App.Pages
+namespace Courier_Data_Control_App
 {
     /// <summary>
     /// Interaction logic for Deliveries.xaml
@@ -28,7 +28,6 @@ namespace Courier_Data_Control_App.Pages
         public Deliveries()
         {
             InitializeComponent();
-
             var app = (App)Application.Current;
             DataContext = app.ServiceProvider.GetRequiredService<DeliveriesViewModel>();
         }

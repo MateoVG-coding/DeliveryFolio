@@ -7,20 +7,22 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace Courier_Data_Control_App.Validations;
-public class PhoneNumberValidationRule : ValidationRule
+namespace Courier_Data_Control_App.Validations
 {
-    public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+    public class PhoneNumberValidationRule : ValidationRule
     {
-        string phoneNumber = (value ?? "").ToString();
-        if (string.IsNullOrWhiteSpace(phoneNumber))
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            return new ValidationResult(false, "El número de teléfono es obligatorio.");
+            string phoneNumber = (value ?? "").ToString();
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+            {
+                return new ValidationResult(false, "El número de teléfono es obligatorio.");
+            }
+            if (!System.Text.RegularExpressions.Regex.IsMatch(phoneNumber, @"^[\d-]+$"))
+            {
+                return new ValidationResult(false, "El número de teléfono solo debe contener dígitos y guiones.");
+            }
+            return ValidationResult.ValidResult;
         }
-        if (!System.Text.RegularExpressions.Regex.IsMatch(phoneNumber, @"^[\d-]+$"))
-        {
-            return new ValidationResult(false, "El número de teléfono solo debe contener dígitos y guiones.");
-        }
-        return ValidationResult.ValidResult;
     }
 }

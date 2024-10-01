@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Courier_Data_Control_App.Models;
-using Courier_Data_Control_App.Pages;
 using Courier_Data_Control_App.Repositories;
 using Courier_Data_Control_App.Services;
 using System;
@@ -57,11 +56,12 @@ namespace Courier_Data_Control_App.ViewModels
         [ObservableProperty]
         private bool canNavigateNext;
 
-        // Properties and method for the header CheckBox
+        // START: Properties and method for the header CheckBox
         [ObservableProperty]
         private bool isAllDeliveriesSelected;
         [ObservableProperty]
         private bool isAnyDeliverySelected;
+
         partial void OnIsAllDeliveriesSelectedChanged(bool value)
         {
             if(!value)
@@ -90,6 +90,7 @@ namespace Courier_Data_Control_App.ViewModels
 
             IsAllDeliveriesSelected = IsAnyDeliverySelected = true;
         }
+
         public void DeselectAllDeliveries()
         {
             foreach (var delivery in Deliveries)
@@ -99,6 +100,8 @@ namespace Courier_Data_Control_App.ViewModels
 
             IsAllDeliveriesSelected = IsAnyDeliverySelected = false;
         }
+
+        // END: Properties and method for the header CheckBox
 
         public DeliveriesViewModel(DeliveryRepository deliveryRepository, ISharedDataService sharedDataService)
         {

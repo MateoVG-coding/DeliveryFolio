@@ -12,21 +12,38 @@ using System.Xml.Linq;
 
 namespace Courier_Data_Control_App.Models
 {
-    public class Delivery : ObservableValidator
+    public partial class Delivery : ObservableValidator
     {
-        public int Id { get; set; }
-        public string CustomerName { get; set; }
+        [ObservableProperty]
+        private int id;
+
+        [ObservableProperty]
+        private string customerName;
+
+        [ObservableProperty]
         [Required]
-        public string PhoneNumber { get; set; }
+        private string phoneNumber;
+
+        [ObservableProperty]
         [Required]
-        public string Address { get; set; }
-        public string Description { get; set; }
-        public bool Status { get; set; }
-        public DateTime DateCreated { get; set; } = DateTime.Now;
+        private string address;
+
+        [ObservableProperty]
+        private string description;
+
+        [ObservableProperty]
+        private bool status;
+
+        [ObservableProperty]
+        private DateTime dateCreated = DateTime.Now;
+
+        [ObservableProperty]
         [Required]
-        public int DriverId { get; set; }
+        private int driverId;
+
+        [ObservableProperty]
         [Required]
-        public Driver Driver { get; set; }
+        private Driver driver;
 
         [NotMapped]
         private bool _isSelected;

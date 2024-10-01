@@ -27,7 +27,7 @@ namespace Courier_Data_Control_App
             ServiceProvider = serviceCollection.BuildServiceProvider();
         }
 
-        private void ConfigureServices(IServiceCollection services)
+        private static void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlite("Data Source=DeliveryFolio.db"));
@@ -51,7 +51,7 @@ namespace Courier_Data_Control_App
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            var mainWindow = new MainWindow();
+            var mainWindow = new MainWindow(ServiceProvider);
             mainWindow.Show();
             base.OnStartup(e);
         }

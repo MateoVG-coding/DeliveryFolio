@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Courier_Data_Control_App.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,9 +23,11 @@ namespace Courier_Data_Control_App
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private readonly IServiceProvider _serviceProvider;
+        public MainWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
+            _serviceProvider = serviceProvider;
             MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
         }
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -34,19 +39,19 @@ namespace Courier_Data_Control_App
                 switch (tag)
                 {
                     case "Home":
-                        //fContainer.Navigate(new Uri("Pages/HomePage.xaml", UriKind.Relative));
+                        //fContainer.Navigate(new HomePage { DataContext = _serviceProvider.GetRequiredService<HomeViewModel>() });
                         break;
                     case "Deliveries":
-                        fContainer.Navigate(new Uri("Deliveries.xaml", UriKind.Relative));
+                        fContainer.Navigate(new Deliveries { DataContext = _serviceProvider.GetRequiredService<DeliveriesViewModel>() });
                         break;
                     case "Clients":
-                        //fContainer.Navigate(new Uri("Pages/ClientsPage.xaml", UriKind.Relative));
+                        //fContainer.Navigate(new ClientsPage { DataContext = _serviceProvider.GetRequiredService<ClientsViewModel>() });
                         break;
                     case "Couriers":
-                        fContainer.Navigate(new Uri("Drivers.xaml", UriKind.Relative));
+                        fContainer.Navigate(new Drivers { DataContext = _serviceProvider.GetRequiredService<DriversViewModel>() });
                         break;
                     case "Settings":
-                        //fContainer.Navigate(new Uri("Pages/SettingsPage.xaml", UriKind.Relative));
+                        //fContainer.Navigate(new SettingsPage { DataContext = _serviceProvider.GetRequiredService<SettingsViewModel>() });
                         break;
                 }
             }

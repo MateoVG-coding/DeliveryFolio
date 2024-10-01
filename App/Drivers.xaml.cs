@@ -22,15 +22,13 @@ using static MaterialDesignThemes.Wpf.Theme;
 namespace Courier_Data_Control_App
 {
     /// <summary>
-    /// Interaction logic for Drivers.xaml
+    /// Interaction logic for Deliveries.xaml
     /// </summary>
     public partial class Drivers : Page
     {
         public Drivers()
         {
             InitializeComponent();
-            var app = (App)Application.Current;
-            DataContext = app.ServiceProvider.GetRequiredService<DriversViewModel>();
         }
 
         private void DialogHostEditDriver_DialogClosing(object sender, DialogClosingEventArgs eventArgs)
@@ -76,7 +74,7 @@ namespace Courier_Data_Control_App
         }
 
         // Helper method to find the ancestor of a specific type
-        private T FindAncestor<T>(DependencyObject current) where T : DependencyObject
+        private static T FindAncestor<T>(DependencyObject current) where T : DependencyObject
         {
             while (current != null)
             {
@@ -90,7 +88,7 @@ namespace Courier_Data_Control_App
         }
 
         // Helper method to find a child of a specific type within a parent
-        private T FindChild<T>(DependencyObject parent) where T : DependencyObject
+        private static T FindChild<T>(DependencyObject parent) where T : DependencyObject
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {

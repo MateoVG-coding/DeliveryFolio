@@ -28,8 +28,6 @@ namespace Courier_Data_Control_App
         public Deliveries()
         {
             InitializeComponent();
-            var app = (App)Application.Current;
-            DataContext = app.ServiceProvider.GetRequiredService<DeliveriesViewModel>();
         }
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {

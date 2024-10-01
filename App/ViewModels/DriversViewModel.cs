@@ -32,8 +32,8 @@ namespace Courier_Data_Control_App.ViewModels
         public ObservableCollection<Driver> ActiveDrivers { get; } = new();
         public ObservableCollection<Driver> InactiveDrivers { get; } = new();
 
+        // START: Methods and properties to handle editing a driver item.
         private Driver _currentDriver;
-
         public Driver CurrentDriver
         {
             get => _currentDriver;
@@ -49,7 +49,6 @@ namespace Courier_Data_Control_App.ViewModels
         {
             CurrentDriver?.CancelEdit();
         }
-
         private void OnDriversCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.OldItems != null)
@@ -65,11 +64,8 @@ namespace Courier_Data_Control_App.ViewModels
         }
         private void OnDriverPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (CurrentDriver.HasErrors)
-            {
-                Console.WriteLine("Driver has validation errors.");
-            }
         }
+        // END: Methods and properties to handle editing a driver item.
 
         public DriversViewModel(DriverRepository driverRepository, ISharedDataService sharedDataService)
         {

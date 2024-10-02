@@ -64,6 +64,10 @@ namespace Courier_Data_Control_App.ViewModels
         }
         private void OnDriverPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (e.PropertyName == nameof(CurrentDriver.Status))
+            {
+                UpdateDriverCommand.Execute(null);
+            }
         }
         // END: Methods and properties to handle editing a driver item.
 
@@ -98,7 +102,7 @@ namespace Courier_Data_Control_App.ViewModels
         {
             await _driverRepository.UpdateDriverAsync(CurrentDriver);
             CurrentDriver.EndEdit(); // Clear backup if successful
-            MessageBox.Show("Changes saved successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Los cambios se han guardado correctamente!", "", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         /// <summary>

@@ -33,7 +33,7 @@ namespace Courier_Data_Control_App.Models
         private bool status;
 
         [ObservableProperty]
-        private string imagePath;
+        private string? imagePath;
 
         private Driver _backupDriver;
 

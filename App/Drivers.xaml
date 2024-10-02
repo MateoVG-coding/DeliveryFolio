@@ -20,6 +20,7 @@
                                    DialogTheme="Inherit" DialogMargin="8">
         <materialDesign:DialogHost.DialogContent>
             <StackPanel Margin="16">
+                
                 <!-- Phone Number Input -->
                 <TextBox x:Name="TextBoxPhoneNumber" Margin="15" 
                      materialDesign:HintAssist.Hint="Telefóno"
@@ -123,35 +124,40 @@
                             <Grid Width="220" Height="290">
                                 
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="160" />
+                                    <RowDefinition Height="190" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
 
                                 <!-- Color zone for driver profile image -->
                                 <materialDesign:ColorZone VerticalAlignment="Stretch" Mode="PrimaryLight">
                                     <Grid>
-                                        
-                                        <Image x:Name="DriverImage" Source="/Resources/defaultProfilePicture.png" 
-                                                   Width="128" Height="128" 
-                                                   HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                                   Stretch="UniformToFill"/>
+                                        <!-- Image Control -->
+                                        <Image x:Name="DriverImage" Stretch="Fill" RenderOptions.BitmapScalingMode="NearestNeighbor" Margin="1">
+                                            <Image.Source>
+                                                <Binding Path="ImagePath">
+                                                    <Binding.TargetNullValue>
+                                                        <ImageSource>/Resources/DefaultProfilePicture.png</ImageSource>
+                                                    </Binding.TargetNullValue>
+                                                </Binding>
+                                            </Image.Source>
+                                        </Image>
 
-                                        <materialDesign:PackIcon x:Name="FallbackIcon"
-                                                                 Width="128" Height="128" HorizontalAlignment="Center"
-                                                                 VerticalAlignment="Center" Kind="AccountCircle"/>
-                                        
+                                        <!-- Load Image Button -->
+                                        <Button Style="{StaticResource MaterialDesignRaisedButton}" Content="Cambiar imagen" FontWeight="Medium"
+                                                HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Opacity="0.9">
+                                        </Button>
                                     </Grid>
                                 </materialDesign:ColorZone>
                                 
                                 <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    
-                                    <TextBlock Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" />
+                                    <!-- Textblock Driver's full name  -->
+                                    <TextBlock Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" />
                                     
                                     <Button Margin="0,15,0,0" 
                                             Command="{x:Static materialDesign:Flipper.FlipCommand}"
                                             Click="Button_Click"
                                             Content="MÁS" 
-                                            Style="{StaticResource MaterialDesignOutlinedSecondaryButton}" 
+                                            Style="{StaticResource MaterialDesignPaperSecondaryButton}" 
                                             materialDesign:ButtonAssist.CornerRadius="10" />
                                     
                                 </StackPanel>
@@ -187,15 +193,18 @@
                                 
                                 <Grid Grid.Row="1" VerticalAlignment="Stretch">
                                     <StackPanel>
-                                        
+
+                                        <!-- Textblock Driver's phone number  -->
                                         <TextBlock Text="Número de Teléfono:" FontWeight="SemiBold" Margin="15,15,0,5" />
                                         <TextBlock Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
                                                    Margin="15,0,0,5" />
 
+                                        <!-- Textblock Driver's license plate -->
                                         <TextBlock Text="Placa de matrícula:" FontWeight="SemiBold" Margin="15,15,0,5" />
                                         <TextBlock Text="{Binding LicensePlate, UpdateSourceTrigger=PropertyChanged}"
                                                    Margin="15,0,0,5" />
-
+                                        
+                                        <!-- Textblock Driver's status -->
                                         <TextBlock Text="Disponibilidad:" FontWeight="SemiBold" Margin="15,15,0,5" />
                                         <ToggleButton IsChecked="{Binding Status, UpdateSourceTrigger=PropertyChanged}" 
                                                       HorizontalAlignment="Left" Margin="15,0,0,5" />

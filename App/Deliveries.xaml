@@ -15,115 +15,164 @@
       FontFamily="{materialDesign:RobotoFont}">
 
     <Grid>
-        <!-- Start: Add new delivery form -->
-        <materialDesign:ColorZone materialDesign:ElevationAssist.Elevation="Dp2" 
-                                  ClipToBounds="False" CornerRadius="10" Mode="Standard" Height="96">
+        <!--START: Dialog Host to add new delivery -->
+        <materialDesign:DialogHost x:Name="DialogHostAddDelivery" DialogTheme="Inherit" DialogMargin="5">
+            <materialDesign:DialogHost.DialogContent>
 
-            <StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Orientation="Horizontal" 
-                        Margin="25, 0">
-                <!-- Start: Fields to add new deliveries -->
-                <Button ToolTip="Agregar nueva entrega" Margin="5, 5" materialDesign:ElevationAssist.Elevation="Dp4"
-                        Command="{Binding AddDeliveryCommand}">
-                    <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Text, ElementName=TextBoxAddress}" Value="">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
+                <!-- START: Fields to add new deliveries -->
+                <Grid Margin="30, 15">
+                    
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
 
-                                <!-- Disable button if TextBoxPhoneNumber is empty -->
-                                <DataTrigger Binding="{Binding Path=Text, ElementName=TextBoxPhoneNumber}" Value="">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                                <!-- Disable button if ComboBoxDriver has no selected item -->
-                                <DataTrigger Binding="{Binding Path=SelectedItem, ElementName=ComboboxDriver}" Value="{x:Null}">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
-                                
-                                <!-- Disable button if any validation errors -->
-                                <DataTrigger Binding="{Binding Path=(Validation.HasError), ElementName=TextBoxAddress}" Value="True">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
-                                
-                                <DataTrigger Binding="{Binding Path=(Validation.HasError), ElementName=TextBoxPhoneNumber}" Value="True">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
-                                
-                                <DataTrigger Binding="{Binding Path=(Validation.HasError), ElementName=ComboboxDriver}" Value="True">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
-                                
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
+                    <!-- START: Left Column Content -->
+                    <StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Grid.Column="0" Orientation="Vertical" Margin="10">
+                        
+                        <!-- Customer Name Field -->
+                        <ComboBox x:Name="ComboboxClient" materialDesign:HintAssist.Hint="Cliente" materialDesign:TextFieldAssist.HasClearButton="True" Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                  ItemsSource="{Binding Clients}" DisplayMemberPath="Name" SelectedValuePath="Name"
+                                  SelectedValue="{Binding CurrentDelivery.CustomerName, UpdateSourceTrigger=PropertyChanged}" 
+                                  IsEditable="True" HorizontalContentAlignment="Left" Width="200" Margin="10, 15"/>
 
-                    <materialDesign:PackIcon Kind="Plus" Width="30" Height="30"/>
-                </Button>
+                        <!-- Phone Number Field -->
+                        <TextBox x:Name="TextBoxPhoneNumber" materialDesign:HintAssist.Hint="Teléfono" materialDesign:TextFieldAssist.HasClearButton="True" 
+                                 Style="{StaticResource MaterialDesignOutlinedTextBox}" HorizontalContentAlignment="Left" 
+                                 Width="200" Margin="10, 15">
+                            <TextBox.Text>
+                                <Binding Path="CurrentDelivery.PhoneNumber" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
+                                    <Binding.ValidationRules>
+                                        <validations:PhoneNumberValidationRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+
+                        <!-- Address Field -->
+                        <TextBox x:Name="TextBoxAddress" materialDesign:HintAssist.Hint="Dirección" 
+                                 materialDesign:TextFieldAssist.HasClearButton="True" Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                 HorizontalContentAlignment="Left" Width="200" Margin="10, 15">
+                            <TextBox.Text>
+                                <Binding Path="CurrentDelivery.Address" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
+                                    <Binding.ValidationRules>
+                                        <validations:AddressValidationRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        
+                    </StackPanel>
+                    <!-- END: Left Column Content -->
+
+
+                    <!-- START: Right Column Content -->
+                    <StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Grid.Column="1" Orientation="Vertical" Margin="10">
+                        
+                        <!-- Description Field -->
+                        <ComboBox materialDesign:HintAssist.Hint="Descripción" materialDesign:TextFieldAssist.HasClearButton="True"
+                                  Style="{StaticResource MaterialDesignOutlinedComboBox}" ItemsSource="{Binding DeliveryTypes}"
+                                  Text="{Binding CurrentDelivery.Description}" IsEditable="True"
+                                  HorizontalContentAlignment="Left" Width="200" Margin="10, 15"/>
+
+                        <!-- Driver Field -->
+                        <ComboBox x:Name="ComboboxDriver" materialDesign:HintAssist.Hint="Mensajero" materialDesign:TextFieldAssist.HasClearButton="True" 
+                                  Style="{StaticResource MaterialDesignOutlinedComboBox}" IsTextSearchEnabled="True" 
+                                  ItemsSource="{Binding Drivers}" DisplayMemberPath="FullName"
+                                  Margin="10, 15" HorizontalContentAlignment="Left" Width="200">
+                            <ComboBox.SelectedItem>
+                                <Binding Path="CurrentDelivery.Driver" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
+                                    <Binding.ValidationRules>
+                                        <validations:DriverValidationRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ComboBox.SelectedItem>
+                        </ComboBox>
+                        
+                    </StackPanel>
+                    <!-- END: Right Column Content -->
+
+
+                    <!-- START: Dialog Control Buttons -->
+                    <StackPanel Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal" Margin="20">
+
+                        <!-- Accept button Dialog -->
+                        <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                        Content="Aceptar" IsDefault="True">
+                            <Button.CommandParameter>
+                                <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">True</system:Boolean>
+                            </Button.CommandParameter>
+
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                                    <Style.Triggers>
+                                        <!-- Disable button if TextBoxAddress is empty -->
+                                        <DataTrigger Binding="{Binding Text, ElementName=TextBoxAddress}" Value="">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger>
+
+                                        <!-- Disable button if TextBoxPhoneNumber is empty -->
+                                        <DataTrigger Binding="{Binding Text, ElementName=TextBoxPhoneNumber}" Value="">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger>
+
+                                        <!-- Disable button if ComboBoxDriver has no selected item -->
+                                        <DataTrigger Binding="{Binding SelectedItem, ElementName=ComboboxDriver}" Value="{x:Null}">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger>
+
+                                        <!-- Disable button if there are validation errors -->
+                                        <DataTrigger Binding="{Binding (Validation.HasError), ElementName=TextBoxAddress}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding (Validation.HasError), ElementName=TextBoxPhoneNumber}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding (Validation.HasError), ElementName=ComboboxDriver}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <!-- Cancel button Dialog -->
+                        <Button Margin="0,10,10,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                        Content="Cancelar" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}">
+                            <Button.CommandParameter>
+                                <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">False</system:Boolean>
+                            </Button.CommandParameter>
+                        </Button>
+                        
+                    </StackPanel>
+                    <!-- END: Dialog Control Buttons -->
+                    
+                </Grid>
+                <!-- END: Fields to add new deliveries -->
                 
-                <!-- Customer Name Field -->
-                <ComboBox x:Name="ComboboxClient" materialDesign:HintAssist.Hint="Cliente" 
-                          materialDesign:TextFieldAssist.HasClearButton="True" Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                          ItemsSource="{Binding Clients}" DisplayMemberPath="Name" SelectedValuePath="Name"
-                          SelectedValue="{Binding CurrentDelivery.CustomerName, UpdateSourceTrigger=PropertyChanged}" 
-                          IsEditable="True" Margin="20, 20" HorizontalContentAlignment="Left" Width="150">
-                </ComboBox>
+            </materialDesign:DialogHost.DialogContent>
 
-                <!-- Phone Number Field -->
-                <TextBox x:Name="TextBoxPhoneNumber" materialDesign:HintAssist.Hint="Teléfono" 
-                         materialDesign:TextFieldAssist.HasClearButton="True"
-                         Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="20, 20"
-                         HorizontalContentAlignment="Left" Width="150">
-                        <TextBox.Text>
-                        <Binding Path="CurrentDelivery.PhoneNumber" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
-                                <Binding.ValidationRules>
-                                    <validations:PhoneNumberValidationRule />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                </TextBox>
+            <materialDesign:ColorZone materialDesign:ElevationAssist.Elevation="Dp2" CornerRadius="10" Mode="Standard" Height="96">
+                <!--START: Filtered search driver section -->
+                <Grid Height="45" HorizontalAlignment="Stretch" Margin="20,20,20,0">
+
+                    <Button Content="Agregar" Style="{StaticResource MaterialDesignPaperButton}" Width="200"
+                Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"/>
+                </Grid>
+                <!--END: Filtered search driver section -->
                 
-                <!-- Address Field -->
-                <TextBox x:Name="TextBoxAddress" materialDesign:HintAssist.Hint="Dirección" 
-                         materialDesign:TextFieldAssist.HasClearButton="True"
-                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                         Margin="20, 20" HorizontalContentAlignment="Left" Width="150">
-                        <TextBox.Text>
-                        <Binding Path="CurrentDelivery.Address" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
-                                <Binding.ValidationRules>
-                                    <validations:AddressValidationRule/>
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                </TextBox>
-                
-                <!-- Description Field -->
-                <ComboBox materialDesign:HintAssist.Hint="Descripción" materialDesign:TextFieldAssist.HasClearButton="True"
-                          Style="{StaticResource MaterialDesignOutlinedComboBox}" ItemsSource="{Binding DeliveryTypes}"
-                          Text="{Binding CurrentDelivery.Description}" IsEditable="True"
-                          Margin="20, 20" HorizontalContentAlignment="Left" Width="150">
-                </ComboBox>
+            </materialDesign:ColorZone>
 
-                <!-- Driver Field -->
-                <ComboBox x:Name="ComboboxDriver" materialDesign:HintAssist.Hint="Mensajero" 
-                          materialDesign:TextFieldAssist.HasClearButton="True"
-                          Style="{StaticResource MaterialDesignOutlinedComboBox}" IsTextSearchEnabled="True"
-                          ItemsSource="{Binding Drivers}" DisplayMemberPath="FullName"
-                          Margin="20, 20" HorizontalContentAlignment="Left" Width="150">
-                        <ComboBox.SelectedItem>
-                            <Binding Path="CurrentDelivery.Driver" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
-                                <Binding.ValidationRules>
-                                    <validations:DriverValidationRule/>
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </ComboBox.SelectedItem>
-                </ComboBox>
-                <!-- End: Fields to add new deliveries -->
-            </StackPanel>
-        </materialDesign:ColorZone>
-        <!-- End: Add new delivery form -->
+        </materialDesign:DialogHost>
+        <!-- END: Dialog Host to add new delivery -->
 
-        <!-- Start: List of Deliveries -->
+
+        <!-- START: List of Deliveries -->
         <FrameworkElement x:Name="DataContextProxy" DataContext="{Binding}" Validation.ErrorTemplate="{x:Null}"/>
         <DataGrid x:Name="DeliveriesDataGrid" CanUserSortColumns="False"
                   AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
@@ -131,7 +180,7 @@
                   EnableColumnVirtualization="True"
                   ItemsSource="{Binding Deliveries}"
                   RowHeight="50" Margin="5,130,5,80" 
-                  FontSize="15"
+                  FontSize="15" Opacity="0.9"
                   CanUserDeleteRows="False" CanUserAddRows="False"
                   AlternationCount="2"
                   RowStyle="{StaticResource MaterialDesignDataGridRow}"
@@ -139,11 +188,11 @@
                   Style="{StaticResource MaterialDesignDataGrid}"
                   MouseDoubleClick="DataGrid_MouseDoubleClick">
 
-            <!-- Start: Deliveries Data Grid Columns -->
+            <!-- START: Deliveries Data Grid Columns -->
             <DataGrid.Columns>
                 
                 <!-- Selection Column -->
-                <DataGridCheckBoxColumn Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" >
+                <DataGridCheckBoxColumn Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
                     <DataGridCheckBoxColumn.Header>
                         <Border Background="Transparent">
                             <CheckBox IsChecked="{Binding DataContext.IsAllDeliveriesSelected, 
@@ -158,12 +207,30 @@
                 </DataGridCheckBoxColumn>
 
                 <!-- Date Created Column -->
-                <DataGridTextColumn Header="Fecha" Binding="{Binding DateCreated}" 
-                                    Width="*" IsReadOnly="True" />
+                <DataGridTextColumn Header="Fecha" Binding="{Binding DateCreated}"
+                                    Width="*" IsReadOnly="True" >
+                    <DataGridTextColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <materialDesign:PackIcon Kind="Calendar" />
+                                <TextBlock Text="Fecha" Margin="5,0,0,0" FontWeight="Light"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTextColumn.HeaderTemplate>
+                </DataGridTextColumn>
 
                 <!-- Customer Name Column -->
-                <DataGridTextColumn Header="Cliente" Binding="{Binding CustomerName, 
-                                    UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                <DataGridTextColumn Binding="{Binding CustomerName, 
+                                    UpdateSourceTrigger=PropertyChanged}" Width="*">
+                    <DataGridTextColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <materialDesign:PackIcon Kind="Account"/>
+                                <TextBlock Text="Cliente" Margin="5,0,0,0" FontWeight="Light"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTextColumn.HeaderTemplate>
+                </DataGridTextColumn>
 
                 <!-- Phone Number Column -->
                 <DataGridTextColumn Header="Teléfono" Width="*">
@@ -174,6 +241,14 @@
                             </Binding.ValidationRules>
                         </Binding>
                     </DataGridTextColumn.Binding>
+                    <DataGridTextColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <materialDesign:PackIcon Kind="Phone"/>
+                                <TextBlock Text="Teléfono" Margin="5,0,0,0" FontWeight="Light"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTextColumn.HeaderTemplate>
                 </DataGridTextColumn>
 
                 <!-- Address Column -->
@@ -185,6 +260,14 @@
                             </Binding.ValidationRules>
                         </Binding>
                     </DataGridTextColumn.Binding>
+                    <DataGridTextColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <materialDesign:PackIcon Kind="MapMarker"/>
+                                <TextBlock Text="Dirección" Margin="5,0,0,0" FontWeight="Light"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTextColumn.HeaderTemplate>
                 </DataGridTextColumn>
 
                 <!-- Description Column -->
@@ -203,6 +286,14 @@
                                       Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <materialDesign:PackIcon Kind="Information"/>
+                                <TextBlock Text="Descripción" Margin="5,0,0,0" FontWeight="Light"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
                 </DataGridTemplateColumn>
 
                 <!-- Driver Column -->
@@ -220,6 +311,14 @@
                                        IsTextSearchEnabled="True"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <materialDesign:PackIcon Kind="Moped" />
+                                <TextBlock Text="Mensajero" Margin="5,0,0,0" FontWeight="Light"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
                 </DataGridTemplateColumn>
 
                 <!-- Status Column -->
@@ -228,7 +327,7 @@
                         <DataTemplate>
                             <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" 
                                           IsChecked="{Binding Status, UpdateSourceTrigger=PropertyChanged}"
-                                          IsHitTestVisible="False">
+                                          IsHitTestVisible="False" HorizontalAlignment="Left">
                                 <materialDesign:PackIcon Kind="ProgressClock" RenderTransformOrigin=".5,.5">
                                     <materialDesign:PackIcon.RenderTransform>
                                         <RotateTransform Angle="45" />
@@ -243,7 +342,7 @@
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
                             <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" 
-                                          IsChecked="{Binding Status, UpdateSourceTrigger=PropertyChanged}">
+                                          IsChecked="{Binding Status, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left">
                                 <materialDesign:PackIcon Kind="ProgressClock" RenderTransformOrigin=".5,.5">
                                     <materialDesign:PackIcon.RenderTransform>
                                         <RotateTransform Angle="45" />
@@ -255,14 +354,22 @@
                             </ToggleButton>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <materialDesign:PackIcon Kind="PackageVariantClosed" />
+                                <TextBlock Text="Estado" Margin="5,0,0,0" FontWeight="Light"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
-            <!-- End: Deliveries Data Grid Columns -->
+            <!-- END: Deliveries Data Grid Columns -->
             
         </DataGrid>
-        <!-- End: List of Deliveries -->
+        <!-- END: List of Deliveries -->
 
-        <!-- Start: Paging Buttons -->
+        <!-- START: Paging Buttons -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20">
             <!-- Previous Page Button -->
             <Button materialDesign:ElevationAssist.Elevation="Dp2"
@@ -274,7 +381,7 @@
             </Button>
 
             <!-- Page Information -->
-            <TextBlock Text="{Binding CurrentPage, StringFormat='Page {0} of'}"
+            <TextBlock Text="{Binding CurrentPage, StringFormat='Pag {0} de'}"
                VerticalAlignment="Center"
                Margin="20,0,0,0"/>
             <TextBlock Text="{Binding TotalPages}"
@@ -290,19 +397,19 @@
                 <materialDesign:PackIcon Kind="ArrowRight" Width="20" Height="20"/>
             </Button>
         </StackPanel>
-        <!-- End: Paging Buttons -->
+        <!-- END: Paging Buttons -->
 
-        <!-- Start: Delete deliveries button -->
+        <!-- START: Delete deliveries button -->
         <Button Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Eliminar entregas seleccionadas"
                 ToolTipService.Placement="Left"
                 Margin="20, 15" materialDesign:ElevationAssist.Elevation="Dp4" Command="{Binding DeleteSelectedDeliveriesCommand}"
                 HorizontalAlignment="Right" VerticalAlignment="Bottom" IsEnabled="{Binding IsAnyDeliverySelected}">
             <materialDesign:PackIcon Kind="Delete" Width="30" Height="30"/>
         </Button>
-        <!-- End: Delete deliveries button -->
+        <!-- END: Delete deliveries button -->
     </Grid>
 
-    <!-- Start: Behaviors -->
+    <!-- START: Behaviors -->
     <behaviors:Interaction.Triggers>
         <!-- Behavior Editing Deliveries Data Grid -->
         <behaviors:EventTrigger EventName="RowEditEnding" x:Name="DeliveriesDataGridEndingEdit" SourceName="DeliveriesDataGrid">
@@ -315,6 +422,6 @@
         </behaviors:EventTrigger>
 
     </behaviors:Interaction.Triggers>
-    <!-- End: Behaviors -->
+    <!-- END: Behaviors -->
 
 </Page>

@@ -16,6 +16,7 @@ using System.Windows.Input;
 using System.ComponentModel;
 using Courier_Data_Control_App.Validations;
 using System.Collections.Specialized;
+using Microsoft.Win32;
 
 
 namespace Courier_Data_Control_App.ViewModels
@@ -31,6 +32,9 @@ namespace Courier_Data_Control_App.ViewModels
         public ObservableCollection<Driver> Drivers => _sharedDataService.Drivers;
         public ObservableCollection<Driver> ActiveDrivers { get; } = new();
         public ObservableCollection<Driver> InactiveDrivers { get; } = new();
+
+        [ObservableProperty]
+        private Driver newDriver = new Driver();
 
         // START: Methods and properties to handle editing a driver item.
         private Driver _currentDriver;
@@ -68,6 +72,11 @@ namespace Courier_Data_Control_App.ViewModels
             {
                 UpdateDriverCommand.Execute(null);
             }
+
+            if (e.PropertyName == nameof(CurrentDriver.ImagePath))
+            {
+                UpdateDriverCommand.Execute(null);
+            }
         }
         // END: Methods and properties to handle editing a driver item.
 
@@ -102,7 +111,25 @@ namespace Courier_Data_Control_App.ViewModels
         {
             await _driverRepository.UpdateDriverAsync(CurrentDriver);
             CurrentDriver.EndEdit(); // Clear backup if successful
-            MessageBox.Show("Los cambios se han guardado correctamente!", "", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        /// <summary>
+        /// Update the driver image path
+        /// </summary>
+        [RelayCommand]
+        private void LoadDriverImage()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image Files|*.jpg;*.png",
+                Title = "Select Driver Image"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                CurrentDriver.ImagePath = openFileDialog.FileName;
+                OnPropertyChanged(nameof(CurrentDriver));
+            }
         }
 
         /// <summary>

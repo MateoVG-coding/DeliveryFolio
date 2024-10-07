@@ -49,7 +49,7 @@ namespace Courier_Data_Control_App
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_FlipOtherDriversFlipper(object sender, RoutedEventArgs e)
         {
             var button = sender as System.Windows.Controls.Button;
 
@@ -71,6 +71,32 @@ namespace Courier_Data_Control_App
                     }
                 }
             }
+        }
+
+        private void Button_Click_SelectDriverImage(object sender, RoutedEventArgs e)
+        {
+            var viewModel = this.DataContext as DriversViewModel;
+
+            var button = sender as System.Windows.Controls.Button;
+
+            var listBoxItem = FindAncestor<System.Windows.Controls.ListBoxItem>(button);
+
+            listBoxItem.IsSelected = true;
+
+            viewModel.LoadDriverImageCommand.Execute(null);
+        }
+        private void DriverImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            var image = sender as Image;
+            var viewModel = this.DataContext as DriversViewModel;
+
+            viewModel.CurrentDriver.ImagePath = null;
+
+            if (image != null)
+            {
+                image.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/DefaultProfilePicture.png"));
+            }
+            
         }
 
         // Helper method to find the ancestor of a specific type

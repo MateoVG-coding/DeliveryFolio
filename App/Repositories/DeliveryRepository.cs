@@ -17,33 +17,32 @@ namespace Courier_Data_Control_App.Repositories
         {
             _context = context;
         }
+        public async Task<int> GetFilteredDeliveriesCountAsync(string searchFilter)
+        {
+            IQueryable<Delivery> query = _context.Deliveries;
 
-        public async Task<List<Delivery>> GetFilteredDeliveriesAsync(string customerName = null, string phoneNumber = null,
-                                                                    string address = null, string description = null)
+            if (!string.IsNullOrEmpty(searchFilter))
+            {
+                query = query.Where(d => d.CustomerName.Contains(searchFilter) || d.PhoneNumber.Contains(searchFilter));
+            }
+
+            return await query.CountAsync();
+        }
+
+        public async Task<List<Delivery>> GetFilteredDeliveriesAsync(int pageNumber, int pageSize, string searchString)
         {
             var query = _context.Deliveries.AsQueryable();
 
-            if (!string.IsNullOrEmpty(customerName))
+            if (!string.IsNullOrEmpty(searchString))
             {
-                query = query.Where(c => c.CustomerName.Contains(customerName));
+                query = query.Where(c => c.CustomerName.Contains(searchString) || c.PhoneNumber.Contains(searchString));
             }
 
-            if (!string.IsNullOrEmpty(phoneNumber))
-            {
-                query = query.Where(c => c.PhoneNumber.Contains(phoneNumber));
-            }
-
-            if (!string.IsNullOrEmpty(address))
-            {
-                query = query.Where(c => c.Address.Contains(address));
-            }
-
-            if (!string.IsNullOrEmpty(description))
-            {
-                query = query.Where(c => c.Description.Contains(description));
-            }
-
-            return await query.ToListAsync();
+            return await query
+                .OrderByDescending(d => d.DateCreated)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
 
         public async Task<int> GetTotalDeliveriesCountAsync()

@@ -16,7 +16,8 @@
 
     <Grid>
         <!--START: Dialog Host to add new delivery -->
-        <materialDesign:DialogHost x:Name="DialogHostAddDelivery" DialogTheme="Inherit" DialogMargin="5">
+        <materialDesign:DialogHost x:Name="DialogHostAddDelivery" DialogTheme="Inherit" DialogMargin="5"
+                                   DialogClosing="DialogHostAddDelivery_DialogClosing">
             <materialDesign:DialogHost.DialogContent>
 
                 <!-- START: Fields to add new deliveries -->
@@ -157,23 +158,65 @@
                 
             </materialDesign:DialogHost.DialogContent>
 
-            <materialDesign:ColorZone materialDesign:ElevationAssist.Elevation="Dp2" CornerRadius="10" Mode="Standard" Height="96">
-                <!--START: Filtered search driver section -->
-                <Grid Height="45" HorizontalAlignment="Stretch" Margin="20,20,20,0">
+            <!--START: Filtered search deliveries table -->
+            <Grid Height="45" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="20,50,20,0">
 
-                    <Button Content="Agregar" Style="{StaticResource MaterialDesignPaperButton}" Width="200"
-                Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"/>
-                </Grid>
-                <!--END: Filtered search driver section -->
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox x:Name="SearchDeliveryTextBox" materialDesign:HintAssist.Hint="Buscar..." 
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}" 
+                         VerticalAlignment="Stretch" Width="250" HorizontalAlignment="Left" Padding="10,10,10,10" 
+                         materialDesign:TextFieldAssist.TextFieldCornerRadius="10" Text="{Binding SearchFilter}"/>
+
+                <Button Background="{DynamicResource MaterialDesignTextFieldBoxBackground}" 
+                        VerticalAlignment="Center" HorizontalAlignment="Right" Width="40" Height="40" Margin="10"
+                        Command="{Binding SearchFilteredDeliveriesCommand}">
+                    <materialDesign:PackIcon Kind="Magnify"/>
+                    
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconButton}">
+                            <Style.Triggers>
+                                <!-- Disable button if SearchTextBox is empty -->
+                                <DataTrigger Binding="{Binding Text, ElementName=SearchDeliveryTextBox}" Value="">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    
+                </Button>
+
+                <Button Style="{StaticResource MaterialDesignIconButton}" Content="{materialDesign:PackIcon Autorenew}"
+                        Grid.Column="1" HorizontalAlignment="Left" Width="30" ToolTip="Ver todos los domicilios" Opacity="0.5"
+                        materialDesign:ButtonAssist.CornerRadius="5" Margin="10, 0" 
+                        Visibility="{Binding IsFiltering, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Command="{Binding SearchAllDeliveriesCommand}">
+                </Button>
+
+                <Button Style="{StaticResource MaterialDesignRaisedButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" 
+                        Grid.Column="1" HorizontalAlignment="Right" Width="120" materialDesign:ButtonAssist.CornerRadius="5">
+
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Plus" Width="20" Height="20" Margin="0,0,5,0"/>
+                        <TextBlock Text="Agregar" VerticalAlignment="Center" Margin="0,0,5,0" />
+                    </StackPanel>
+                </Button>
+
+                <Button Style="{StaticResource MaterialDesignPaperButton}" Content="{materialDesign:PackIcon FilterVariant}"
+                        Grid.Column="1" HorizontalAlignment="Right" Width="50" ToolTip="Filtros" 
+                        materialDesign:ButtonAssist.CornerRadius="5" Margin="125, 0">
+                </Button>
+
+            </Grid>
+            <!--END: Filtered search deliveries table -->
                 
-            </materialDesign:ColorZone>
-
         </materialDesign:DialogHost>
         <!-- END: Dialog Host to add new delivery -->
 
-
         <!-- START: List of Deliveries -->
-        <FrameworkElement x:Name="DataContextProxy" DataContext="{Binding}" Validation.ErrorTemplate="{x:Null}"/>
         <DataGrid x:Name="DeliveriesDataGrid" CanUserSortColumns="False"
                   AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
                   EnableRowVirtualization="True"
@@ -196,7 +239,8 @@
                     <DataGridCheckBoxColumn.Header>
                         <Border Background="Transparent">
                             <CheckBox IsChecked="{Binding DataContext.IsAllDeliveriesSelected, 
-                                            Source={x:Reference DataContextProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay, 
+                                UpdateSourceTrigger=PropertyChanged}"/>
                         </Border>
                     </DataGridCheckBoxColumn.Header>
                     <DataGridCheckBoxColumn.HeaderStyle>
@@ -367,6 +411,7 @@
             <!-- END: Deliveries Data Grid Columns -->
             
         </DataGrid>
+
         <!-- END: List of Deliveries -->
 
         <!-- START: Paging Buttons -->

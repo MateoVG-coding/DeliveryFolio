@@ -40,5 +40,18 @@ namespace Courier_Data_Control_App
                 dataGrid.CellEditEnding += (s, args) => dataGrid.IsReadOnly = true;
             }
         }
+
+        private void DialogHostAddDelivery_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            var viewModel = this.DataContext as DeliveriesViewModel;
+
+            if (eventArgs.Parameter is bool result && result)
+            {
+                if (viewModel?.AddDeliveryCommand.CanExecute(null) == true)
+                {
+                    viewModel.AddDeliveryCommand.Execute(null);
+                }
+            }
+        }
     }
 }

@@ -44,6 +44,13 @@ namespace Courier_Data_Control_App.ViewModels
             "Entrega programada"
         };
 
+        //Properties to apply searching
+        [ObservableProperty]
+        private string searchFilter = string.Empty;
+
+        [ObservableProperty]
+        private bool isFiltering;
+
         //Properties to apply paging
         private const int _pageSize = 9;
         [ObservableProperty]
@@ -114,10 +121,17 @@ namespace Courier_Data_Control_App.ViewModels
         }
 
         /// <summary>
-        /// Gets the current deliveries in the database for the collection of
+        /// Gets the current deliveries for the collection of
         /// the view model using paging
         /// </summary>
         [RelayCommand]
+        async Task SearchAllDeliveriesAsync()
+        {
+            SearchFilter = string.Empty;
+            IsFiltering = false;
+            CalculatePagination();
+            await LoadDeliveriesAsync(1);
+        }
         async Task LoadDeliveriesAsync(int pageNumber)
         {
             if (pageNumber < 1 || pageNumber > TotalPages)
@@ -127,6 +141,38 @@ namespace Courier_Data_Control_App.ViewModels
 
             CurrentPage = pageNumber;
             var deliveries = await _deliveryRepository.GetAllDeliveriesAsync(CurrentPage, _pageSize);
+
+            Deliveries.Clear();
+
+            foreach (var delivery in deliveries)
+            {
+                delivery.PropertyChanged += Delivery_PropertyChanged;
+                Deliveries.Add(delivery);
+            }
+
+            UpdateNavigationButtons();
+        }
+
+        /// <summary>
+        /// Gets the filtered deliveries for the collection of
+        /// the view model using paging
+        /// </summary>
+        [RelayCommand]
+        async Task SearchFilteredDeliveriesAsync()
+        {
+            IsFiltering = true;
+            CalculatePagination();
+            await LoadFilteredDeliveriesAsync(1);
+        }
+        async Task LoadFilteredDeliveriesAsync(int pageNumber = 1)
+        {
+            if (pageNumber < 1 || pageNumber > TotalPages)
+            {
+                return;
+            }
+
+            CurrentPage = pageNumber;
+            var deliveries = await _deliveryRepository.GetFilteredDeliveriesAsync(CurrentPage, _pageSize, SearchFilter);
 
             Deliveries.Clear();
 
@@ -235,7 +281,17 @@ namespace Courier_Data_Control_App.ViewModels
 
         async void CalculatePagination()
         {
-            var totalDeliveries = await _deliveryRepository.GetTotalDeliveriesCountAsync();
+            var totalDeliveries = 0;
+
+            if (!IsFiltering)
+            {
+                totalDeliveries = await _deliveryRepository.GetTotalDeliveriesCountAsync();
+            }
+            else
+            {
+                totalDeliveries = await _deliveryRepository.GetFilteredDeliveriesCountAsync(SearchFilter);
+            }
+
             TotalPages = (int)Math.Ceiling(totalDeliveries / (double)_pageSize);
         }
 
@@ -244,7 +300,14 @@ namespace Courier_Data_Control_App.ViewModels
         {
             if (CanNavigateNext)
             {
-                await LoadDeliveriesAsync(CurrentPage + 1);
+                if (IsFiltering)
+                {
+                    await LoadFilteredDeliveriesAsync(CurrentPage + 1);
+                }
+                else
+                {
+                    await LoadDeliveriesAsync(CurrentPage + 1);
+                }
             }
 
             //Reset the checkbox header of Deliveries data grid
@@ -257,7 +320,14 @@ namespace Courier_Data_Control_App.ViewModels
         {
             if (CanNavigatePrevious)
             {
-                await LoadDeliveriesAsync(CurrentPage - 1);
+                if (IsFiltering)
+                {
+                    await LoadFilteredDeliveriesAsync(CurrentPage - 1);
+                }
+                else
+                {
+                    await LoadDeliveriesAsync(CurrentPage - 1);
+                }
             }
 
             //Reset the checkbox header of Deliveries data grid

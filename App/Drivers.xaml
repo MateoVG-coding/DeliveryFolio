@@ -16,9 +16,148 @@
       Title="Drivers">
 
     <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+        <!--START: Dialog Host to add drivers -->
+        <materialDesign:DialogHost x:Name="DialogHostAddDriver" DialogClosing="DialogHostAddDriver_DialogClosing"
+                                       DialogTheme="Inherit" DialogMargin="5" Grid.RowSpan="2">
+
+            <materialDesign:DialogHost.DialogContent>
+                <!-- START: Fields to add new driver -->
+                <StackPanel Margin="30, 30">
+
+                    <!-- FullName Input -->
+                    <TextBox x:Name="AddDriverTextBoxFullName" materialDesign:HintAssist.Hint="Nombre"
+                                     materialDesign:HintAssist.IsFloating="True" Margin="15, 15">
+                        <Binding Path="NewDriver.FullName" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
+                            <Binding.ValidationRules>
+                                <validations:NameValidationRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox>
+
+                    <!-- Phone Number Input -->
+                    <TextBox x:Name="AddDriverTextBoxPhoneNumber" materialDesign:HintAssist.Hint="Telefóno"
+                                     materialDesign:HintAssist.IsFloating="True" Margin="15, 15">
+                        <Binding Path="NewDriver.PhoneNumber" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
+                            <Binding.ValidationRules>
+                                <validations:PhoneNumberValidationRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox>
+
+                    <!-- License Plate Input -->
+                    <TextBox x:Name="AddDriverTextBoxLicensePlate" materialDesign:HintAssist.Hint="Placa de matrícula" 
+                                materialDesign:HintAssist.IsFloating="True" Margin="15, 15">
+                        <Binding Path="NewDriver.LicensePlate"  UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
+                            <Binding.ValidationRules>
+                                <validations:LicensePlateValidationRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox>
+
+                    <!-- START: Dialog Control Buttons -->
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+
+                        <!-- START: Accept button Dialog -->
+                        <Button Margin="0,10,10,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                   Content="Aceptar" IsDefault="True" >
+
+                            <Button.CommandParameter>
+                                <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">True</system:Boolean>
+                            </Button.CommandParameter>
+
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                                    <Style.Triggers>
+
+                                        <!-- Disable button if any validation errors -->
+                                        <DataTrigger Binding="{Binding ElementName=AddDriverTextBoxPhoneNumber, Path=(Validation.HasError)}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding ElementName=AddDriverTextBoxLicensePlate, Path=(Validation.HasError)}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger>
+
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <!-- END: Accept button Dialog -->
+
+                        <!-- Cancel button Dialog -->
+                        <Button Margin="0,10,10,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                   Content="Cancelar" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}">
+
+                            <Button.CommandParameter>
+                                <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">False</system:Boolean>
+                            </Button.CommandParameter>
+
+                        </Button>
+                    </StackPanel>
+                    <!-- END: Dialog Control Buttons -->
+                </StackPanel>
+            </materialDesign:DialogHost.DialogContent>
+
+            <!--START: Filtered search driver section -->
+            <Grid Height="44" VerticalAlignment="Top" Margin="20,30,20,0">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox x:Name="SearchDriverTextBox" materialDesign:HintAssist.Hint="Buscar..." 
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}" 
+                        VerticalAlignment="Stretch" Width="250" HorizontalAlignment="Left" Padding="10,10,10,10" 
+                        materialDesign:TextFieldAssist.TextFieldCornerRadius="10" Text="{Binding SearchDriverName}"/>
+
+                <Button Background="{DynamicResource MaterialDesignTextFieldBoxBackground}" 
+                       VerticalAlignment="Center" HorizontalAlignment="Right" Width="40" Height="40" Margin="10"
+                       Command="{Binding SearchFilteredDriversCommand}">
+                    <materialDesign:PackIcon Kind="Magnify"/>
+
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconButton}">
+                            <Style.Triggers>
+                                <!-- Disable button if SearchTextBox is empty -->
+                                <DataTrigger Binding="{Binding Text, ElementName=SearchDriverTextBox}" Value="">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Style="{StaticResource MaterialDesignIconButton}" Content="{materialDesign:PackIcon Autorenew}"
+                        Grid.Column="1" HorizontalAlignment="Left" ToolTip="Ver todos los domicilios" ToolTipService.InitialShowDelay="500"
+                        Opacity="0.5" materialDesign:ButtonAssist.CornerRadius="5" Margin="10, 0" Width="30"
+                        Visibility="{Binding IsFiltering, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Command="{Binding SearchAllDriversCommand}">
+                </Button>
+
+                <Button Style="{StaticResource MaterialDesignRaisedButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" 
+                        Grid.Column="1" HorizontalAlignment="Right" Width="120" materialDesign:ButtonAssist.CornerRadius="5">
+
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Plus" Width="20" Height="20" Margin="0,0,5,0"/>
+                        <TextBlock Text="Agregar" VerticalAlignment="Center" Margin="0,0,5,0" />
+                    </StackPanel>
+                </Button>
+
+            </Grid>
+
+        </materialDesign:DialogHost>
+        <!-- END: Dialog Host to add drivers -->
+
         <!--START: Dialog Host to edit drivers -->
         <materialDesign:DialogHost x:Name="DialogHostEditDriver" DialogClosing="DialogHostEditDriver_DialogClosing"
-                                       DialogTheme="Inherit" DialogMargin="5">
+                                       DialogTheme="Inherit" DialogMargin="5" Grid.Row="2">
             <materialDesign:DialogHost.DialogContent>
                 <StackPanel Margin="10">
 
@@ -47,7 +186,7 @@
 
                     <!-- START: Dialog Control Buttons -->
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                        
+
                         <!-- START: Accept button Dialog -->
                         <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
                                     Content="Aceptar" IsDefault="True" >
@@ -88,284 +227,166 @@
                     <!-- END: Dialog Control Buttons -->
                 </StackPanel>
             </materialDesign:DialogHost.DialogContent>
-            <!--END: Dialog Host to edit drivers -->
-            
 
-            <StackPanel>
-                
-                <!--START: Dialog Host to add drivers -->
-                <materialDesign:DialogHost x:Name="DialogHostAddDriver" DialogClosing="DialogHostEditDriver_DialogClosing"
-                                       DialogTheme="Inherit" DialogMargin="5">
-                    <materialDesign:DialogHost.DialogContent>
-                        <StackPanel>
+            <!--START: Listbox with all the drivers -->
+            <ListBox x:Name="DriverListBox" ItemsSource="{Binding Drivers}"
+                        SelectedItem="{Binding CurrentDriver, UpdateSourceTrigger=PropertyChanged}" 
+                        SelectionMode="Single" HorizontalContentAlignment="Stretch" Margin="10,0,10,50" Grid.Row="2">
 
-                            <!-- FullName Input -->
-                            <TextBox x:Name="AddDriverTextBoxFullName" Margin="15" materialDesign:HintAssist.Hint="Telefóno"
-                                     materialDesign:HintAssist.IsFloating="True">
-                                <Binding Path="NewDriver.FullName" UpdateSourceTrigger="PropertyChanged" 
-                                    NotifyOnValidationError="True" ValidatesOnDataErrors="True">
-                                    <Binding.ValidationRules>
-                                        <validations:PhoneNumberValidationRule ValidatesOnTargetUpdated="True"/>
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
 
-                            <!-- Phone Number Input -->
-                            <TextBox x:Name="AddDriverTextBoxPhoneNumber" Margin="15" materialDesign:HintAssist.Hint="Telefóno"
-                                     materialDesign:HintAssist.IsFloating="True">
-                                <Binding Path="NewDriver.PhoneNumber" UpdateSourceTrigger="PropertyChanged" 
-                                    NotifyOnValidationError="True" ValidatesOnDataErrors="True">
-                                    <Binding.ValidationRules>
-                                        <validations:PhoneNumberValidationRule ValidatesOnTargetUpdated="True"/>
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <ContentPresenter />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
 
-                            <!-- License Plate Input -->
-                            <TextBox x:Name="AddDriverTextBoxLicensePlate" Margin="15" materialDesign:HintAssist.Hint="Placa de matrícula" 
-                                materialDesign:HintAssist.IsFloating="True">
-                                <Binding Path="NewDriver.LicensePlate" UpdateSourceTrigger="PropertyChanged" 
-                                    NotifyOnValidationError="True" ValidatesOnDataErrors="True">
-                                    <Binding.ValidationRules>
-                                        <validations:LicensePlateValidationRule ValidatesOnTargetUpdated="True"/>
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox>
+                    </Style>
+                </ListBox.ItemContainerStyle>
 
-                            <!-- START: Dialog Control Buttons -->
-                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                                
-                                <!-- START: Accept button Dialog -->
-                                <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                                   Content="Aceptar" IsDefault="True" >
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
 
-                                    <Button.CommandParameter>
-                                        <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">True</system:Boolean>
-                                    </Button.CommandParameter>
+                <!--START: Flipper for every driver item in the listbox -->
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <materialDesign:Flipper materialDesign:ElevationAssist.Elevation="Dp4" Margin="5, 15, 50, 15" 
+                                                  materialDesign:FlipperAssist.UniformCornerRadius="15" >
 
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
-                                            <Style.Triggers>
+                            <!--START: Flipper front content -->
+                            <materialDesign:Flipper.FrontContent>
+                                <Grid Width="220" Height="290">
 
-                                                <!-- Disable button if any validation errors -->
-                                                <DataTrigger Binding="{Binding ElementName=AddDriverTextBoxPhoneNumber, Path=(Validation.HasError)}" Value="True">
-                                                    <Setter Property="IsEnabled" Value="False" />
-                                                </DataTrigger>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="190" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
 
-                                                <DataTrigger Binding="{Binding ElementName=AddDriverTextBoxLicensePlate, Path=(Validation.HasError)}" Value="True">
-                                                    <Setter Property="IsEnabled" Value="False" />
-                                                </DataTrigger>
+                                    <!-- Color zone for driver profile image -->
+                                    <materialDesign:ColorZone VerticalAlignment="Stretch" Mode="PrimaryLight">
+                                        <Grid>
+                                            <!-- Image Control -->
+                                            <Image x:Name="DriverImage" Stretch="Fill" RenderOptions.BitmapScalingMode="NearestNeighbor" 
+                                                      Margin="1" ImageFailed="DriverImage_ImageFailed">
+                                                <Image.Source>
+                                                    <Binding Path="ImagePath" TargetNullValue="pack://application:,,,/Resources/DefaultProfilePicture.png">
+                                                        <Binding.FallbackValue>
+                                                            <ImageSource>pack://application:,,,/Resources/DefaultProfilePicture.png</ImageSource>
+                                                        </Binding.FallbackValue>
+                                                    </Binding>
+                                                </Image.Source>
+                                            </Image>
 
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
-                                <!-- END: Accept button Dialog -->
+                                            <!-- Load Image Button -->
+                                            <Button Style="{StaticResource MaterialDesignRaisedButton}" Content="Cambiar imagen" FontWeight="Medium"
+                                                       HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Opacity="0.7" Click="Button_Click_SelectDriverImage">
+                                            </Button>
+                                        </Grid>
+                                    </materialDesign:ColorZone>
 
-                                <!-- Cancel button Dialog -->
-                                <Button Margin="0,10,10,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                                   Content="Cancelar" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}">
+                                    <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <!-- Textblock Driver's full name  -->
+                                        <TextBlock Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" />
 
-                                    <Button.CommandParameter>
-                                        <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">False</system:Boolean>
-                                    </Button.CommandParameter>
+                                        <Button Margin="0,15,0,0" 
+                                                   Command="{x:Static materialDesign:Flipper.FlipCommand}"
+                                                   Click="Button_Click_FlipOtherDriversFlipper"
+                                                   Content="MÁS" 
+                                                   Style="{StaticResource MaterialDesignPaperSecondaryButton}" 
+                                                   materialDesign:ButtonAssist.CornerRadius="10" />
 
-                                </Button>
-                            </StackPanel>
-                            <!-- END: Dialog Control Buttons -->
-                        </StackPanel>
-                    </materialDesign:DialogHost.DialogContent>
-                    
-                </materialDesign:DialogHost>
-                <!-- END: Dialog Host to add drivers -->
+                                    </StackPanel>
 
+                                </Grid>
+                            </materialDesign:Flipper.FrontContent>
+                            <!--END: Flipper front content -->
 
-                <!--START: Filtered search driver section -->
-                <Grid Height="45" HorizontalAlignment="Stretch" Margin="20,20,20,0">
-                    <!-- Search textbox -->
-                    <TextBox materialDesign:HintAssist.Hint="Buscar..."  Style="{StaticResource MaterialDesignOutlinedTextBox}" 
-                             VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Padding="10,10,10,10" />
+                            <!--START: Flipper back content -->
+                            <materialDesign:Flipper.BackContent>
 
-                    <!-- Filters combobox  -->
-                    <ComboBox x:Name="FilterComboBox" Width="150" SelectedValue="Name" HorizontalAlignment="Right"
-                              Style="{StaticResource MaterialDesignFilledComboBox}"
-                              materialDesign:HintAssist.Hint="Filtrar por" Margin="0,0,70,0" Height="46">
-                        <ComboBoxItem Content="Nombre" />
-                        <ComboBoxItem Content="Placa de matrícula" />
-                        <ComboBoxItem Content="Número de teléfono" />
-                    </ComboBox>
+                                <Grid Width="220" Height="290">
 
-                    <!-- Search Button  -->
-                    <Button Style="{StaticResource MaterialDesignIconButton}" 
-                            Background="{DynamicResource MaterialDesignTextFieldBoxBackground}"
-                            VerticalAlignment="Center" HorizontalAlignment="Right"
-                            Margin="0, 0, 20,0" Width="34" Height="40" >
-                        <materialDesign:PackIcon Kind="Magnify"/>
-                    </Button>
-                </Grid>
-                <!--END: Filtered search driver section -->
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
 
-                <!--START: Listbox with all the drivers -->
-                <ListBox x:Name="DriverListBox" ItemsSource="{Binding Drivers}"
-                         SelectedItem="{Binding CurrentDriver, UpdateSourceTrigger=PropertyChanged}" 
-                         SelectionMode="Single"
-                         HorizontalAlignment="Stretch"
-                         HorizontalContentAlignment="Stretch"
-                         Grid.Row="1" Margin="10">
+                                    <materialDesign:ColorZone Padding="6" Mode="SecondaryLight">
+                                        <StackPanel Orientation="Horizontal">
 
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
+                                            <Button HorizontalAlignment="Left" 
+                                                       Command="{x:Static materialDesign:Flipper.FlipCommand}"
+                                                       Style="{StaticResource MaterialDesignToolForegroundButton}">
+                                                <materialDesign:PackIcon HorizontalAlignment="Right" Kind="ArrowLeft" />
+                                            </Button>
 
-                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                            <Setter Property="BorderThickness" Value="0" />
-                            <Setter Property="Padding" Value="0" />
-                            <Setter Property="Background" Value="Transparent" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListBoxItem">
-                                        <ContentPresenter />
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-
-                    <!--START: Flipper for every driver item in the listbox -->
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <materialDesign:Flipper materialDesign:ElevationAssist.Elevation="Dp4" Margin="15" 
-                                                   materialDesign:FlipperAssist.UniformCornerRadius="15" >
-
-                                <!--START: Flipper front content -->
-                                <materialDesign:Flipper.FrontContent>
-                                    <Grid Width="220" Height="290">
-
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="190" />
-                                            <RowDefinition Height="*" />
-                                        </Grid.RowDefinitions>
-
-                                        <!-- Color zone for driver profile image -->
-                                        <materialDesign:ColorZone VerticalAlignment="Stretch" Mode="PrimaryLight">
-                                            <Grid>
-                                                <!-- Image Control -->
-                                                <Image x:Name="DriverImage" Stretch="Fill" RenderOptions.BitmapScalingMode="NearestNeighbor" 
-                                                       Margin="1" ImageFailed="DriverImage_ImageFailed">
-                                                    <Image.Source>
-                                                        <Binding Path="ImagePath" TargetNullValue="pack://application:,,,/Resources/DefaultProfilePicture.png">
-                                                            <Binding.FallbackValue>
-                                                                <ImageSource>pack://application:,,,/Resources/DefaultProfilePicture.png</ImageSource>
-                                                            </Binding.FallbackValue>
-                                                        </Binding>
-                                                    </Image.Source>
-                                                </Image>
-
-                                                <!-- Load Image Button -->
-                                                <Button Style="{StaticResource MaterialDesignRaisedButton}" Content="Cambiar imagen" FontWeight="Medium"
-                                                        HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Opacity="0.7" Click="Button_Click_SelectDriverImage">
-                                                </Button>
-                                            </Grid>
-                                        </materialDesign:ColorZone>
-
-                                        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <!-- Textblock Driver's full name  -->
-                                            <TextBlock Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" />
-
-                                            <Button Margin="0,15,0,0" 
-                                                    Command="{x:Static materialDesign:Flipper.FlipCommand}"
-                                                    Click="Button_Click_FlipOtherDriversFlipper"
-                                                    Content="MÁS" 
-                                                    Style="{StaticResource MaterialDesignPaperSecondaryButton}" 
-                                                    materialDesign:ButtonAssist.CornerRadius="10" />
+                                            <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" 
+                                                          Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" />
 
                                         </StackPanel>
+                                    </materialDesign:ColorZone>
 
+                                    <Grid Grid.Row="1" VerticalAlignment="Stretch">
+                                        <StackPanel>
+
+                                            <!-- Textblock Driver's phone number  -->
+                                            <TextBlock Text="Número de Teléfono:" FontWeight="SemiBold" Margin="15,15,0,5" />
+                                            <TextBlock Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="15,0,0,5" />
+
+                                            <!-- Textblock Driver's license plate -->
+                                            <TextBlock Text="Placa de matrícula:" FontWeight="SemiBold" Margin="15,15,0,5" />
+                                            <TextBlock Text="{Binding LicensePlate, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="15,0,0,5" />
+
+                                            <!-- Textblock Driver's status -->
+                                            <TextBlock Text="Disponibilidad:" FontWeight="SemiBold" Margin="15,15,0,5" />
+                                            <ToggleButton IsChecked="{Binding Status, UpdateSourceTrigger=PropertyChanged}" 
+                                                             HorizontalAlignment="Left" Margin="15,0,0,5" />
+
+                                            <DockPanel Margin="15,20,0,0">
+
+                                                <TextBlock DockPanel.Dock="Left" FontStyle="Italic" FontWeight="UltraLight">
+                                                    <TextBlock.Text>
+                                                        <Binding Path="DateCreated" StringFormat="Se unió el {0:MM/dd/yyyy}" />
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+
+                                                <materialDesign:PopupBox DockPanel.Dock="Right" HorizontalAlignment="Right"
+                                                                                VerticalAlignment="Top" PopupElevation="Dp8" PopupVerticalOffset="-140"
+                                                                                Style="{StaticResource MaterialDesignPopupBox}">
+                                                    <StackPanel>
+                                                        <Button Content="Editar" 
+                                                                       Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"/>
+                                                        <Button Content="Eliminar" />
+                                                    </StackPanel>
+                                                </materialDesign:PopupBox>
+
+                                            </DockPanel>
+
+                                        </StackPanel>
                                     </Grid>
-                                </materialDesign:Flipper.FrontContent>
-                                <!--END: Flipper front content -->
+                                </Grid>
+                            </materialDesign:Flipper.BackContent>
+                            <!--END: Flipper back content -->
+                        </materialDesign:Flipper>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <!--END: Flipper for every driver item in the listbox -->
+            </ListBox>
+            <!--END: Listbox with all the drivers -->
 
-                                <!--START: Flipper back content -->
-                                <materialDesign:Flipper.BackContent>
-
-                                    <Grid Width="220" Height="290">
-
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-
-                                        <materialDesign:ColorZone Padding="6" Mode="SecondaryLight">
-                                            <StackPanel Orientation="Horizontal">
-
-                                                <Button HorizontalAlignment="Left" 
-                                                        Command="{x:Static materialDesign:Flipper.FlipCommand}"
-                                                        Style="{StaticResource MaterialDesignToolForegroundButton}">
-                                                    <materialDesign:PackIcon HorizontalAlignment="Right" Kind="ArrowLeft" />
-                                                </Button>
-
-                                                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" 
-                                                           Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" />
-
-                                            </StackPanel>
-                                        </materialDesign:ColorZone>
-
-                                        <Grid Grid.Row="1" VerticalAlignment="Stretch">
-                                            <StackPanel>
-
-                                                <!-- Textblock Driver's phone number  -->
-                                                <TextBlock Text="Número de Teléfono:" FontWeight="SemiBold" Margin="15,15,0,5" />
-                                                <TextBlock Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
-                                                           Margin="15,0,0,5" />
-
-                                                <!-- Textblock Driver's license plate -->
-                                                <TextBlock Text="Placa de matrícula:" FontWeight="SemiBold" Margin="15,15,0,5" />
-                                                <TextBlock Text="{Binding LicensePlate, UpdateSourceTrigger=PropertyChanged}"
-                                                           Margin="15,0,0,5" />
-
-                                                <!-- Textblock Driver's status -->
-                                                <TextBlock Text="Disponibilidad:" FontWeight="SemiBold" Margin="15,15,0,5" />
-                                                <ToggleButton IsChecked="{Binding Status, UpdateSourceTrigger=PropertyChanged}" 
-                                                              HorizontalAlignment="Left" Margin="15,0,0,5" />
-
-                                                <DockPanel Margin="15,20,0,0">
-
-                                                    <TextBlock DockPanel.Dock="Left" FontStyle="Italic" FontWeight="UltraLight">
-                                                        <TextBlock.Text>
-                                                            <Binding Path="DateCreated" StringFormat="Se unió el {0:MM/dd/yyyy}" />
-                                                        </TextBlock.Text>
-                                                    </TextBlock>
-
-                                                    <materialDesign:PopupBox DockPanel.Dock="Right" HorizontalAlignment="Right"
-                                                                                 VerticalAlignment="Top" PopupElevation="Dp8" PopupVerticalOffset="-140"
-                                                                                 Style="{StaticResource MaterialDesignPopupBox}">
-                                                        <StackPanel>
-                                                            <Button Content="Editar" 
-                                                                        Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"/>
-                                                            <Button Content="Eliminar" />
-                                                        </StackPanel>
-                                                    </materialDesign:PopupBox>
-
-                                                </DockPanel>
-
-                                            </StackPanel>
-                                        </Grid>
-                                    </Grid>
-                                </materialDesign:Flipper.BackContent>
-                                <!--END: Flipper back content -->
-                            </materialDesign:Flipper>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <!--END: Flipper for every driver item in the listbox -->
-                </ListBox>
-                <!--END: Listbox with all the drivers -->
-            </StackPanel>
         </materialDesign:DialogHost>
+        <!--END: Dialog Host to edit drivers -->
     </Grid>
 </Page>

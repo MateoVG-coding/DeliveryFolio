@@ -36,6 +36,12 @@ namespace Courier_Data_Control_App.ViewModels
         [ObservableProperty]
         private Driver newDriver = new Driver();
 
+        //Properties to apply searching
+        [ObservableProperty]
+        private string searchDriverName = string.Empty;
+        [ObservableProperty]
+        private bool isFiltering;
+
         // START: Methods and properties to handle editing a driver item.
         private Driver _currentDriver;
         public Driver CurrentDriver
@@ -94,13 +100,74 @@ namespace Courier_Data_Control_App.ViewModels
         }
 
         /// <summary>
+        /// Gets the current drivers for the collection of the view model
+        /// </summary>
+        [RelayCommand]
+        async Task SearchAllDriversAsync()
+        {
+            SearchDriverName = string.Empty;
+            IsFiltering = false;
+            await LoadDriversAsync();
+        }
+        async Task LoadDriversAsync()
+        {
+            var drivers = await _driverRepository.GetAllDriversAsync();
+
+            Drivers.Clear();
+
+            foreach (var driver in drivers)
+            {
+                Drivers.Add(driver);
+            }
+        }
+
+        /// <summary>
+        /// Gets the filtered drivers for the collection of the view model 
+        /// </summary>
+        [RelayCommand]
+        async Task SearchFilteredDriversAsync()
+        {
+            IsFiltering = true;
+            await LoadFilteredDriversAsync();
+        }
+        async Task LoadFilteredDriversAsync()
+        {
+            var drivers = await _driverRepository.GetFilteredDriversAsync(SearchDriverName);
+
+            Drivers.Clear();
+
+            foreach (var driver in drivers)
+            {
+                Drivers.Add(driver);
+            }
+        }
+
+        /// <summary>
         /// Add a driver to the drivers repository and add it to the collection
         /// of the view model
         /// </summary>
         [RelayCommand]
-        async Task AddDriverAsync(Driver newDriver)
+        async Task AddDriverAsync()
         {
-            await _driverRepository.AddDriverAsync(newDriver);
+            await _driverRepository.AddDriverAsync(NewDriver);
+
+            //Insert the new driver in the collection in the right index
+            var index = Drivers
+                .Select((driver, i) => new { driver.FullName, Index = i })
+                .Where(d => string.Compare(NewDriver.FullName, d.FullName, StringComparison.Ordinal) < 0)
+                .Select(d => d.Index)
+                .FirstOrDefault();
+
+            if (index == 0 && Drivers.Any(d => string.Compare(NewDriver.FullName, d.FullName, StringComparison.Ordinal) >= 0))
+            {
+                Drivers.Add(NewDriver);
+            }
+            else
+            {
+                Drivers.Insert(index, NewDriver);
+            }
+
+            NewDriver = new Driver();
         }
 
         /// <summary>

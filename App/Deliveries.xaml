@@ -18,8 +18,8 @@
         <!--START: Dialog Host to add new delivery -->
         <materialDesign:DialogHost x:Name="DialogHostAddDelivery" DialogTheme="Inherit" DialogMargin="5"
                                    DialogClosing="DialogHostAddDelivery_DialogClosing">
-            <materialDesign:DialogHost.DialogContent>
 
+            <materialDesign:DialogHost.DialogContent>
                 <!-- START: Fields to add new deliveries -->
                 <Grid Margin="30, 15">
                     
@@ -105,12 +105,14 @@
                         <!-- Accept button Dialog -->
                         <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
                         Content="Aceptar" IsDefault="True">
+                            
                             <Button.CommandParameter>
                                 <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">True</system:Boolean>
                             </Button.CommandParameter>
 
                             <Button.Style>
                                 <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                                    
                                     <Style.Triggers>
                                         <!-- Disable button if TextBoxAddress is empty -->
                                         <DataTrigger Binding="{Binding Text, ElementName=TextBoxAddress}" Value="">
@@ -138,6 +140,7 @@
                                             <Setter Property="IsEnabled" Value="False" />
                                         </DataTrigger>
                                     </Style.Triggers>
+                                    
                                 </Style>
                             </Button.Style>
                         </Button>
@@ -163,7 +166,7 @@
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="250" />
-                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
 
                 <TextBox x:Name="SearchDeliveryTextBox" materialDesign:HintAssist.Hint="Buscar..." 
@@ -190,8 +193,8 @@
                 </Button>
 
                 <Button Style="{StaticResource MaterialDesignIconButton}" Content="{materialDesign:PackIcon Autorenew}"
-                        Grid.Column="1" HorizontalAlignment="Left" Width="30" ToolTip="Ver todos los domicilios" Opacity="0.5"
-                        materialDesign:ButtonAssist.CornerRadius="5" Margin="10, 0" 
+                        Grid.Column="1" HorizontalAlignment="Left" ToolTip="Ver todos los domicilios" ToolTipService.InitialShowDelay="500"
+                        Opacity="0.5" materialDesign:ButtonAssist.CornerRadius="5" Margin="10, 0" Width="30"
                         Visibility="{Binding IsFiltering, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Command="{Binding SearchAllDeliveriesCommand}">
                 </Button>

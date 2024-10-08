@@ -49,6 +49,19 @@ namespace Courier_Data_Control_App
             }
         }
 
+        private void DialogHostAddDriver_DialogClosing(object sender, DialogClosingEventArgs eventArgs)
+        {
+            var viewModel = this.DataContext as DriversViewModel;
+
+            if (eventArgs.Parameter is bool result && result)
+            {
+                if (viewModel?.AddDriverCommand.CanExecute(null) == true)
+                {
+                    viewModel.AddDriverCommand.Execute(null);
+                }
+            }
+        }
+
         private void Button_Click_FlipOtherDriversFlipper(object sender, RoutedEventArgs e)
         {
             var button = sender as System.Windows.Controls.Button;

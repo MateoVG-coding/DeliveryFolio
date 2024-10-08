@@ -24,6 +24,9 @@ namespace Courier_Data_Control_App
     public partial class MainWindow : Window
     {
         private readonly IServiceProvider _serviceProvider;
+        private Deliveries _deliveriesPage;
+        private Drivers _driversPage;
+
         public MainWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
@@ -39,19 +42,32 @@ namespace Courier_Data_Control_App
                 switch (tag)
                 {
                     case "Home":
-                        //fContainer.Navigate(new HomePage { DataContext = _serviceProvider.GetRequiredService<HomeViewModel>() });
                         break;
+
                     case "Deliveries":
-                        fContainer.Navigate(new Deliveries { DataContext = _serviceProvider.GetRequiredService<DeliveriesViewModel>() });
+
+                        if (_deliveriesPage == null)
+                        {
+                            _deliveriesPage = new Deliveries { DataContext = _serviceProvider.GetRequiredService<DeliveriesViewModel>() };
+                        }
+
+                        fContainer.Navigate(_deliveriesPage);
                         break;
+
                     case "Clients":
-                        //fContainer.Navigate(new ClientsPage { DataContext = _serviceProvider.GetRequiredService<ClientsViewModel>() });
                         break;
+
                     case "Couriers":
-                        fContainer.Navigate(new Drivers { DataContext = _serviceProvider.GetRequiredService<DriversViewModel>() });
+
+                        if (_driversPage == null)
+                        {
+                            _driversPage = new Drivers { DataContext = _serviceProvider.GetRequiredService<DriversViewModel>() };
+                        }
+
+                        fContainer.Navigate(_driversPage);
                         break;
+
                     case "Settings":
-                        //fContainer.Navigate(new SettingsPage { DataContext = _serviceProvider.GetRequiredService<SettingsViewModel>() });
                         break;
                 }
             }

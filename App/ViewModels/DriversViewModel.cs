@@ -203,9 +203,17 @@ namespace Courier_Data_Control_App.ViewModels
         /// Delete a driver from the drivers repository and the view model collection.
         /// </summary>
         [RelayCommand]
-        async Task DeleteDriverAsync(Driver selectedDriver)
+        async Task SoftDeleteDriverAsync()
         {
-            await _driverRepository.DeleteDriverAsync(selectedDriver);
+            var result = MessageBox.Show($"¿Estás seguro de que quieres eliminar a {CurrentDriver.FullName} de los registros?",
+                "Eliminar Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                CurrentDriver.IsInCompany = false;
+                await _driverRepository.UpdateDriverAsync(CurrentDriver);
+                Drivers.Remove(CurrentDriver);
+            }
         }
     }
 }

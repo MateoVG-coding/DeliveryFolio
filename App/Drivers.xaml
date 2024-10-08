@@ -366,9 +366,9 @@
                                                                                 VerticalAlignment="Top" PopupElevation="Dp8" PopupVerticalOffset="-140"
                                                                                 Style="{StaticResource MaterialDesignPopupBox}">
                                                     <StackPanel>
-                                                        <Button Content="Editar" 
-                                                                       Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"/>
-                                                        <Button Content="Eliminar" />
+                                                        <Button Content="Editar" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"/>
+                                                        <Button Content="Eliminar" Command="{Binding DataContext.SoftDeleteDriverCommand, 
+                                                                                            RelativeSource={RelativeSource AncestorType=Page}}"/>
                                                     </StackPanel>
                                                 </materialDesign:PopupBox>
 

@@ -26,6 +26,7 @@ namespace Courier_Data_Control_App.Repositories
             }
 
             return await query
+                .Where(d => d.IsInCompany.Equals(true))
                 .OrderBy(d => d.FullName)
                 .ToListAsync();
         }
@@ -33,6 +34,7 @@ namespace Courier_Data_Control_App.Repositories
         public async Task<List<Driver>> GetAllDriversAsync()
         {
             return await _context.Drivers
+                .Where(d => d.IsInCompany.Equals(true))
                 .OrderBy(d => d.FullName) 
                 .ToListAsync();
         }

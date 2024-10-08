@@ -35,6 +35,9 @@ namespace Courier_Data_Control_App.Models
         [ObservableProperty]
         private string? imagePath;
 
+        [ObservableProperty]
+        private bool isInCompany = true;
+
         private Driver _backupDriver;
 
         public void BeginEdit()

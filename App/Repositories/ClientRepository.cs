@@ -17,31 +17,25 @@ namespace Courier_Data_Control_App.Repositories
             _context = context;
         }
 
-        public async Task<List<Client>> GetFilteredClientsAsync(string name = null, string phoneNumber = null, string address = null)
+        public async Task<List<Client>> GetFilteredClientsAsync(string clientName)
         {
             var query = _context.Clients.AsQueryable();
 
-            if (!string.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(clientName))
             {
-                query = query.Where(c => c.Name.Contains(name));
+                query = query.Where(c => c.Name.Contains(clientName));
             }
 
-            if (!string.IsNullOrEmpty(phoneNumber))
-            {
-                query = query.Where(c => c.PhoneNumber.Contains(phoneNumber));
-            }
-
-            if (!string.IsNullOrEmpty(address))
-            {
-                query = query.Where(c => c.Address.Contains(address));
-            }
-
-            return await query.ToListAsync();
+            return await query
+                .OrderBy(d => d.Name)
+                .ToListAsync();
         }
 
         public async Task<List<Client>> GetAllClientsAsync()
         {
-            return await _context.Clients.ToListAsync();
+            return await _context.Clients
+                .OrderBy(d => d.Name)
+                .ToListAsync();
         }
 
         public async Task AddClientAsync(Client client)

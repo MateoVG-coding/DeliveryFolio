@@ -40,12 +40,12 @@
                         <ComboBox x:Name="ComboboxClient" materialDesign:HintAssist.Hint="Cliente" materialDesign:TextFieldAssist.HasClearButton="True" Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                   ItemsSource="{Binding Clients}" DisplayMemberPath="Name" SelectedValuePath="Name"
                                   SelectedValue="{Binding CurrentDelivery.CustomerName, UpdateSourceTrigger=PropertyChanged}" 
-                                  IsEditable="True" HorizontalContentAlignment="Left" Width="200" Margin="10, 15"/>
+                                  IsEditable="True" HorizontalContentAlignment="Left" Width="200" Margin="15, 20"/>
 
                         <!-- Phone Number Field -->
                         <TextBox x:Name="TextBoxPhoneNumber" materialDesign:HintAssist.Hint="Teléfono" materialDesign:TextFieldAssist.HasClearButton="True" 
                                  Style="{StaticResource MaterialDesignOutlinedTextBox}" HorizontalContentAlignment="Left" 
-                                 Width="200" Margin="10, 15">
+                                 Width="200" Margin="15, 20">
                             <TextBox.Text>
                                 <Binding Path="CurrentDelivery.PhoneNumber" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
                                     <Binding.ValidationRules>
@@ -58,7 +58,7 @@
                         <!-- Address Field -->
                         <TextBox x:Name="TextBoxAddress" materialDesign:HintAssist.Hint="Dirección" 
                                  materialDesign:TextFieldAssist.HasClearButton="True" Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                                 HorizontalContentAlignment="Left" Width="200" Margin="10, 15">
+                                 HorizontalContentAlignment="Left" Width="200" Margin="15, 20">
                             <TextBox.Text>
                                 <Binding Path="CurrentDelivery.Address" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
                                     <Binding.ValidationRules>
@@ -79,13 +79,13 @@
                         <ComboBox materialDesign:HintAssist.Hint="Descripción" materialDesign:TextFieldAssist.HasClearButton="True"
                                   Style="{StaticResource MaterialDesignOutlinedComboBox}" ItemsSource="{Binding DeliveryTypes}"
                                   Text="{Binding CurrentDelivery.Description}" IsEditable="True"
-                                  HorizontalContentAlignment="Left" Width="200" Margin="10, 15"/>
+                                  HorizontalContentAlignment="Left" Width="200" Margin="15, 20"/>
 
                         <!-- Driver Field -->
                         <ComboBox x:Name="ComboboxDriver" materialDesign:HintAssist.Hint="Mensajero" materialDesign:TextFieldAssist.HasClearButton="True" 
                                   Style="{StaticResource MaterialDesignOutlinedComboBox}" IsTextSearchEnabled="True" 
                                   ItemsSource="{Binding Drivers}" DisplayMemberPath="FullName"
-                                  Margin="10, 15" HorizontalContentAlignment="Left" Width="200">
+                                  Margin="15, 20" HorizontalContentAlignment="Left" Width="200">
                             <ComboBox.SelectedItem>
                                 <Binding Path="CurrentDelivery.Driver" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
                                     <Binding.ValidationRules>
@@ -206,11 +206,6 @@
                         <materialDesign:PackIcon Kind="Plus" Width="20" Height="20" Margin="0,0,5,0"/>
                         <TextBlock Text="Agregar" VerticalAlignment="Center" Margin="0,0,5,0" />
                     </StackPanel>
-                </Button>
-
-                <Button Style="{StaticResource MaterialDesignPaperButton}" Content="{materialDesign:PackIcon FilterVariant}"
-                        Grid.Column="1" HorizontalAlignment="Right" Width="50" ToolTip="Filtros" 
-                        materialDesign:ButtonAssist.CornerRadius="5" Margin="125, 0">
                 </Button>
 
             </Grid>

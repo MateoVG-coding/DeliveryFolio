@@ -27,7 +27,7 @@ namespace Courier_Data_Control_App.Models
         private string licensePlate;
 
         [ObservableProperty]
-        private DateTime dateCreated;
+        private DateTime dateCreated = DateTime.Now;
 
         [ObservableProperty]
         private bool status;

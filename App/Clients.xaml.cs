@@ -1,10 +1,8 @@
 ﻿using Courier_Data_Control_App.Models;
 using Courier_Data_Control_App.ViewModels;
 using MaterialDesignThemes.Wpf;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,29 +15,28 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static MaterialDesignThemes.Wpf.Theme;
 
 namespace Courier_Data_Control_App
 {
     /// <summary>
-    /// Interaction logic for Deliveries.xaml
+    /// Interaction logic for Clients.xaml
     /// </summary>
-    public partial class Drivers : Page
+    public partial class Clients : Page
     {
-        public Drivers()
+        public Clients()
         {
             InitializeComponent();
         }
 
-        private void DialogHostEditDriver_DialogClosing(object sender, DialogClosingEventArgs eventArgs)
+        private void DialogHostEditClient_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
         {
-            var viewModel = this.DataContext as DriversViewModel;
+            var viewModel = this.DataContext as ClientsViewModel;
 
             if (eventArgs.Parameter is bool result && result)
             {
-                if (viewModel?.UpdateDriverCommand.CanExecute(null) == true)
+                if (viewModel?.UpdateClientCommand.CanExecute(null) == true)
                 {
-                    viewModel.UpdateDriverCommand.Execute(null);
+                    viewModel.UpdateClientCommand.Execute(null);
                 }
             }
             else
@@ -49,24 +46,24 @@ namespace Courier_Data_Control_App
             }
         }
 
-        private void DialogHostAddDriver_DialogClosing(object sender, DialogClosingEventArgs eventArgs)
+        private void DialogHostAddClient_DialogClosing(object sender, DialogClosingEventArgs eventArgs)
         {
-            var viewModel = this.DataContext as DriversViewModel;
+            var viewModel = this.DataContext as ClientsViewModel;
 
             if (eventArgs.Parameter is bool result && result)
             {
-                if (viewModel?.AddDriverCommand.CanExecute(null) == true)
+                if (viewModel?.AddClientCommand.CanExecute(null) == true)
                 {
-                    viewModel.AddDriverCommand.Execute(null);
+                    viewModel.AddClientCommand.Execute(null);
                 }
             }
             else
             {
-                viewModel.NewDriver = new Driver();
+                viewModel.NewClient = new Client();
             }
         }
 
-        private void Button_Click_FlipOtherDriversFlipper(object sender, RoutedEventArgs e)
+        private void Button_Click_FlipOtherClientsFlipper(object sender, RoutedEventArgs e)
         {
             var button = sender as System.Windows.Controls.Button;
 
@@ -75,10 +72,10 @@ namespace Courier_Data_Control_App
             listBoxItem.IsSelected = true;
 
             // Find all Flipper controls in the ListBox and flip them back to front
-            var listBoxItems = DriverListBox.Items.Cast<Driver>().ToList();
+            var listBoxItems = ClientListBox.Items.Cast<Client>().ToList();
             foreach (var item in listBoxItems)
             {
-                var itemContainer = DriverListBox.ItemContainerGenerator.ContainerFromItem(item) as System.Windows.Controls.ListBoxItem;
+                var itemContainer = ClientListBox.ItemContainerGenerator.ContainerFromItem(item) as System.Windows.Controls.ListBoxItem;
                 if (itemContainer != null)
                 {
                     var otherFlipper = FindChild<Flipper>(itemContainer);
@@ -88,32 +85,6 @@ namespace Courier_Data_Control_App
                     }
                 }
             }
-        }
-
-        private void Button_Click_SelectDriverImage(object sender, RoutedEventArgs e)
-        {
-            var viewModel = this.DataContext as DriversViewModel;
-
-            var button = sender as System.Windows.Controls.Button;
-
-            var listBoxItem = FindAncestor<System.Windows.Controls.ListBoxItem>(button);
-
-            listBoxItem.IsSelected = true;
-
-            viewModel.LoadDriverImageCommand.Execute(null);
-        }
-        private void DriverImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
-        {
-            var image = sender as Image;
-            var viewModel = this.DataContext as DriversViewModel;
-
-            viewModel.CurrentDriver.ImagePath = null;
-
-            if (image != null)
-            {
-                image.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/DefaultProfilePicture.png"));
-            }
-            
         }
 
         // Helper method to find the ancestor of a specific type

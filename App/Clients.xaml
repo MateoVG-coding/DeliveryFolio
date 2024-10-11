@@ -1,4 +1,4 @@
-﻿<Page x:Class="Courier_Data_Control_App.Drivers"
+﻿<Page x:Class="Courier_Data_Control_App.Clients"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -13,7 +13,7 @@
       TextElement.FontWeight="Regular"
       TextElement.FontSize="14"
       FontFamily="{materialDesign:RobotoFont}"
-      Title="Drivers">
+      Title="Clients">
 
     <Grid>
 
@@ -22,18 +22,18 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
-        <!--START: Dialog Host to add drivers -->
-        <materialDesign:DialogHost x:Name="DialogHostAddDriver" DialogClosing="DialogHostAddDriver_DialogClosing"
+        <!--START: Dialog Host to add clients -->
+        <materialDesign:DialogHost x:Name="DialogHostAddClient" DialogClosing="DialogHostAddClient_DialogClosing"
                                        DialogTheme="Inherit" DialogMargin="5" Grid.RowSpan="2">
 
             <materialDesign:DialogHost.DialogContent>
-                <!-- START: Fields to add new driver -->
+                <!-- START: Fields to add new client -->
                 <StackPanel Margin="30, 30">
 
-                    <!-- FullName Input -->
-                    <TextBox x:Name="AddDriverTextBoxFullName" materialDesign:HintAssist.Hint="Nombre" Width="200"
+                    <!-- Name Input -->
+                    <TextBox x:Name="AddClientTextBoxName" materialDesign:HintAssist.Hint="Nombre" Width="200"
                                      materialDesign:HintAssist.IsFloating="True" Margin="15, 20" Style="{StaticResource MaterialDesignOutlinedTextBox}">
-                        <Binding Path="NewDriver.FullName" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
+                        <Binding Path="NewClient.Name" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
                             <Binding.ValidationRules>
                                 <validations:NameValidationRule />
                             </Binding.ValidationRules>
@@ -41,21 +41,21 @@
                     </TextBox>
 
                     <!-- Phone Number Input -->
-                    <TextBox x:Name="AddDriverTextBoxPhoneNumber" materialDesign:HintAssist.Hint="Telefóno" Width="200"
+                    <TextBox x:Name="AddClientTextBoxPhoneNumber" materialDesign:HintAssist.Hint="Telefóno" Width="200"
                                      materialDesign:HintAssist.IsFloating="True" Margin="15, 20" Style="{StaticResource MaterialDesignOutlinedTextBox}">
-                        <Binding Path="NewDriver.PhoneNumber" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
+                        <Binding Path="NewClient.PhoneNumber" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
                             <Binding.ValidationRules>
                                 <validations:PhoneNumberValidationRule />
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox>
 
-                    <!-- License Plate Input -->
-                    <TextBox x:Name="AddDriverTextBoxLicensePlate" materialDesign:HintAssist.Hint="Placa de matrícula" Width="200"
+                    <!-- Address Input -->
+                    <TextBox x:Name="AddClientTextBoxAddress" materialDesign:HintAssist.Hint="Dirección" Width="200"
                                 materialDesign:HintAssist.IsFloating="True" Margin="15, 20" Style="{StaticResource MaterialDesignOutlinedTextBox}">
-                        <Binding Path="NewDriver.LicensePlate"  UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
+                        <Binding Path="NewClient.Address"  UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
                             <Binding.ValidationRules>
-                                <validations:LicensePlateValidationRule />
+                                <validations:AddressValidationRule />
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox>
@@ -76,11 +76,11 @@
                                     <Style.Triggers>
 
                                         <!-- Disable button if any validation errors -->
-                                        <DataTrigger Binding="{Binding ElementName=AddDriverTextBoxPhoneNumber, Path=(Validation.HasError)}" Value="True">
+                                        <DataTrigger Binding="{Binding ElementName=AddClientTextBoxPhoneNumber, Path=(Validation.HasError)}" Value="True">
                                             <Setter Property="IsEnabled" Value="False" />
                                         </DataTrigger>
 
-                                        <DataTrigger Binding="{Binding ElementName=AddDriverTextBoxLicensePlate, Path=(Validation.HasError)}" Value="True">
+                                        <DataTrigger Binding="{Binding ElementName=AddClientTextBoxAddress, Path=(Validation.HasError)}" Value="True">
                                             <Setter Property="IsEnabled" Value="False" />
                                         </DataTrigger>
 
@@ -104,7 +104,7 @@
                 </StackPanel>
             </materialDesign:DialogHost.DialogContent>
 
-            <!--START: Filtered search driver section -->
+            <!--START: Filtered search client section -->
             <Grid Height="44" VerticalAlignment="Top" Margin="20,30,20,0">
 
                 <Grid.ColumnDefinitions>
@@ -112,21 +112,21 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBox x:Name="SearchDriverTextBox" materialDesign:HintAssist.Hint="Buscar..." 
+                <TextBox x:Name="SearchClientTextBox" materialDesign:HintAssist.Hint="Buscar..." 
                         Style="{StaticResource MaterialDesignOutlinedTextBox}" 
                         VerticalAlignment="Stretch" Width="250" HorizontalAlignment="Left" Padding="10,10,10,10" 
-                        materialDesign:TextFieldAssist.TextFieldCornerRadius="10" Text="{Binding SearchDriverName}"/>
+                        materialDesign:TextFieldAssist.TextFieldCornerRadius="10" Text="{Binding SearchClientName}"/>
 
                 <Button Background="{DynamicResource MaterialDesignTextFieldBoxBackground}" 
                        VerticalAlignment="Center" HorizontalAlignment="Right" Width="40" Height="40" Margin="10"
-                       Command="{Binding SearchFilteredDriversCommand}">
+                       Command="{Binding SearchFilteredClientsCommand}">
                     <materialDesign:PackIcon Kind="Magnify"/>
 
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconButton}">
                             <Style.Triggers>
                                 <!-- Disable button if SearchTextBox is empty -->
-                                <DataTrigger Binding="{Binding Text, ElementName=SearchDriverTextBox}" Value="">
+                                <DataTrigger Binding="{Binding Text, ElementName=SearchClientTextBox}" Value="">
                                     <Setter Property="IsEnabled" Value="False" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -135,10 +135,10 @@
                 </Button>
 
                 <Button Style="{StaticResource MaterialDesignIconButton}" Content="{materialDesign:PackIcon Autorenew}"
-                        Grid.Column="1" HorizontalAlignment="Left" ToolTip="Ver todos los mensajeros" ToolTipService.InitialShowDelay="500"
+                        Grid.Column="1" HorizontalAlignment="Left" ToolTip="Ver todos los clientes" ToolTipService.InitialShowDelay="500"
                         Opacity="0.5" materialDesign:ButtonAssist.CornerRadius="5" Margin="10, 0" Width="30"
                         Visibility="{Binding IsFiltering, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Command="{Binding SearchAllDriversCommand}">
+                        Command="{Binding SearchAllClientsCommand}">
                 </Button>
 
                 <Button Style="{StaticResource MaterialDesignRaisedButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" 
@@ -153,20 +153,20 @@
             </Grid>
 
         </materialDesign:DialogHost>
-        <!-- END: Dialog Host to add drivers -->
+        <!-- END: Dialog Host to add clients -->
 
-        <!--START: Dialog Host to edit drivers -->
-        <materialDesign:DialogHost x:Name="DialogHostEditDriver" DialogClosing="DialogHostEditDriver_DialogClosing"
+        <!--START: Dialog Host to edit clients -->
+        <materialDesign:DialogHost x:Name="DialogHostEditClient" DialogClosing="DialogHostEditClient_DialogClosing"
                                        DialogTheme="Inherit" DialogMargin="5" Grid.Row="2">
             <materialDesign:DialogHost.DialogContent>
                 <StackPanel Margin="30, 30">
 
                     <!-- Phone Number Input -->
-                    <TextBox x:Name="EditDriverTextBoxPhoneNumber" Margin="15, 20" Width="200"
+                    <TextBox x:Name="EditClientTextBoxPhoneNumber" Margin="15, 20" Width="200" 
                              Style="{StaticResource MaterialDesignOutlinedTextBox}"
                              materialDesign:HintAssist.Hint="Telefóno"
                              materialDesign:HintAssist.IsFloating="True">
-                        <Binding Path="CurrentDriver.PhoneNumber" UpdateSourceTrigger="PropertyChanged" 
+                        <Binding Path="CurrentClient.PhoneNumber" UpdateSourceTrigger="PropertyChanged" 
                                      NotifyOnValidationError="True" ValidatesOnDataErrors="True">
                             <Binding.ValidationRules>
                                 <validations:PhoneNumberValidationRule ValidatesOnTargetUpdated="True"/>
@@ -174,15 +174,15 @@
                         </Binding>
                     </TextBox>
 
-                    <!-- License Plate Input -->
-                    <TextBox x:Name="EditDriverTextBoxLicensePlate" Margin="15, 20" Width="200"
+                    <!-- Address Input -->
+                    <TextBox x:Name="EditClientTextBoxAddress" Margin="15, 20" Width="200"
                              Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                             materialDesign:HintAssist.Hint="Placa de matrícula" 
+                             materialDesign:HintAssist.Hint="Dirección" 
                              materialDesign:HintAssist.IsFloating="True">
-                        <Binding Path="CurrentDriver.LicensePlate" UpdateSourceTrigger="PropertyChanged" 
+                        <Binding Path="CurrentClient.Address" UpdateSourceTrigger="PropertyChanged" 
                                      NotifyOnValidationError="True" ValidatesOnDataErrors="True">
                             <Binding.ValidationRules>
-                                <validations:LicensePlateValidationRule ValidatesOnTargetUpdated="True"/>
+                                <validations:AddressValidationRule ValidatesOnTargetUpdated="True"/>
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox>
@@ -203,11 +203,11 @@
                                     <Style.Triggers>
 
                                         <!-- Disable button if any validation errors -->
-                                        <DataTrigger Binding="{Binding ElementName=EditDriverTextBoxPhoneNumber, Path=(Validation.HasError)}" Value="True">
+                                        <DataTrigger Binding="{Binding ElementName=EditClientTextBoxPhoneNumber, Path=(Validation.HasError)}" Value="True">
                                             <Setter Property="IsEnabled" Value="False" />
                                         </DataTrigger>
 
-                                        <DataTrigger Binding="{Binding ElementName=EditDriverTextBoxLicensePlate, Path=(Validation.HasError)}" Value="True">
+                                        <DataTrigger Binding="{Binding ElementName=EditClientTextBoxAddress, Path=(Validation.HasError)}" Value="True">
                                             <Setter Property="IsEnabled" Value="False" />
                                         </DataTrigger>
 
@@ -231,9 +231,9 @@
                 </StackPanel>
             </materialDesign:DialogHost.DialogContent>
 
-            <!--START: Listbox with all the drivers -->
-            <ListBox x:Name="DriverListBox" ItemsSource="{Binding Drivers}"
-                        SelectedItem="{Binding CurrentDriver, UpdateSourceTrigger=PropertyChanged}" 
+            <!--START: Listbox with all the clients -->
+            <ListBox x:Name="ClientListBox" ItemsSource="{Binding Clients}"
+                        SelectedItem="{Binding CurrentClient, UpdateSourceTrigger=PropertyChanged}" 
                         SelectionMode="Single" HorizontalContentAlignment="Stretch" Margin="10,0,10,50" Grid.Row="2">
 
                 <ListBox.ItemContainerStyle>
@@ -260,7 +260,7 @@
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
 
-                <!--START: Flipper for every driver item in the listbox -->
+                <!--START: Flipper for every client item in the listbox -->
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <materialDesign:Flipper materialDesign:ElevationAssist.Elevation="Dp4" Margin="5, 15, 50, 15" 
@@ -268,42 +268,27 @@
 
                             <!--START: Flipper front content -->
                             <materialDesign:Flipper.FrontContent>
-                                <Grid Width="220" Height="290">
+                                <Grid Width="220" Height="240">
 
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="190" />
+                                        <RowDefinition Height="150" />
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
 
-                                    <!-- Color zone for driver profile image -->
                                     <materialDesign:ColorZone VerticalAlignment="Stretch" Mode="PrimaryLight">
-                                        <Grid>
-                                            <!-- Image Control -->
-                                            <Image x:Name="DriverImage" Stretch="Fill" RenderOptions.BitmapScalingMode="NearestNeighbor" 
-                                                      Margin="1" ImageFailed="DriverImage_ImageFailed">
-                                                <Image.Source>
-                                                    <Binding Path="ImagePath" TargetNullValue="pack://application:,,,/Resources/DefaultProfilePicture.png">
-                                                        <Binding.FallbackValue>
-                                                            <ImageSource>pack://application:,,,/Resources/DefaultProfilePicture.png</ImageSource>
-                                                        </Binding.FallbackValue>
-                                                    </Binding>
-                                                </Image.Source>
-                                            </Image>
-
-                                            <!-- Load Image Button -->
-                                            <Button Style="{StaticResource MaterialDesignRaisedButton}" Content="Cambiar imagen" FontWeight="Medium"
-                                                       HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Opacity="0.7" Click="Button_Click_SelectDriverImage">
-                                            </Button>
-                                        </Grid>
+                                        
+                                        <materialDesign:PackIcon Width="128" Height="128" HorizontalAlignment="Center"
+                                                                     VerticalAlignment="Center" Kind="AccountCircle" />
+                                        
                                     </materialDesign:ColorZone>
 
                                     <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <!-- Textblock Driver's full name  -->
-                                        <TextBlock Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" />
+                                        <!-- Textblock Client's name  -->
+                                        <TextBlock Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" />
 
                                         <Button Margin="0,15,0,0" 
                                                    Command="{x:Static materialDesign:Flipper.FlipCommand}"
-                                                   Click="Button_Click_FlipOtherDriversFlipper"
+                                                   Click="Button_Click_FlipOtherClientsFlipper"
                                                    Content="MÁS" 
                                                    Style="{StaticResource MaterialDesignPaperSecondaryButton}" 
                                                    materialDesign:ButtonAssist.CornerRadius="10" />
@@ -317,7 +302,7 @@
                             <!--START: Flipper back content -->
                             <materialDesign:Flipper.BackContent>
 
-                                <Grid Width="220" Height="290">
+                                <Grid Width="220" Height="240">
 
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -334,7 +319,7 @@
                                             </Button>
 
                                             <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" 
-                                                          Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" />
+                                                          Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
 
                                         </StackPanel>
                                     </materialDesign:ColorZone>
@@ -348,20 +333,15 @@
                                                           Margin="15,0,0,5" />
 
                                             <!-- Textblock Driver's license plate -->
-                                            <TextBlock Text="Placa de matrícula:" FontWeight="SemiBold" Margin="15,15,0,5" />
-                                            <TextBlock Text="{Binding LicensePlate, UpdateSourceTrigger=PropertyChanged}"
-                                                          Margin="15,0,0,5" />
+                                            <TextBlock Text="Dirección:" FontWeight="SemiBold" Margin="15,15,0,5" />
+                                            <TextBlock Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" TextTrimming="WordEllipsis"
+                                                          Margin="15,0,15,5" />
 
-                                            <!-- Textblock Driver's status -->
-                                            <TextBlock Text="Disponibilidad:" FontWeight="SemiBold" Margin="15,15,0,5" />
-                                            <ToggleButton IsChecked="{Binding Status, UpdateSourceTrigger=PropertyChanged}" 
-                                                             HorizontalAlignment="Left" Margin="15,0,0,5" />
-
-                                            <DockPanel Margin="15,20,0,0">
+                                            <DockPanel Margin="15,40,0,0" >
 
                                                 <TextBlock DockPanel.Dock="Left" FontStyle="Italic" FontWeight="UltraLight">
                                                     <TextBlock.Text>
-                                                        <Binding Path="DateCreated" StringFormat="Se unió el {0:MM/dd/yyyy}" />
+                                                        <Binding Path="DateCreated" StringFormat="Se registró el {0:MM/dd/yyyy}" />
                                                     </TextBlock.Text>
                                                 </TextBlock>
 
@@ -370,7 +350,7 @@
                                                                                 Style="{StaticResource MaterialDesignPopupBox}">
                                                     <StackPanel>
                                                         <Button Content="Editar" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"/>
-                                                        <Button Content="Eliminar" Command="{Binding DataContext.SoftDeleteDriverCommand, 
+                                                        <Button Content="Eliminar" Command="{Binding DataContext.DeleteClientCommand, 
                                                                                             RelativeSource={RelativeSource AncestorType=Page}}"/>
                                                     </StackPanel>
                                                 </materialDesign:PopupBox>
@@ -385,11 +365,12 @@
                         </materialDesign:Flipper>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
-                <!--END: Flipper for every driver item in the listbox -->
+                <!--END: Flipper for every client item in the listbox -->
             </ListBox>
-            <!--END: Listbox with all the drivers -->
+            <!--END: Listbox with all the clients -->
 
         </materialDesign:DialogHost>
-        <!--END: Dialog Host to edit drivers -->
+        <!--END: Dialog Host to edit clients -->
+
     </Grid>
 </Page>

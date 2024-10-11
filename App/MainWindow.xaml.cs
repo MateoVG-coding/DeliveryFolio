@@ -25,6 +25,7 @@ namespace Courier_Data_Control_App
     {
         private readonly IServiceProvider _serviceProvider;
         private Deliveries _deliveriesPage;
+        private Clients _clientsPage;
         private Drivers _driversPage;
 
         public MainWindow(IServiceProvider serviceProvider)
@@ -55,6 +56,12 @@ namespace Courier_Data_Control_App
                         break;
 
                     case "Clients":
+                        if (_clientsPage == null)
+                        {
+                            _clientsPage = new Clients { DataContext = _serviceProvider.GetRequiredService<ClientsViewModel>() };
+                        }
+
+                        fContainer.Navigate(_clientsPage);
                         break;
 
                     case "Couriers":

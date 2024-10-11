@@ -52,6 +52,10 @@ namespace Courier_Data_Control_App
                     viewModel.AddDeliveryCommand.Execute(null);
                 }
             }
+            else
+            {
+                viewModel.CurrentDelivery = new Delivery();
+            }
         }
     }
 }

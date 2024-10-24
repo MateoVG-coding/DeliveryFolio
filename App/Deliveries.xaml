@@ -22,7 +22,7 @@
             <materialDesign:DialogHost.DialogContent>
                 <!-- START: Fields to add new deliveries -->
                 <Grid Margin="30, 15">
-                    
+
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*" />
                         <ColumnDefinition Width="1*" />
@@ -35,11 +35,11 @@
 
                     <!-- START: Left Column Content -->
                     <StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Grid.Column="0" Orientation="Vertical" Margin="10">
-                        
+
                         <!-- Customer Name Field -->
                         <ComboBox x:Name="ComboboxClient" materialDesign:HintAssist.Hint="Cliente" materialDesign:TextFieldAssist.HasClearButton="True" Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                   ItemsSource="{Binding Clients}" DisplayMemberPath="Name" SelectedValuePath="Name"
-                                  SelectedValue="{Binding CurrentDelivery.CustomerName, UpdateSourceTrigger=PropertyChanged}" 
+                                  Text="{Binding CurrentDelivery.CustomerName, UpdateSourceTrigger=PropertyChanged}"
                                   IsEditable="True" HorizontalContentAlignment="Left" Width="200" Margin="15, 20"/>
 
                         <!-- Phone Number Field -->
@@ -67,14 +67,14 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                        
+
                     </StackPanel>
                     <!-- END: Left Column Content -->
 
 
                     <!-- START: Right Column Content -->
                     <StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Grid.Column="1" Orientation="Vertical" Margin="10">
-                        
+
                         <!-- Description Field -->
                         <ComboBox materialDesign:HintAssist.Hint="Descripción" materialDesign:TextFieldAssist.HasClearButton="True"
                                   Style="{StaticResource MaterialDesignOutlinedComboBox}" ItemsSource="{Binding DeliveryTypes}"
@@ -94,7 +94,7 @@
                                 </Binding>
                             </ComboBox.SelectedItem>
                         </ComboBox>
-                        
+
                     </StackPanel>
                     <!-- END: Right Column Content -->
 
@@ -105,14 +105,14 @@
                         <!-- Accept button Dialog -->
                         <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
                         Content="Aceptar" IsDefault="True">
-                            
+
                             <Button.CommandParameter>
                                 <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">True</system:Boolean>
                             </Button.CommandParameter>
 
                             <Button.Style>
                                 <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
-                                    
+
                                     <Style.Triggers>
                                         <!-- Disable button if TextBoxAddress is empty -->
                                         <DataTrigger Binding="{Binding Text, ElementName=TextBoxAddress}" Value="">
@@ -140,7 +140,7 @@
                                             <Setter Property="IsEnabled" Value="False" />
                                         </DataTrigger>
                                     </Style.Triggers>
-                                    
+
                                 </Style>
                             </Button.Style>
                         </Button>
@@ -152,17 +152,17 @@
                                 <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">False</system:Boolean>
                             </Button.CommandParameter>
                         </Button>
-                        
+
                     </StackPanel>
                     <!-- END: Dialog Control Buttons -->
-                    
+
                 </Grid>
                 <!-- END: Fields to add new deliveries -->
-                
+
             </materialDesign:DialogHost.DialogContent>
 
             <!--START: Filtered search deliveries table -->
-            <Grid Height="45" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="20,50,20,0">
+            <Grid Height="45" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="20,30,20,0">
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="250" />
@@ -176,9 +176,9 @@
 
                 <Button Background="{DynamicResource MaterialDesignTextFieldBoxBackground}" 
                         VerticalAlignment="Center" HorizontalAlignment="Right" Width="40" Height="40" Margin="10"
-                        Command="{Binding SearchFilteredDeliveriesCommand}">
+                        Command="{Binding SearchDeliveriesCommand}">
                     <materialDesign:PackIcon Kind="Magnify"/>
-                    
+
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconButton}">
                             <Style.Triggers>
@@ -189,14 +189,14 @@
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
-                    
+
                 </Button>
 
                 <Button Style="{StaticResource MaterialDesignIconButton}" Content="{materialDesign:PackIcon Autorenew}"
                         Grid.Column="1" HorizontalAlignment="Left" ToolTip="Ver todos los domicilios" ToolTipService.InitialShowDelay="500"
                         Opacity="0.5" materialDesign:ButtonAssist.CornerRadius="5" Margin="10, 0" Width="30"
                         Visibility="{Binding IsFiltering, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Command="{Binding SearchAllDeliveriesCommand}">
+                        Command="{Binding ClearFiltersCommand}">
                 </Button>
 
                 <Button Style="{StaticResource MaterialDesignRaisedButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" 
@@ -204,13 +204,30 @@
 
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Plus" Width="20" Height="20" Margin="0,0,5,0"/>
-                        <TextBlock Text="Agregar" VerticalAlignment="Center" Margin="0,0,5,0" />
+                        <TextBlock Text="Agregar" VerticalAlignment="Center" Margin="0,0,5,0"/>
                     </StackPanel>
                 </Button>
 
+                <Menu Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,130,0" VerticalAlignment="Center">
+                    <MenuItem materialDesign:ButtonAssist.CornerRadius="10" BorderThickness="1"
+                              BorderBrush="{DynamicResource MaterialDesign.Brush.Primary}" Height="35" >
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Calendar" Width="20" Height="20" Margin="0,0,5,0" />
+                                <TextBlock Text="{Binding SelectedTimeSpan}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </MenuItem.Header>
+                        <MenuItem Header="Hoy" Command="{Binding SelectTimeSpanCommand}" CommandParameter="Hoy" />
+                        <MenuItem Header="Hace una semana" Command="{Binding SelectTimeSpanCommand}" CommandParameter="Hace una semana" />
+                        <MenuItem Header="Hace un mes" Command="{Binding SelectTimeSpanCommand}" CommandParameter="Hace un mes" />
+                        <MenuItem Header="Hace un año" Command="{Binding SelectTimeSpanCommand}" CommandParameter="Hace un año" />
+                        <MenuItem Header="Todos" Command="{Binding SelectTimeSpanCommand}" CommandParameter="Todos" />
+                    </MenuItem>
+                </Menu>
+
             </Grid>
             <!--END: Filtered search deliveries table -->
-                
+
         </materialDesign:DialogHost>
         <!-- END: Dialog Host to add new delivery -->
 
@@ -220,7 +237,7 @@
                   EnableRowVirtualization="True"
                   EnableColumnVirtualization="True"
                   ItemsSource="{Binding Deliveries}"
-                  RowHeight="50" Margin="5,130,5,80" 
+                  RowHeight="50" Margin="5,100,5,80" 
                   FontSize="15" Opacity="0.9"
                   CanUserDeleteRows="False" CanUserAddRows="False"
                   AlternationCount="2"
@@ -231,7 +248,7 @@
 
             <!-- START: Deliveries Data Grid Columns -->
             <DataGrid.Columns>
-                
+
                 <!-- Selection Column -->
                 <DataGridCheckBoxColumn Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
                     <DataGridCheckBoxColumn.Header>
@@ -407,7 +424,7 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
             <!-- END: Deliveries Data Grid Columns -->
-            
+
         </DataGrid>
 
         <!-- END: List of Deliveries -->

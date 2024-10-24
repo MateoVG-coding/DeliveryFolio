@@ -1,10 +1,12 @@
 ﻿using Courier_Data_Control_App.Models;
 using Courier_Data_Control_App.ViewModels;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -29,6 +31,7 @@ namespace Courier_Data_Control_App
         {
             InitializeComponent();
         }
+
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var dataGrid = sender as System.Windows.Controls.DataGrid;

@@ -1,0 +1,21 @@
+﻿<Page x:Class="Courier_Data_Control_App.Dashboard"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:validations="clr-namespace:Courier_Data_Control_App.Validations"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Primary.Dark.Foreground}"
+      Background="{DynamicResource MaterialDesign.Brush.Background}"
+      TextElement.FontWeight="Regular"
+      TextElement.FontSize="14"
+      FontFamily="{materialDesign:RobotoFont}"
+      Title="Dashboard">
+
+    <Grid>
+
+    </Grid>
+</Page>

@@ -21,7 +21,7 @@ using System.Windows.Input;
 namespace Courier_Data_Control_App.ViewModels
 {
     /// <summary>
-    /// A view model for list of clients.
+    /// View model for clients page
     /// </summary>
     public partial class ClientsViewModel : ObservableObject
     {
@@ -86,21 +86,37 @@ namespace Courier_Data_Control_App.ViewModels
             }
 
             Clients.CollectionChanged += OnClientsCollectionChanged;
-        }
+        }   
 
         /// <summary>
         /// Gets the current clients for the collection of the view model
         /// </summary>
         [RelayCommand]
-        async Task SearchAllClientsAsync()
+        async Task SearchClientsAsync()
         {
-            SearchClientName = string.Empty;
-            IsFiltering = false;
             await LoadClientsAsync();
+
+            if (!string.IsNullOrEmpty(SearchClientName))
+            {
+                IsFiltering = true;
+            }
+            else
+            {
+                IsFiltering = false;
+            }
         }
         async Task LoadClientsAsync()
         {
-            var clients = await _clientRepository.GetAllClientsAsync();
+            var clients = await _clientRepository.GetAllClientsAsync(SearchClientName);
+
+            if (clients.Count() == 0)
+            {
+                MessageBox.Show($"No se han encontrado clientes que coincidan con sus criterios de búsqueda. Vuelva a intentarlo con otro nombre.",
+                    "", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                await ClearFilters();
+                return;
+            }
 
             Clients.Clear();
 
@@ -111,24 +127,14 @@ namespace Courier_Data_Control_App.ViewModels
         }
 
         /// <summary>
-        /// Gets the filtered clients for the collection of the view model 
+        /// Clear search or filters applied
         /// </summary>
         [RelayCommand]
-        async Task SearchFilteredClientsAsync()
+        async Task ClearFilters()
         {
-            IsFiltering = true;
-            await LoadFilteredClientsAsync();
-        }
-        async Task LoadFilteredClientsAsync()
-        {
-            var clients = await _clientRepository.GetFilteredClientsAsync(SearchClientName);
-
-            Clients.Clear();
-
-            foreach (var client in clients)
-            {
-                Clients.Add(client);
-            }
+            SearchClientName = String.Empty;
+            IsFiltering = false;
+            await LoadClientsAsync();
         }
 
         /// <summary>

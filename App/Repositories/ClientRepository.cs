@@ -17,7 +17,7 @@ namespace Courier_Data_Control_App.Repositories
             _context = context;
         }
 
-        public async Task<List<Client>> GetFilteredClientsAsync(string clientName)
+        public async Task<List<Client>> GetAllClientsAsync(string clientName)
         {
             var query = _context.Clients.AsQueryable();
 
@@ -27,13 +27,6 @@ namespace Courier_Data_Control_App.Repositories
             }
 
             return await query
-                .OrderBy(d => d.Name)
-                .ToListAsync();
-        }
-
-        public async Task<List<Client>> GetAllClientsAsync()
-        {
-            return await _context.Clients
                 .OrderBy(d => d.Name)
                 .ToListAsync();
         }

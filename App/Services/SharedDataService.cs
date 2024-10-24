@@ -35,8 +35,8 @@ namespace Courier_Data_Control_App.Services
         private async Task LoadDataAsync()
         {
             //Just load drivers and clients data since does not require pagination
-            var drivers = await _driverRepository.GetAllDriversAsync();
-            var clients = await _clientRepository.GetAllClientsAsync();
+            var drivers = await _driverRepository.GetAllDriversAsync(string.Empty);
+            var clients = await _clientRepository.GetAllClientsAsync(string.Empty);
 
             foreach (var driver in drivers)
             {

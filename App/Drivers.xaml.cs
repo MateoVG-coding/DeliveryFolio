@@ -102,6 +102,7 @@ namespace Courier_Data_Control_App
 
             viewModel.LoadDriverImageCommand.Execute(null);
         }
+
         private void DriverImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
             var image = sender as Image;

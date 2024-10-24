@@ -16,7 +16,8 @@ namespace Courier_Data_Control_App.Repositories
         {
             _context = context;
         }
-        public async Task<List<Driver>> GetFilteredDriversAsync(string driverName)
+
+        public async Task<List<Driver>> GetAllDriversAsync(string driverName)
         {
             var query = _context.Drivers.AsQueryable();
 
@@ -26,14 +27,6 @@ namespace Courier_Data_Control_App.Repositories
             }
 
             return await query
-                .Where(d => d.IsInCompany.Equals(true))
-                .OrderBy(d => d.FullName)
-                .ToListAsync();
-        }
-
-        public async Task<List<Driver>> GetAllDriversAsync()
-        {
-            return await _context.Drivers
                 .Where(d => d.IsInCompany.Equals(true))
                 .OrderBy(d => d.FullName) 
                 .ToListAsync();

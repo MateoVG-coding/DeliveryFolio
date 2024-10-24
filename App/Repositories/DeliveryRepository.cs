@@ -17,42 +17,45 @@ namespace Courier_Data_Control_App.Repositories
         {
             _context = context;
         }
-        public async Task<int> GetFilteredDeliveriesCountAsync(string searchFilter)
+
+        public async Task<int> GetTotalDeliveriesCountAsync(string searchFilter, DateTime? timeSpan)
         {
-            IQueryable<Delivery> query = _context.Deliveries;
+            var query = _context.Deliveries.AsQueryable();
 
             if (!string.IsNullOrEmpty(searchFilter))
             {
-                query = query.Where(d => d.CustomerName.Contains(searchFilter) || d.PhoneNumber.Contains(searchFilter));
+                query = query.Where(d =>
+                    d.CustomerName.Contains(searchFilter) ||
+                    d.PhoneNumber.Contains(searchFilter) ||
+                    d.Driver.FullName.Contains(searchFilter));
+            }
+
+            //Apply date range filter if provided
+            if (timeSpan.HasValue)
+            {
+                query = query.Where(d => d.DateCreated >= timeSpan && d.DateCreated <= DateTime.Today.AddDays(1).AddTicks(-1));
             }
 
             return await query.CountAsync();
         }
 
-        public async Task<List<Delivery>> GetFilteredDeliveriesAsync(int pageNumber, int pageSize, string searchString)
-        {
-            var query = _context.Deliveries.AsQueryable();
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                query = query.Where(c => c.CustomerName.Contains(searchString) || c.PhoneNumber.Contains(searchString));
-            }
-
-            return await query
-                .OrderByDescending(d => d.DateCreated)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-        }
-
-        public async Task<int> GetTotalDeliveriesCountAsync()
-        {
-            return await _context.Deliveries.CountAsync();
-        }
-
-        public async Task<List<Delivery>> GetAllDeliveriesAsync(int pageNumber, int pageSize)
+        public async Task<List<Delivery>> GetAllDeliveriesAsync(int pageNumber, int pageSize, string searchFilter, DateTime? timeSpan)
         {
             var query = _context.Deliveries.Include(d => d.Driver).AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchFilter))
+            {
+                query = query.Where(d =>
+                    d.CustomerName.Contains(searchFilter) ||
+                    d.PhoneNumber.Contains(searchFilter) ||
+                    d.Driver.FullName.Contains(searchFilter));
+            }
+
+            //Apply date range filter if provided
+            if (timeSpan.HasValue)
+            {
+                query = query.Where(d => d.DateCreated >= timeSpan && d.DateCreated <= DateTime.Today.AddDays(1).AddTicks(-1));
+            }
 
             return await query
             .OrderByDescending(d => d.DateCreated)

@@ -75,6 +75,15 @@
                                 <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
                                     <Style.Triggers>
 
+                                        <!-- Disable button if input is empty -->
+                                        <DataTrigger Binding="{Binding Text, ElementName=AddDriverTextBoxPhoneNumber}" Value="">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding Text, ElementName=AddDriverTextBoxLicensePlates}" Value="">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger>
+
                                         <!-- Disable button if any validation errors -->
                                         <DataTrigger Binding="{Binding ElementName=AddDriverTextBoxPhoneNumber, Path=(Validation.HasError)}" Value="True">
                                             <Setter Property="IsEnabled" Value="False" />
@@ -105,7 +114,7 @@
             </materialDesign:DialogHost.DialogContent>
 
             <!--START: Filtered search driver section -->
-            <Grid Height="44" VerticalAlignment="Top" Margin="20,30,20,0">
+            <Grid Height="45" VerticalAlignment="Top" Margin="20,30,20,0">
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="250" />
@@ -119,7 +128,7 @@
 
                 <Button Background="{DynamicResource MaterialDesignTextFieldBoxBackground}" 
                        VerticalAlignment="Center" HorizontalAlignment="Right" Width="40" Height="40" Margin="10"
-                       Command="{Binding SearchFilteredDriversCommand}">
+                       Command="{Binding SearchDriversCommand}">
                     <materialDesign:PackIcon Kind="Magnify"/>
 
                     <Button.Style>
@@ -138,7 +147,7 @@
                         Grid.Column="1" HorizontalAlignment="Left" ToolTip="Ver todos los mensajeros" ToolTipService.InitialShowDelay="500"
                         Opacity="0.5" materialDesign:ButtonAssist.CornerRadius="5" Margin="10, 0" Width="30"
                         Visibility="{Binding IsFiltering, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Command="{Binding SearchAllDriversCommand}">
+                        Command="{Binding ClearFiltersCommand}">
                 </Button>
 
                 <Button Style="{StaticResource MaterialDesignRaisedButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" 

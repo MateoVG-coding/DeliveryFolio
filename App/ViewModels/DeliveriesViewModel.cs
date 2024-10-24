@@ -23,7 +23,7 @@ using System.Xml.Linq;
 namespace Courier_Data_Control_App.ViewModels
 {
     /// <summary>
-    /// A view model for list of deliveries.
+    /// View model for deliveries page
     /// </summary>
     public partial class DeliveriesViewModel : ObservableValidator
     {
@@ -31,7 +31,7 @@ namespace Courier_Data_Control_App.ViewModels
         private readonly ISharedDataService _sharedDataService;
 
         public ObservableCollection<Delivery> Deliveries => _sharedDataService.Deliveries;
-        public ObservableCollection<Driver> Drivers  => _sharedDataService.Drivers;
+        public ObservableCollection<Driver> Drivers => _sharedDataService.Drivers;
         public ObservableCollection<Client> Clients=> _sharedDataService.Clients;
 
         [ObservableProperty]
@@ -44,15 +44,48 @@ namespace Courier_Data_Control_App.ViewModels
             "Entrega programada"
         };
 
-        //Properties to apply searching
+        // START: Properties and methods to apply filtering
         [ObservableProperty]
         private string searchFilter = string.Empty;
-
         [ObservableProperty]
         private bool isFiltering;
+        [ObservableProperty]
+        private string selectedTimeSpan = "Todos";
+
+        partial void OnSelectedTimeSpanChanged(string value)
+        {
+            _ = SearchDeliveriesAsync();
+        }
+        [RelayCommand]
+        private void SelectTimeSpan(string timespan)
+        {
+            SelectedTimeSpan = timespan;
+        }
+        public DateTime? CalculateTimeSpan()
+        {
+            DateTime today = DateTime.Today;
+
+            switch (SelectedTimeSpan)
+            {
+                case "Hoy":
+                    return (today);
+
+                case "Hace una semana":
+                    return (today.AddDays(-7));
+
+                case "Hace un mes":
+                    return (today.AddMonths(-1));
+
+                case "Hace un año":
+                    return (today.AddYears(-1));
+            }
+
+            return null;
+        }
+        // END: Properties and methods to apply filtering
 
         //Properties to apply paging
-        private const int _pageSize = 9;
+        private const int _pageSize = 10;
         [ObservableProperty]
         private int totalPages;
         [ObservableProperty]
@@ -63,7 +96,7 @@ namespace Courier_Data_Control_App.ViewModels
         [ObservableProperty]
         private bool canNavigateNext;
 
-        // START: Properties and method for the header CheckBox
+        // START: Properties and methodS for the header CheckBox
         [ObservableProperty]
         private bool isAllDeliveriesSelected;
         [ObservableProperty]
@@ -79,7 +112,6 @@ namespace Courier_Data_Control_App.ViewModels
 
             SelectAllDeliveries();
         }
-
         private void Delivery_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Delivery.IsSelected))
@@ -97,7 +129,6 @@ namespace Courier_Data_Control_App.ViewModels
 
             IsAllDeliveriesSelected = IsAnyDeliverySelected = true;
         }
-
         public void DeselectAllDeliveries()
         {
             foreach (var delivery in Deliveries)
@@ -125,10 +156,17 @@ namespace Courier_Data_Control_App.ViewModels
         /// the view model using paging
         /// </summary>
         [RelayCommand]
-        async Task SearchAllDeliveriesAsync()
+        async Task SearchDeliveriesAsync()
         {
-            SearchFilter = string.Empty;
-            IsFiltering = false;
+            if (!string.IsNullOrEmpty(SearchFilter))
+            {
+                IsFiltering = true;
+            }
+            else 
+            {
+                IsFiltering = false; 
+            }
+
             CalculatePagination();
             await LoadDeliveriesAsync(1);
         }
@@ -136,14 +174,26 @@ namespace Courier_Data_Control_App.ViewModels
         {
             if (pageNumber < 1 || pageNumber > TotalPages)
             {
+                //Ensure the user stays within valid page range
+                if (!IsFiltering)
+                {
+                    TotalPages = 1;
+                    CanNavigateNext = false;
+                    Deliveries.Clear();
+                    return;
+                }
+
+                MessageBox.Show($"No se han encontrado entregas que coincidan con sus criterios de búsqueda. Vuelva a intentarlo con otro nombre de cliente, " +
+                $"número de teléfono, o mensajero.", "", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                await ClearFilters();
                 return;
             }
 
             CurrentPage = pageNumber;
-            var deliveries = await _deliveryRepository.GetAllDeliveriesAsync(CurrentPage, _pageSize);
+            var deliveries = await _deliveryRepository.GetAllDeliveriesAsync(CurrentPage, _pageSize, SearchFilter, CalculateTimeSpan());
 
             Deliveries.Clear();
-
             foreach (var delivery in deliveries)
             {
                 delivery.PropertyChanged += Delivery_PropertyChanged;
@@ -154,35 +204,13 @@ namespace Courier_Data_Control_App.ViewModels
         }
 
         /// <summary>
-        /// Gets the filtered deliveries for the collection of
-        /// the view model using paging
+        /// Clear search or filters applied
         /// </summary>
         [RelayCommand]
-        async Task SearchFilteredDeliveriesAsync()
+        async Task ClearFilters()
         {
-            IsFiltering = true;
-            CalculatePagination();
-            await LoadFilteredDeliveriesAsync(1);
-        }
-        async Task LoadFilteredDeliveriesAsync(int pageNumber = 1)
-        {
-            if (pageNumber < 1 || pageNumber > TotalPages)
-            {
-                return;
-            }
-
-            CurrentPage = pageNumber;
-            var deliveries = await _deliveryRepository.GetFilteredDeliveriesAsync(CurrentPage, _pageSize, SearchFilter);
-
-            Deliveries.Clear();
-
-            foreach (var delivery in deliveries)
-            {
-                delivery.PropertyChanged += Delivery_PropertyChanged;
-                Deliveries.Add(delivery);
-            }
-
-            UpdateNavigationButtons();
+            SearchFilter = String.Empty;
+            await SearchDeliveriesAsync();
         }
 
         /// <summary>
@@ -199,8 +227,7 @@ namespace Courier_Data_Control_App.ViewModels
 
             await _deliveryRepository.AddDeliveryAsync(CurrentDelivery);
             CurrentDelivery = new Delivery();
-            CalculatePagination();
-            await LoadDeliveriesAsync(CurrentPage);
+            await SearchDeliveriesAsync();
         }
 
         /// <summary>
@@ -227,25 +254,31 @@ namespace Courier_Data_Control_App.ViewModels
         [RelayCommand]
         async Task DeleteSelectedDeliveriesAsync(Delivery selectedDelivery)
         {
-            var deliveriesToDelete = Deliveries.Where(d => d.IsSelected).ToList();
+            var result = MessageBox.Show($"¿Estás seguro de que quieres eliminar los registros seleccionados?",
+                "Eliminar Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
-            foreach (var delivery in deliveriesToDelete)
+            if (result == MessageBoxResult.Yes)
             {
-                await _deliveryRepository.DeleteDeliveryAsync(delivery);
-                Deliveries.Remove(delivery);
+                var deliveriesToDelete = Deliveries.Where(d => d.IsSelected).ToList();
+
+                foreach (var delivery in deliveriesToDelete)
+                {
+                    await _deliveryRepository.DeleteDeliveryAsync(delivery);
+                    Deliveries.Remove(delivery);
+                }
+
+                //Reset the checkbox header of Deliveries data grid
+                IsAllDeliveriesSelected = false;
+
+                //Ensure the user stays within valid page range
+                CalculatePagination();
+                if (CurrentPage > TotalPages)
+                {
+                    CurrentPage = CurrentPage = TotalPages;
+                }
+
+                await LoadDeliveriesAsync(CurrentPage);
             }
-
-            //Reset the checkbox header of Deliveries data grid
-            IsAllDeliveriesSelected = false;
-
-            //Ensure the user stays within valid page range
-            CalculatePagination();
-            if (CurrentPage > TotalPages)
-            {
-                CurrentPage = CurrentPage = TotalPages;
-            }
-
-            await LoadDeliveriesAsync(CurrentPage);
         }
 
         /// <summary>
@@ -278,56 +311,31 @@ namespace Courier_Data_Control_App.ViewModels
             CanNavigatePrevious = CurrentPage > 1;
             CanNavigateNext = CurrentPage < TotalPages;
         }
-
         async void CalculatePagination()
         {
             var totalDeliveries = 0;
 
-            if (!IsFiltering)
-            {
-                totalDeliveries = await _deliveryRepository.GetTotalDeliveriesCountAsync();
-            }
-            else
-            {
-                totalDeliveries = await _deliveryRepository.GetFilteredDeliveriesCountAsync(SearchFilter);
-            }
+            totalDeliveries = await _deliveryRepository.GetTotalDeliveriesCountAsync(SearchFilter, CalculateTimeSpan());
 
             TotalPages = (int)Math.Ceiling(totalDeliveries / (double)_pageSize);
         }
-
         [RelayCommand]
         async Task NextPageAsync()
         {
             if (CanNavigateNext)
             {
-                if (IsFiltering)
-                {
-                    await LoadFilteredDeliveriesAsync(CurrentPage + 1);
-                }
-                else
-                {
-                    await LoadDeliveriesAsync(CurrentPage + 1);
-                }
+                await LoadDeliveriesAsync(CurrentPage + 1);  
             }
 
             //Reset the checkbox header of Deliveries data grid
             DeselectAllDeliveries();
-
         }
-
         [RelayCommand]
         async Task PreviousPageAsync()
         {
             if (CanNavigatePrevious)
             {
-                if (IsFiltering)
-                {
-                    await LoadFilteredDeliveriesAsync(CurrentPage - 1);
-                }
-                else
-                {
-                    await LoadDeliveriesAsync(CurrentPage - 1);
-                }
+                await LoadDeliveriesAsync(CurrentPage - 1);
             }
 
             //Reset the checkbox header of Deliveries data grid

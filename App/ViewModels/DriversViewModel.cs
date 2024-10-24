@@ -22,7 +22,7 @@ using Microsoft.Win32;
 namespace Courier_Data_Control_App.ViewModels
 {
     /// <summary>
-    /// A view model for list of drivers.
+    /// View model for drivers page
     /// </summary>
     public partial class DriversViewModel : ObservableObject
     {
@@ -103,15 +103,31 @@ namespace Courier_Data_Control_App.ViewModels
         /// Gets the current drivers for the collection of the view model
         /// </summary>
         [RelayCommand]
-        async Task SearchAllDriversAsync()
+        async Task SearchDriversAsync()
         {
-            SearchDriverName = string.Empty;
-            IsFiltering = false;
             await LoadDriversAsync();
+
+            if (!string.IsNullOrEmpty(SearchDriverName))
+            {
+                IsFiltering = true;
+            }
+            else
+            {
+                IsFiltering = false;
+            }
         }
         async Task LoadDriversAsync()
         {
-            var drivers = await _driverRepository.GetAllDriversAsync();
+            var drivers = await _driverRepository.GetAllDriversAsync(SearchDriverName);
+
+            if (drivers.Count() == 0)
+            {
+                MessageBox.Show($"No se han encontrado mensajeros que coincidan con sus criterios de búsqueda. Vuelva a intentarlo con otro nombre.",
+                    "", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                await ClearFilters();
+                return;
+            }
 
             Drivers.Clear();
 
@@ -122,24 +138,14 @@ namespace Courier_Data_Control_App.ViewModels
         }
 
         /// <summary>
-        /// Gets the filtered drivers for the collection of the view model 
+        /// Clear search or filters applied
         /// </summary>
         [RelayCommand]
-        async Task SearchFilteredDriversAsync()
+        async Task ClearFilters()
         {
-            IsFiltering = true;
-            await LoadFilteredDriversAsync();
-        }
-        async Task LoadFilteredDriversAsync()
-        {
-            var drivers = await _driverRepository.GetFilteredDriversAsync(SearchDriverName);
-
-            Drivers.Clear();
-
-            foreach (var driver in drivers)
-            {
-                Drivers.Add(driver);
-            }
+            SearchDriverName = String.Empty;
+            IsFiltering = false;
+            await LoadDriversAsync();
         }
 
         /// <summary>

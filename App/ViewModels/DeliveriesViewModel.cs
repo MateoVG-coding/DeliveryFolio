@@ -44,6 +44,30 @@ namespace Courier_Data_Control_App.ViewModels
             "Entrega programada"
         };
 
+        // START: Collection and methodS to get only available drivers
+        public ICollectionView AvailableDrivers { get; }
+        private void OnDriversCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            AvailableDrivers.Refresh();
+        }
+        private void OnDriverPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Driver.Status))
+            {
+                AvailableDrivers.Refresh();
+            }
+        }
+        private bool FilterDrivers(object obj)
+        {
+            if (obj is Driver driver)
+            {
+                return driver.Status;
+            }
+
+            return false;
+        }
+        // END: Collection and methodS to get only available drivers
+
         // START: Properties and methods to apply filtering
         [ObservableProperty]
         private string searchFilter = string.Empty;
@@ -138,13 +162,21 @@ namespace Courier_Data_Control_App.ViewModels
 
             IsAllDeliveriesSelected = IsAnyDeliverySelected = false;
         }
-
         // END: Properties and method for the header CheckBox
 
         public DeliveriesViewModel(DeliveryRepository deliveryRepository, ISharedDataService sharedDataService)
         {
             _deliveryRepository = deliveryRepository;
             _sharedDataService = sharedDataService;
+
+            AvailableDrivers = new ListCollectionView(Drivers);
+            AvailableDrivers.Filter = FilterDrivers;
+            Drivers.CollectionChanged += OnDriversCollectionChanged;
+
+            foreach (var driver in Drivers)
+            {
+                driver.PropertyChanged += OnDriverPropertyChanged;
+            }
 
             int pageNumber = 1;
             CalculatePagination();

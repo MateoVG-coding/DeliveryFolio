@@ -80,7 +80,7 @@
                                             <Setter Property="IsEnabled" Value="False" />
                                         </DataTrigger>
 
-                                        <DataTrigger Binding="{Binding Text, ElementName=AddDriverTextBoxLicensePlates}" Value="">
+                                        <DataTrigger Binding="{Binding Text, ElementName=AddDriverTextBoxLicensePlate}" Value="">
                                             <Setter Property="IsEnabled" Value="False" />
                                         </DataTrigger>
 

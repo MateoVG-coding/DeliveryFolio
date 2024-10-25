@@ -30,8 +30,6 @@ namespace Courier_Data_Control_App.ViewModels
         private readonly ISharedDataService _sharedDataService;
 
         public ObservableCollection<Driver> Drivers => _sharedDataService.Drivers;
-        public ObservableCollection<Driver> ActiveDrivers { get; } = new();
-        public ObservableCollection<Driver> InactiveDrivers { get; } = new();
 
         [ObservableProperty]
         private Driver newDriver = new Driver();

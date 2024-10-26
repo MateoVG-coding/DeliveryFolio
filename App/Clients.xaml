@@ -243,7 +243,7 @@
             <!--START: Listbox with all the clients -->
             <ListBox x:Name="ClientListBox" ItemsSource="{Binding Clients}"
                         SelectedItem="{Binding CurrentClient, UpdateSourceTrigger=PropertyChanged}" 
-                        SelectionMode="Single" HorizontalContentAlignment="Stretch" Margin="10,0,10,50" Grid.Row="2">
+                        SelectionMode="Single" HorizontalContentAlignment="Stretch" Margin="10,20,10,40" Grid.Row="2">
 
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">

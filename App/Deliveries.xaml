@@ -84,7 +84,7 @@
                         <!-- Driver Field -->
                         <ComboBox x:Name="ComboboxDriver" materialDesign:HintAssist.Hint="Mensajero" materialDesign:TextFieldAssist.HasClearButton="True" 
                                   Style="{StaticResource MaterialDesignOutlinedComboBox}" IsTextSearchEnabled="True" 
-                                  ItemsSource="{Binding AvailableDrivers}" DisplayMemberPath="FullName"
+                                  ItemsSource="{Binding AvailableDriversView}" DisplayMemberPath="FullName"
                                   Margin="15, 20" HorizontalContentAlignment="Left" Width="200">
                             <ComboBox.SelectedItem>
                                 <Binding Path="CurrentDelivery.Driver" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">

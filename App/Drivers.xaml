@@ -15,6 +15,30 @@
       FontFamily="{materialDesign:RobotoFont}"
       Title="Drivers">
 
+    <Page.Resources>
+        <!-- Style for ListBox items -->
+        <Style x:Key="DriverListBoxItemStyle" TargetType="ListBoxItem">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <ContentPresenter />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ItemsPanelTemplate for ListBox -->
+        <ItemsPanelTemplate x:Key="WrapPanelItemsPanelTemplate">
+            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" />
+        </ItemsPanelTemplate>
+    </Page.Resources>
+
     <Grid>
 
         <Grid.RowDefinitions>
@@ -240,165 +264,292 @@
                 </StackPanel>
             </materialDesign:DialogHost.DialogContent>
 
-            <!--START: Listbox with all the drivers -->
-            <ListBox x:Name="DriverListBox" ItemsSource="{Binding Drivers}"
-                        SelectedItem="{Binding CurrentDriver, UpdateSourceTrigger=PropertyChanged}" 
-                        SelectionMode="Single" HorizontalContentAlignment="Stretch" Margin="10,0,10,50" Grid.Row="2">
+            <!--START: Tabs for drivers -->
+            <TabControl Grid.Row="2" >
 
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
+                <!--START: Listbox with available drivers -->
+                <TabItem Header="Disponibles">
+                    <ListBox x:Name="AvailableDriverListBox" ItemsSource="{Binding AvailableDriversView}"
+                                SelectedItem="{Binding CurrentDriver, UpdateSourceTrigger=PropertyChanged}" 
+                                SelectionMode="Single" HorizontalContentAlignment="Stretch" Margin="10,20,10,40"
+                                ItemContainerStyle="{StaticResource DriverListBoxItemStyle}"
+                                ItemsPanel="{StaticResource WrapPanelItemsPanelTemplate}" >
 
-                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="Padding" Value="0" />
-                        <Setter Property="Background" Value="Transparent" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListBoxItem">
-                                    <ContentPresenter />
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
+                        <!--START: Flipper for every driver item in the listbox -->
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <materialDesign:Flipper materialDesign:ElevationAssist.Elevation="Dp4" Margin="5, 15, 50, 15" 
+                                                          materialDesign:FlipperAssist.UniformCornerRadius="15" >
 
-                    </Style>
-                </ListBox.ItemContainerStyle>
+                                    <!--START: Flipper front content -->
+                                    <materialDesign:Flipper.FrontContent>
+                                        <Grid Width="220" Height="290">
 
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="190" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
 
-                <!--START: Flipper for every driver item in the listbox -->
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <materialDesign:Flipper materialDesign:ElevationAssist.Elevation="Dp4" Margin="5, 15, 50, 15" 
-                                                  materialDesign:FlipperAssist.UniformCornerRadius="15" >
+                                            <!-- Color zone for driver profile image -->
+                                            <materialDesign:ColorZone VerticalAlignment="Stretch" Mode="PrimaryLight">
+                                                <Grid>
+                                                    <!-- Image Control -->
+                                                    <Image x:Name="DriverImage" Stretch="Fill" RenderOptions.BitmapScalingMode="NearestNeighbor" 
+                                                              Margin="1" ImageFailed="DriverImage_ImageFailed">
+                                                        <Image.Source>
+                                                            <Binding Path="ImagePath" TargetNullValue="pack://application:,,,/Resources/DefaultProfilePicture.png">
+                                                                <Binding.FallbackValue>
+                                                                    <ImageSource>pack://application:,,,/Resources/DefaultProfilePicture.png</ImageSource>
+                                                                </Binding.FallbackValue>
+                                                            </Binding>
+                                                        </Image.Source>
+                                                    </Image>
 
-                            <!--START: Flipper front content -->
-                            <materialDesign:Flipper.FrontContent>
-                                <Grid Width="220" Height="290">
+                                                    <!-- Load Image Button -->
+                                                    <Button Style="{StaticResource MaterialDesignRaisedButton}" Content="Cambiar imagen" FontWeight="Medium"
+                                                               HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Opacity="0.7" Click="Button_Click_SelectDriverImage">
+                                                    </Button>
+                                                </Grid>
+                                            </materialDesign:ColorZone>
 
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="190" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <!-- Textblock Driver's full name  -->
+                                                <TextBlock Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" />
 
-                                    <!-- Color zone for driver profile image -->
-                                    <materialDesign:ColorZone VerticalAlignment="Stretch" Mode="PrimaryLight">
-                                        <Grid>
-                                            <!-- Image Control -->
-                                            <Image x:Name="DriverImage" Stretch="Fill" RenderOptions.BitmapScalingMode="NearestNeighbor" 
-                                                      Margin="1" ImageFailed="DriverImage_ImageFailed">
-                                                <Image.Source>
-                                                    <Binding Path="ImagePath" TargetNullValue="pack://application:,,,/Resources/DefaultProfilePicture.png">
-                                                        <Binding.FallbackValue>
-                                                            <ImageSource>pack://application:,,,/Resources/DefaultProfilePicture.png</ImageSource>
-                                                        </Binding.FallbackValue>
-                                                    </Binding>
-                                                </Image.Source>
-                                            </Image>
+                                                <Button Margin="0,15,0,0" 
+                                                           Command="{x:Static materialDesign:Flipper.FlipCommand}"
+                                                           Click="Button_Click_FlipOtherDriversFlipper"
+                                                           Content="MÁS" 
+                                                           Style="{StaticResource MaterialDesignPaperSecondaryButton}" 
+                                                           materialDesign:ButtonAssist.CornerRadius="10" />
 
-                                            <!-- Load Image Button -->
-                                            <Button Style="{StaticResource MaterialDesignRaisedButton}" Content="Cambiar imagen" FontWeight="Medium"
-                                                       HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Opacity="0.7" Click="Button_Click_SelectDriverImage">
-                                            </Button>
+                                            </StackPanel>
+
                                         </Grid>
-                                    </materialDesign:ColorZone>
+                                    </materialDesign:Flipper.FrontContent>
+                                    <!--END: Flipper front content -->
 
-                                    <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <!-- Textblock Driver's full name  -->
-                                        <TextBlock Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" />
+                                    <!--START: Flipper back content -->
+                                    <materialDesign:Flipper.BackContent>
 
-                                        <Button Margin="0,15,0,0" 
-                                                   Command="{x:Static materialDesign:Flipper.FlipCommand}"
-                                                   Click="Button_Click_FlipOtherDriversFlipper"
-                                                   Content="MÁS" 
-                                                   Style="{StaticResource MaterialDesignPaperSecondaryButton}" 
-                                                   materialDesign:ButtonAssist.CornerRadius="10" />
+                                        <Grid Width="220" Height="290">
 
-                                    </StackPanel>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
 
-                                </Grid>
-                            </materialDesign:Flipper.FrontContent>
-                            <!--END: Flipper front content -->
+                                            <materialDesign:ColorZone Padding="6" Mode="SecondaryLight">
+                                                <StackPanel Orientation="Horizontal">
 
-                            <!--START: Flipper back content -->
-                            <materialDesign:Flipper.BackContent>
+                                                    <Button HorizontalAlignment="Left" 
+                                                               Command="{x:Static materialDesign:Flipper.FlipCommand}"
+                                                               Style="{StaticResource MaterialDesignToolForegroundButton}">
+                                                        <materialDesign:PackIcon HorizontalAlignment="Right" Kind="ArrowLeft" />
+                                                    </Button>
 
-                                <Grid Width="220" Height="290">
+                                                    <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" 
+                                                                  Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" />
 
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
+                                                </StackPanel>
+                                            </materialDesign:ColorZone>
 
-                                    <materialDesign:ColorZone Padding="6" Mode="SecondaryLight">
-                                        <StackPanel Orientation="Horizontal">
+                                            <Grid Grid.Row="1" VerticalAlignment="Stretch">
+                                                <StackPanel>
 
-                                            <Button HorizontalAlignment="Left" 
-                                                       Command="{x:Static materialDesign:Flipper.FlipCommand}"
-                                                       Style="{StaticResource MaterialDesignToolForegroundButton}">
-                                                <materialDesign:PackIcon HorizontalAlignment="Right" Kind="ArrowLeft" />
-                                            </Button>
+                                                    <!-- Textblock Driver's phone number  -->
+                                                    <TextBlock Text="Número de Teléfono:" FontWeight="SemiBold" Margin="15,15,0,5" />
+                                                    <TextBlock Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                                                                  Margin="15,0,0,5" />
 
-                                            <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" 
-                                                          Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <!-- Textblock Driver's license plate -->
+                                                    <TextBlock Text="Placa de matrícula:" FontWeight="SemiBold" Margin="15,15,0,5" />
+                                                    <TextBlock Text="{Binding LicensePlate, UpdateSourceTrigger=PropertyChanged}"
+                                                                  Margin="15,0,0,5" />
 
-                                        </StackPanel>
-                                    </materialDesign:ColorZone>
+                                                    <!-- Textblock Driver's status -->
+                                                    <TextBlock Text="Disponibilidad:" FontWeight="SemiBold" Margin="15,15,0,5" />
+                                                    <ToggleButton IsChecked="{Binding Status, UpdateSourceTrigger=PropertyChanged}" 
+                                                                     HorizontalAlignment="Left" Margin="15,0,0,5" />
 
-                                    <Grid Grid.Row="1" VerticalAlignment="Stretch">
-                                        <StackPanel>
+                                                    <DockPanel Margin="15,20,0,0">
 
-                                            <!-- Textblock Driver's phone number  -->
-                                            <TextBlock Text="Número de Teléfono:" FontWeight="SemiBold" Margin="15,15,0,5" />
-                                            <TextBlock Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
-                                                          Margin="15,0,0,5" />
+                                                        <TextBlock DockPanel.Dock="Left" FontStyle="Italic" FontWeight="UltraLight">
+                                                            <TextBlock.Text>
+                                                                <Binding Path="DateCreated" StringFormat="Se unió el {0:MM/dd/yyyy}" />
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
 
-                                            <!-- Textblock Driver's license plate -->
-                                            <TextBlock Text="Placa de matrícula:" FontWeight="SemiBold" Margin="15,15,0,5" />
-                                            <TextBlock Text="{Binding LicensePlate, UpdateSourceTrigger=PropertyChanged}"
-                                                          Margin="15,0,0,5" />
+                                                        <materialDesign:PopupBox DockPanel.Dock="Right" HorizontalAlignment="Right"
+                                                                                        VerticalAlignment="Top" PopupElevation="Dp8" PopupVerticalOffset="-140"
+                                                                                        Style="{StaticResource MaterialDesignPopupBox}">
+                                                            <StackPanel>
+                                                                <Button Content="Editar" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"/>
+                                                                <Button Content="Eliminar" Command="{Binding DataContext.SoftDeleteDriverCommand, 
+                                                                                                    RelativeSource={RelativeSource AncestorType=Page}}"/>
+                                                            </StackPanel>
+                                                        </materialDesign:PopupBox>
 
-                                            <!-- Textblock Driver's status -->
-                                            <TextBlock Text="Disponibilidad:" FontWeight="SemiBold" Margin="15,15,0,5" />
-                                            <ToggleButton IsChecked="{Binding Status, UpdateSourceTrigger=PropertyChanged}" 
-                                                             HorizontalAlignment="Left" Margin="15,0,0,5" />
+                                                    </DockPanel>
 
-                                            <DockPanel Margin="15,20,0,0">
+                                                </StackPanel>
+                                            </Grid>
+                                        </Grid>
+                                    </materialDesign:Flipper.BackContent>
+                                    <!--END: Flipper back content -->
+                                </materialDesign:Flipper>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <!--END: Flipper for every driver item in the listbox -->
+                    </ListBox>
+                </TabItem>
+                <!--END: Listbox with available drivers -->
 
-                                                <TextBlock DockPanel.Dock="Left" FontStyle="Italic" FontWeight="UltraLight">
-                                                    <TextBlock.Text>
-                                                        <Binding Path="DateCreated" StringFormat="Se unió el {0:MM/dd/yyyy}" />
-                                                    </TextBlock.Text>
-                                                </TextBlock>
+                <!--START: Listbox with unavailable drivers -->
+                <TabItem Header="No Disponibles" >
 
-                                                <materialDesign:PopupBox DockPanel.Dock="Right" HorizontalAlignment="Right"
-                                                                                VerticalAlignment="Top" PopupElevation="Dp8" PopupVerticalOffset="-140"
-                                                                                Style="{StaticResource MaterialDesignPopupBox}">
-                                                    <StackPanel>
-                                                        <Button Content="Editar" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"/>
-                                                        <Button Content="Eliminar" Command="{Binding DataContext.SoftDeleteDriverCommand, 
-                                                                                            RelativeSource={RelativeSource AncestorType=Page}}"/>
-                                                    </StackPanel>
-                                                </materialDesign:PopupBox>
+                    <ListBox x:Name="UnavailableDriverListBox" ItemsSource="{Binding UnavailableDriversView}"
+                                SelectedItem="{Binding CurrentDriver, UpdateSourceTrigger=PropertyChanged}" 
+                                SelectionMode="Single" HorizontalContentAlignment="Stretch" Margin="10,20,10,40"
+                                ItemContainerStyle="{StaticResource DriverListBoxItemStyle}"
+                                ItemsPanel="{StaticResource WrapPanelItemsPanelTemplate}" >
 
-                                            </DockPanel>
+                        <!--START: Flipper for every driver item in the listbox -->
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <materialDesign:Flipper materialDesign:ElevationAssist.Elevation="Dp4" Margin="5, 15, 50, 15" 
+                                                          materialDesign:FlipperAssist.UniformCornerRadius="15" >
 
-                                        </StackPanel>
-                                    </Grid>
-                                </Grid>
-                            </materialDesign:Flipper.BackContent>
-                            <!--END: Flipper back content -->
-                        </materialDesign:Flipper>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-                <!--END: Flipper for every driver item in the listbox -->
-            </ListBox>
-            <!--END: Listbox with all the drivers -->
+                                    <!--START: Flipper front content -->
+                                    <materialDesign:Flipper.FrontContent>
+                                        <Grid Width="220" Height="290">
+
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="190" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Color zone for driver profile image -->
+                                            <materialDesign:ColorZone VerticalAlignment="Stretch" Mode="PrimaryLight">
+                                                <Grid>
+                                                    <!-- Image Control -->
+                                                    <Image x:Name="DriverImage" Stretch="Fill" RenderOptions.BitmapScalingMode="NearestNeighbor" 
+                                                              Margin="1" ImageFailed="DriverImage_ImageFailed">
+                                                        <Image.Source>
+                                                            <Binding Path="ImagePath" TargetNullValue="pack://application:,,,/Resources/DefaultProfilePicture.png">
+                                                                <Binding.FallbackValue>
+                                                                    <ImageSource>pack://application:,,,/Resources/DefaultProfilePicture.png</ImageSource>
+                                                                </Binding.FallbackValue>
+                                                            </Binding>
+                                                        </Image.Source>
+                                                    </Image>
+
+                                                    <!-- Load Image Button -->
+                                                    <Button Style="{StaticResource MaterialDesignRaisedButton}" Content="Cambiar imagen" FontWeight="Medium"
+                                                               HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Opacity="0.7" Click="Button_Click_SelectDriverImage">
+                                                    </Button>
+                                                </Grid>
+                                            </materialDesign:ColorZone>
+
+                                            <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <!-- Textblock Driver's full name  -->
+                                                <TextBlock Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" />
+
+                                                <Button Margin="0,15,0,0" 
+                                                           Command="{x:Static materialDesign:Flipper.FlipCommand}"
+                                                           Click="Button_Click_FlipOtherDriversFlipper"
+                                                           Content="MÁS" 
+                                                           Style="{StaticResource MaterialDesignPaperSecondaryButton}" 
+                                                           materialDesign:ButtonAssist.CornerRadius="10" />
+
+                                            </StackPanel>
+
+                                        </Grid>
+                                    </materialDesign:Flipper.FrontContent>
+                                    <!--END: Flipper front content -->
+
+                                    <!--START: Flipper back content -->
+                                    <materialDesign:Flipper.BackContent>
+
+                                        <Grid Width="220" Height="290">
+
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <materialDesign:ColorZone Padding="6" Mode="SecondaryLight">
+                                                <StackPanel Orientation="Horizontal">
+
+                                                    <Button HorizontalAlignment="Left" 
+                                                               Command="{x:Static materialDesign:Flipper.FlipCommand}"
+                                                               Style="{StaticResource MaterialDesignToolForegroundButton}">
+                                                        <materialDesign:PackIcon HorizontalAlignment="Right" Kind="ArrowLeft" />
+                                                    </Button>
+
+                                                    <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" 
+                                                                  Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" />
+
+                                                </StackPanel>
+                                            </materialDesign:ColorZone>
+
+                                            <Grid Grid.Row="1" VerticalAlignment="Stretch">
+                                                <StackPanel>
+
+                                                    <!-- Textblock Driver's phone number  -->
+                                                    <TextBlock Text="Número de Teléfono:" FontWeight="SemiBold" Margin="15,15,0,5" />
+                                                    <TextBlock Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                                                                  Margin="15,0,0,5" />
+
+                                                    <!-- Textblock Driver's license plate -->
+                                                    <TextBlock Text="Placa de matrícula:" FontWeight="SemiBold" Margin="15,15,0,5" />
+                                                    <TextBlock Text="{Binding LicensePlate, UpdateSourceTrigger=PropertyChanged}"
+                                                                  Margin="15,0,0,5" />
+
+                                                    <!-- Textblock Driver's status -->
+                                                    <TextBlock Text="Disponibilidad:" FontWeight="SemiBold" Margin="15,15,0,5" />
+                                                    <ToggleButton IsChecked="{Binding Status, UpdateSourceTrigger=PropertyChanged}" 
+                                                                     HorizontalAlignment="Left" Margin="15,0,0,5" />
+
+                                                    <DockPanel Margin="15,20,0,0">
+
+                                                        <TextBlock DockPanel.Dock="Left" FontStyle="Italic" FontWeight="UltraLight">
+                                                            <TextBlock.Text>
+                                                                <Binding Path="DateCreated" StringFormat="Se unió el {0:MM/dd/yyyy}" />
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
+
+                                                        <materialDesign:PopupBox DockPanel.Dock="Right" HorizontalAlignment="Right"
+                                                                                        VerticalAlignment="Top" PopupElevation="Dp8" PopupVerticalOffset="-140"
+                                                                                        Style="{StaticResource MaterialDesignPopupBox}">
+                                                            <StackPanel>
+                                                                <Button Content="Editar" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"/>
+                                                                <Button Content="Eliminar" Command="{Binding DataContext.SoftDeleteDriverCommand, 
+                                                                                                    RelativeSource={RelativeSource AncestorType=Page}}"/>
+                                                            </StackPanel>
+                                                        </materialDesign:PopupBox>
+
+                                                    </DockPanel>
+
+                                                </StackPanel>
+                                            </Grid>
+                                        </Grid>
+                                    </materialDesign:Flipper.BackContent>
+                                    <!--END: Flipper back content -->
+                                </materialDesign:Flipper>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <!--END: Flipper for every driver item in the listbox -->
+                    </ListBox>
+                </TabItem>
+                <!--END: Listbox for unavailable drivers-->
+
+
+            </TabControl>
+            <!--END: Tabs for drivers -->
 
         </materialDesign:DialogHost>
         <!--END: Dialog Host to edit drivers -->
     </Grid>
+
 </Page>

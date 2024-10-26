@@ -30,7 +30,7 @@ namespace Courier_Data_Control_App.Models
         private DateTime dateCreated = DateTime.Now;
 
         [ObservableProperty]
-        private bool status;
+        private bool status = true;
 
         [ObservableProperty]
         private string? imagePath;

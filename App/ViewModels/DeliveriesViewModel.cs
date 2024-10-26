@@ -45,16 +45,17 @@ namespace Courier_Data_Control_App.ViewModels
         };
 
         // START: Collection and methodS to get only available drivers
-        public ICollectionView AvailableDrivers { get; }
+        public ICollectionView AvailableDriversView { get; }
+
         private void OnDriversCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            AvailableDrivers.Refresh();
+            AvailableDriversView.Refresh();
         }
         private void OnDriverPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Driver.Status))
             {
-                AvailableDrivers.Refresh();
+                AvailableDriversView.Refresh();
             }
         }
         private bool FilterDrivers(object obj)
@@ -169,8 +170,8 @@ namespace Courier_Data_Control_App.ViewModels
             _deliveryRepository = deliveryRepository;
             _sharedDataService = sharedDataService;
 
-            AvailableDrivers = new ListCollectionView(Drivers);
-            AvailableDrivers.Filter = FilterDrivers;
+            AvailableDriversView = new ListCollectionView(Drivers);
+            AvailableDriversView.Filter = FilterDrivers;
             Drivers.CollectionChanged += OnDriversCollectionChanged;
 
             foreach (var driver in Drivers)

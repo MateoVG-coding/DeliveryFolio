@@ -30,6 +30,8 @@ namespace Courier_Data_Control_App.ViewModels
         private readonly ISharedDataService _sharedDataService;
 
         public ObservableCollection<Driver> Drivers => _sharedDataService.Drivers;
+        public ICollectionView AvailableDriversView { get; private set; }
+        public ICollectionView UnavailableDriversView { get; private set; }
 
         [ObservableProperty]
         private Driver newDriver = new Driver();
@@ -69,12 +71,17 @@ namespace Courier_Data_Control_App.ViewModels
                 foreach (INotifyPropertyChanged item in e.NewItems)
                     item.PropertyChanged += OnDriverPropertyChanged;
             }
+
+            AvailableDriversView.Refresh();
+            UnavailableDriversView.Refresh();
         }
         private void OnDriverPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(CurrentDriver.Status))
             {
                 UpdateDriverCommand.Execute(null);
+                AvailableDriversView.Refresh();
+                UnavailableDriversView.Refresh();
             }
 
             if (e.PropertyName == nameof(CurrentDriver.ImagePath))
@@ -88,6 +95,12 @@ namespace Courier_Data_Control_App.ViewModels
         {
             _driverRepository = driverRepository;
             _sharedDataService = sharedDataService;
+
+            AvailableDriversView = new ListCollectionView(Drivers);
+            AvailableDriversView.Filter = driver => ((Driver)driver).Status;
+
+            UnavailableDriversView = new ListCollectionView(Drivers);
+            UnavailableDriversView.Filter = driver => !((Driver)driver).Status;
 
             foreach (var driver in Drivers)
             {

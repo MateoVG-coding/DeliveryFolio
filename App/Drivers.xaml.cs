@@ -74,11 +74,15 @@ namespace Courier_Data_Control_App
 
             listBoxItem.IsSelected = true;
 
-            // Find all Flipper controls in the ListBox and flip them back to front
-            var listBoxItems = DriverListBox.Items.Cast<Driver>().ToList();
+            FlipBackAllFlippers(AvailableDriverListBox);
+            FlipBackAllFlippers(UnavailableDriverListBox);
+        }
+        private void FlipBackAllFlippers(System.Windows.Controls.ListBox listBox)
+        {
+            var listBoxItems = listBox.Items.Cast<Driver>().ToList();
             foreach (var item in listBoxItems)
             {
-                var itemContainer = DriverListBox.ItemContainerGenerator.ContainerFromItem(item) as System.Windows.Controls.ListBoxItem;
+                var itemContainer = listBox.ItemContainerGenerator.ContainerFromItem(item) as System.Windows.Controls.ListBoxItem;
                 if (itemContainer != null)
                 {
                     var otherFlipper = FindChild<Flipper>(itemContainer);

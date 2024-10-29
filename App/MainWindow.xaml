@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" Name="home"
+        Icon="/Resources/DeliveryFolioLogo.ico" 
         Height="750" Width="1250"
         WindowStyle="None" ResizeMode="NoResize"
         AllowsTransparency="True" WindowStartupLocation="CenterScreen"

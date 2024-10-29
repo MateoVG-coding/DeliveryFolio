@@ -2,8 +2,8 @@
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Courier_Data_Control_App</RootNamespace>
-    <AssemblyName>Courier-Data-Control-App</AssemblyName>
+    <RootNamespace>DeliveryFolio</RootNamespace>
+    <AssemblyName>DeliveryFolio</AssemblyName>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,6 +26,8 @@
   <ItemGroup>
     <None Remove="DeliveryFolioSplashScreen.png" />
     <None Remove="Resources\DefaultProfilePicture.png" />
+    <None Remove="Resources\DeliveryFolio.ico" />
+    <None Remove="Resources\DeliveryFolioLogo.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">
@@ -41,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\DefaultProfilePicture.png" />
+    <Resource Include="Resources\DeliveryFolioLogo.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\DeliveryFolioLogo.png" />

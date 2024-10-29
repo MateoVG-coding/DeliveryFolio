@@ -24,6 +24,7 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="DeliveryFolioSplashScreen.png" />
     <None Remove="Resources\DefaultProfilePicture.png" />
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +63,9 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="App.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <SplashScreen Include="DeliveryFolioSplashScreen.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">

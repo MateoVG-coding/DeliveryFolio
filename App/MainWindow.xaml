@@ -42,7 +42,7 @@
                             </Border>
 
                             <!-- Label with Rounded Corners -->
-                            <Border Background="#307ab9" CornerRadius="8" VerticalAlignment="Center" Padding="5">
+                            <Border Background="#2ea0eb" CornerRadius="8" VerticalAlignment="Center" Padding="5">
                                 <Label Content="DeliveryFolio"
                                        FontFamily="Futura"
                                        FontSize="16"

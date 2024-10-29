@@ -25,7 +25,7 @@ namespace Courier_Data_Control_App.ViewModels
     /// <summary>
     /// View model for deliveries page
     /// </summary>
-    public partial class DeliveriesViewModel : ObservableValidator
+    public partial class DeliveriesViewModel : ObservableObject
     {
         private readonly DeliveryRepository _deliveryRepository;
         private readonly ISharedDataService _sharedDataService;
@@ -224,7 +224,7 @@ namespace Courier_Data_Control_App.ViewModels
             }
 
             CurrentPage = pageNumber;
-            var deliveries = await _deliveryRepository.GetAllDeliveriesAsync(CurrentPage, _pageSize, SearchFilter, CalculateTimeSpan());
+            var deliveries = await _deliveryRepository.GetFilteredDeliveriesAsync(CurrentPage, _pageSize, SearchFilter, CalculateTimeSpan());
 
             Deliveries.Clear();
             foreach (var delivery in deliveries)
@@ -348,7 +348,7 @@ namespace Courier_Data_Control_App.ViewModels
         {
             var totalDeliveries = 0;
 
-            totalDeliveries = await _deliveryRepository.GetTotalDeliveriesCountAsync(SearchFilter, CalculateTimeSpan());
+            totalDeliveries = await _deliveryRepository.GetFilteredDeliveriesCountAsync(SearchFilter, CalculateTimeSpan());
 
             TotalPages = (int)Math.Ceiling(totalDeliveries / (double)_pageSize);
         }

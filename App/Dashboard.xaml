@@ -4,10 +4,10 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
       xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
       xmlns:validations="clr-namespace:Courier_Data_Control_App.Validations"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      mc:Ignorable="d" d:DesignHeight="750" d:DesignWidth="1250"
       TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Primary.Dark.Foreground}"
       Background="{DynamicResource MaterialDesign.Brush.Background}"
       TextElement.FontWeight="Regular"
@@ -16,6 +16,137 @@
       Title="Dashboard">
 
     <Grid>
+        <!-- START: Resources for charts -->
+        <Grid.Resources>
+
+            <Style TargetType="lvc:ColumnSeries">
+                <Setter Property="Fill" Value="{DynamicResource MaterialDesign.Brush.Primary.Dark}"></Setter>
+            </Style>
+         
+            <Style TargetType="lvc:RowSeries">
+                <Setter Property="Fill" Value="{DynamicResource MaterialDesign.Brush.Primary.Dark}"></Setter>
+            </Style>
+            
+            <Style TargetType="lvc:Separator">
+                <Setter Property="StrokeThickness" Value="0.5"></Setter>
+                <Setter Property="Stroke" Value="#4BFFFFFF"></Setter>
+                <Style.Triggers>
+                    <Trigger Property="AxisOrientation" Value="X">
+                        <Setter Property="IsEnabled" Value="False"></Setter>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style TargetType="lvc:PieSeries">
+                <Setter Property="FontSize" Value="14"></Setter>
+                <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Primary.Dark.Foreground}"/>
+                <Setter Property="FontFamily" Value="{materialDesign:RobotoFont}"/>
+                <Setter Property="DataLabels" Value="True"/>
+                <Setter Property="Fill" Value="{DynamicResource MaterialDesign.Brush.Primary.Dark}"/>
+            </Style>
+
+            <Style TargetType="lvc:Axis">
+                <Setter Property="FontSize" Value="14"></Setter>
+                <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Primary.Dark.Foreground}"></Setter>
+                <Setter Property="FontFamily" Value="{materialDesign:RobotoFont}"></Setter>
+                <Style.Triggers>
+                    <Trigger Property="AxisOrientation" Value="Y">
+                        <Setter Property="IsMerged" Value="False"></Setter>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+        </Grid.Resources>
+        <!-- END: Resources for charts -->
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Chart for count deliveries -->
+        <GroupBox Header="ENTREGAS DEL DIA DE HOY" Style="{StaticResource MaterialDesignCardGroupBox}" 
+                  materialDesign:ElevationAssist.Elevation="Dp4" BorderThickness="1.5" 
+                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="15">
+            <lvc:PieChart Series="{Binding SeriesTodayDeliveriesCollection}" LegendLocation="Right" Margin="5"> 
+            </lvc:PieChart>
+        </GroupBox>
+
+        <!-- START: Chart for count deliveries over a week -->
+        <GroupBox Grid.Column="0" Grid.Row="1" Header="NUMERO DE ENTREGAS LOS ULTIMOS 7 DIAS" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}" materialDesign:ElevationAssist.Elevation="Dp4" 
+                  BorderThickness="1.5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="15">
+
+            <lvc:CartesianChart Series="{Binding SeriesOverWeekDeliveriesCollection}" Margin="5">
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis Labels="{Binding DaysLabels}" ShowLabels="True">
+                        <lvc:Axis.Separator>
+                            <lvc:Separator Step="1" IsEnabled="False"/>
+                        </lvc:Axis.Separator>
+                    </lvc:Axis>
+                </lvc:CartesianChart.AxisX>
+                <lvc:CartesianChart.AxisY>
+                    <lvc:Axis >
+                        <lvc:Axis.Separator>
+                            <lvc:Separator Step="10" />
+                        </lvc:Axis.Separator>
+                    </lvc:Axis>
+                </lvc:CartesianChart.AxisY>
+            </lvc:CartesianChart>
+        </GroupBox>
+        <!-- END: Chart for count deliveries over a week -->
+
+        <!-- START: Chart for top 5 clients over a week -->
+        <GroupBox Grid.Row="0" Grid.Column="1" Header="CLIENTES CON MAS DOMICILIOS EN LOS ULTIMOS 7 DIAS" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}" materialDesign:ElevationAssist.Elevation="Dp4"
+                  BorderThickness="1.5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="15">
+
+            <lvc:CartesianChart Series="{Binding TopClientsSeries}" Margin="5">
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis ShowLabels="True">
+                        <lvc:Axis.Separator>
+                            <lvc:Separator Step="10" />
+                        </lvc:Axis.Separator>
+                    </lvc:Axis>
+                </lvc:CartesianChart.AxisX>
+                <lvc:CartesianChart.AxisY>
+                    <lvc:Axis Labels="{Binding TopClientsNames}" ShowLabels="True">
+                        <lvc:Axis.Separator>
+                            <lvc:Separator IsEnabled="False"/>
+                        </lvc:Axis.Separator>
+                    </lvc:Axis>
+                </lvc:CartesianChart.AxisY>
+            </lvc:CartesianChart>
+        </GroupBox>
+        <!-- END: Chart for top 5 clients over a week -->
+
+        <!-- START: Chart for top 5 drivers over a week -->
+        <GroupBox Grid.Row="1" Grid.Column="1" Header="MENSAJEROS CON MAS ENTREGAS EN LOS ULTIMOS 7 DIAS" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}" materialDesign:ElevationAssist.Elevation="Dp4" 
+                  BorderThickness="1.5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="15" >
+
+            <lvc:CartesianChart Series="{Binding TopDriversSeries}"  Margin="5">
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis ShowLabels="True"> 
+                        <lvc:Axis.Separator>
+                            <lvc:Separator Step="10"/>
+                        </lvc:Axis.Separator>
+                    </lvc:Axis>
+                </lvc:CartesianChart.AxisX>
+                <lvc:CartesianChart.AxisY>
+                    <lvc:Axis Labels="{Binding TopDriversNames}" ShowLabels="True"> 
+                        <lvc:Axis.Separator>
+                            <lvc:Separator IsEnabled="False"/>
+                        </lvc:Axis.Separator>
+                    </lvc:Axis>
+                </lvc:CartesianChart.AxisY>
+            </lvc:CartesianChart>
+        </GroupBox>
+        <!-- END: Chart for top 5 drivers over a week -->
 
     </Grid>
 </Page>

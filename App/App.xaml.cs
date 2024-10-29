@@ -44,6 +44,7 @@ namespace Courier_Data_Control_App
                 return new SharedDataService(deliveryRepository, driverRepository, clientRepository);
             });
 
+            services.AddTransient<DashboardViewModel>();
             services.AddTransient<DeliveriesViewModel>();
             services.AddTransient<DriversViewModel>();
             services.AddTransient<ClientsViewModel>();

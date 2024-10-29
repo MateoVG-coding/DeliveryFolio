@@ -27,6 +27,7 @@ namespace Courier_Data_Control_App
         private Deliveries _deliveriesPage;
         private Clients _clientsPage;
         private Drivers _driversPage;
+        private Dashboard _dashboardPage;
 
         public MainWindow(IServiceProvider serviceProvider)
         {
@@ -34,7 +35,7 @@ namespace Courier_Data_Control_App
             _serviceProvider = serviceProvider;
             MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
         }
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.Source is TabControl tabControl && tabControl.SelectedItem is TabItem selectedTab)
             {
@@ -43,6 +44,18 @@ namespace Courier_Data_Control_App
                 switch (tag)
                 {
                     case "Home":
+
+                        if (_dashboardPage == null)
+                        {
+                            _dashboardPage = new Dashboard { DataContext = _serviceProvider.GetRequiredService<DashboardViewModel>() };
+                        }
+                        else
+                        {
+                            var dashboardViewModel = _dashboardPage.DataContext as DashboardViewModel;
+                            await dashboardViewModel.LoadDataAsync();
+                        }
+
+                        fContainer.Navigate(_dashboardPage);
                         break;
 
                     case "Deliveries":

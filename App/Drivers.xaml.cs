@@ -107,20 +107,6 @@ namespace Courier_Data_Control_App
             viewModel.LoadDriverImageCommand.Execute(null);
         }
 
-        private void DriverImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
-        {
-            var image = sender as Image;
-            var viewModel = this.DataContext as DriversViewModel;
-
-            viewModel.CurrentDriver.ImagePath = null;
-
-            if (image != null)
-            {
-                image.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/DefaultProfilePicture.png"));
-            }
-            
-        }
-
         // Helper method to find the ancestor of a specific type
         private static T FindAncestor<T>(DependencyObject current) where T : DependencyObject
         {

@@ -295,7 +295,7 @@
                                                 <Grid>
                                                     <!-- Image Control -->
                                                     <Image x:Name="DriverImage" Stretch="Fill" RenderOptions.BitmapScalingMode="NearestNeighbor" 
-                                                              Margin="1" ImageFailed="DriverImage_ImageFailed">
+                                                              Margin="1">
                                                         <Image.Source>
                                                             <Binding Path="ImagePath" TargetNullValue="pack://application:,,,/Resources/DefaultProfilePicture.png">
                                                                 <Binding.FallbackValue>
@@ -434,7 +434,7 @@
                                                 <Grid>
                                                     <!-- Image Control -->
                                                     <Image x:Name="DriverImage" Stretch="Fill" RenderOptions.BitmapScalingMode="NearestNeighbor" 
-                                                              Margin="1" ImageFailed="DriverImage_ImageFailed">
+                                                              Margin="1">
                                                         <Image.Source>
                                                             <Binding Path="ImagePath" TargetNullValue="pack://application:,,,/Resources/DefaultProfilePicture.png">
                                                                 <Binding.FallbackValue>

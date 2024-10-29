@@ -18,7 +18,7 @@ namespace Courier_Data_Control_App.Models
         private int id;
 
         [ObservableProperty]
-        private string customerName;
+        private string customerName = string.Empty;
 
         [ObservableProperty]
         [Required]
@@ -29,7 +29,7 @@ namespace Courier_Data_Control_App.Models
         private string address;
 
         [ObservableProperty]
-        private string description;
+        private string description = string.Empty;
 
         [ObservableProperty]
         private bool status;

@@ -65,7 +65,7 @@
     <Page Include="App.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <SplashScreen Include="DeliveryFolioSplashScreen.png" />
+    <SplashScreen Include="Resources\DeliveryFolioSplashScreen.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">

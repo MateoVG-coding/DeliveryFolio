@@ -98,16 +98,7 @@
                                     </StackPanel>
                                 </TabItem.Header>
                             </TabItem>
-
-                            <TabItem Width="180" HorizontalContentAlignment="Left" Tag="Settings">
-                                <TabItem.Header>
-                                    <StackPanel Orientation="Horizontal" Width="160" Height="auto">
-                                        <materialDesign:PackIcon Width="24" Height="24" Kind="Settings" 
-                                                                 Margin="12,0,0,0" ToolTipService.ToolTip="Configuración"/>
-                                        <TextBlock Margin="20,0,20,0" VerticalAlignment="Center" Text="Configuración"/>
-                                    </StackPanel>
-                                </TabItem.Header>
-                            </TabItem>
+                            
                         </TabControl>
                     </materialDesign:Card>
                     <!-- End: MenuItem -->

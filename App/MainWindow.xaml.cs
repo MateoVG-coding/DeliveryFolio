@@ -86,9 +86,6 @@ namespace Courier_Data_Control_App
 
                         fContainer.Navigate(_driversPage);
                         break;
-
-                    case "Settings":
-                        break;
                 }
             }
         }

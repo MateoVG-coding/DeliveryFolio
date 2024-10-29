@@ -76,15 +76,21 @@ namespace Courier_Data_Control_App.ViewModels
         private bool isFiltering;
         [ObservableProperty]
         private string selectedTimeSpan = "Todos";
+        [ObservableProperty]
+        private string selectedStatusFilter = "Todos";
 
-        partial void OnSelectedTimeSpanChanged(string value)
-        {
-            _ = SearchDeliveriesAsync();
-        }
         [RelayCommand]
         private void SelectTimeSpan(string timespan)
         {
             SelectedTimeSpan = timespan;
+        }
+        partial void OnSelectedStatusFilterChanged(string value)
+        {
+            _ = SearchDeliveriesAsync();
+        }
+        partial void OnSelectedTimeSpanChanged(string value)
+        {
+            _ = SearchDeliveriesAsync();
         }
         public DateTime? CalculateTimeSpan()
         {
@@ -229,8 +235,13 @@ namespace Courier_Data_Control_App.ViewModels
             Deliveries.Clear();
             foreach (var delivery in deliveries)
             {
-                delivery.PropertyChanged += Delivery_PropertyChanged;
-                Deliveries.Add(delivery);
+                if ((SelectedStatusFilter == "Delivered" && delivery.Status) ||
+                    (SelectedStatusFilter == "Pending" && !delivery.Status) ||
+                    SelectedStatusFilter == "Todos")
+                {
+                    delivery.PropertyChanged += Delivery_PropertyChanged;
+                    Deliveries.Add(delivery);
+                }
             }
 
             UpdateNavigationButtons();

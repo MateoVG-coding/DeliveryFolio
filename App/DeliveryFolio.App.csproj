@@ -22,6 +22,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <ApplicationIcon>Resources\DeliveryFolioLogo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="DeliveryFolioSplashScreen.png" />

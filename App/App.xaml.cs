@@ -49,9 +49,19 @@ namespace Courier_Data_Control_App
             services.AddTransient<DriversViewModel>();
             services.AddTransient<ClientsViewModel>();
         }
+        private void EnsureDatabaseCreated()
+        {
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                dbContext.Database.EnsureCreated(); // Creates the database if it doesn't exist
+            }
+        }
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            EnsureDatabaseCreated();
+
             var mainWindow = new MainWindow(ServiceProvider);
             mainWindow.Show();
             base.OnStartup(e);
